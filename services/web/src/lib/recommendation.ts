@@ -1,15 +1,11 @@
-// Texto de la recomendación de priorización (F7.2). El texto es fijo; los números se interpolan
-// desde la respuesta de /predict (operating_point) y de /model-info (metrics). Nada aquí
-// conoce el umbral ni la prevalencia: si faltan, se dice «n/d» en vez de inventar.
+// Texto de la recomendación de priorización (F7.2). Por encima del umbral el texto es fijo y sin
+// números; por debajo, el «1 de cada N» se interpola desde el VPN de /model-info (metrics).
+// Nada aquí conoce el umbral ni la prevalencia: si falta el VPN, se dice «n/d» en vez de inventar.
 
-import { oneInN, per100 } from "./format";
+import { oneInN } from "./format";
 
 export interface RecommendationInput {
   refer: boolean;
-  /** sensibilidad medida en el test (operating_point.sensitivity_test) */
-  sensitivityTest: number | null;
-  /** especificidad medida en el test (operating_point.specificity_test) */
-  specificityTest: number | null;
   /** valor predictivo negativo en τ95 (metrics.tau_95.npv), para «1 de cada N» */
   npvTest: number | null;
 }
@@ -22,15 +18,10 @@ export interface Recommendation {
 
 export function recommendation(input: RecommendationInput): Recommendation {
   if (input.refer) {
-    const sens = input.sensitivityTest === null ? "n/d" : per100(input.sensitivityTest, 1);
-    const benignReferred =
-      input.specificityTest === null ? "n/d" : per100(1 - input.specificityTest, 0);
     return {
       refer: true,
       headline: "Referir a dermatología.",
-      body:
-        `Con este umbral el sistema detecta ${sens} de cada 100 melanomas y refiere también ` +
-        `a ${benignReferred} de cada 100 lesiones benignas. Una referencia no es un diagnóstico.`,
+      body: "Una referencia no es un diagnóstico.",
     };
   }
   const missRate = input.npvTest === null ? null : 1 - input.npvTest;

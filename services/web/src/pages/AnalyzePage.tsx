@@ -123,11 +123,7 @@ export default function AnalyzePage({ state }: { state: ModelInfoState }) {
             threshold={result.threshold}
             prevalence={metrics?.prevalence ?? null}
           />
-          <Recommendation
-            refer={result.refer}
-            operatingPoint={result.operating_point}
-            npvTest={metrics?.tau_95.npv ?? null}
-          />
+          <Recommendation refer={result.refer} npvTest={metrics?.tau_95.npv ?? null} />
           <CamViewer cam={result.cam} />
           <Details result={result} />
           <p className="caption">{result.disclaimer}</p>

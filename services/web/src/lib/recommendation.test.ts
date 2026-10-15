@@ -2,20 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import { recommendation } from "./recommendation";
 
-const test = {
-  sensitivityTest: 0.9651162790697675,
-  specificityTest: 0.4283778552071235,
-  npvTest: 0.9986462093862816,
-};
+const test = { npvTest: 0.9986462093862816 };
 
 describe("recommendation", () => {
-  it("por encima del umbral: texto completo con números interpolados", () => {
+  it("por encima del umbral: texto fijo, sin números", () => {
     const r = recommendation({ refer: true, ...test });
     expect(r.refer).toBe(true);
     expect(r.headline).toBe("Referir a dermatología.");
-    expect(r.body).toBe(
-      "Con este umbral el sistema detecta 96,5 de cada 100 melanomas y refiere también a 57 de cada 100 lesiones benignas. Una referencia no es un diagnóstico.",
-    );
+    expect(r.body).toBe("Una referencia no es un diagnóstico.");
+    expect(r.body).not.toMatch(/\d/);
   });
 
   it("por debajo del umbral: 1 de cada N desde el VPN", () => {
@@ -28,10 +23,8 @@ describe("recommendation", () => {
   });
 
   it("sin métricas no inventa números", () => {
-    const r = recommendation({ refer: true, sensitivityTest: null, specificityTest: null, npvTest: null });
-    expect(r.body).toContain("detecta n/d de cada 100 melanomas");
-    expect(r.body).toContain("a n/d de cada 100 lesiones benignas");
-    const below = recommendation({ refer: false, sensitivityTest: null, specificityTest: null, npvTest: null });
+    expect(recommendation({ refer: true, npvTest: null }).body).toBe("Una referencia no es un diagnóstico.");
+    const below = recommendation({ refer: false, npvTest: null });
     expect(below.body).toContain("Aproximadamente n/d lesiones");
   });
 });

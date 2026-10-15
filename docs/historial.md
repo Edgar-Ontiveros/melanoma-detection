@@ -41,7 +41,8 @@ existe o existió con ese nombre:
 - `docs/f4_protocol.yaml` y su copia literal en `reports/f4_clinical_evaluation.md` (ver abajo).
 
 `reports/f3_matrix.md` se genera desde `reports/runs/*/metrics.json`, que conservan los SHAs
-originales: si se regenera, la columna de commit vuelve a mostrar los SHAs viejos.
+originales; `scripts/f3_report.py` los traduce con `docs/commit-map.txt`, así que la columna de
+commit muestra los SHAs nuevos al regenerarse (el nombre de corrida conserva el original).
 
 ## Bitácora del test y protocolo
 

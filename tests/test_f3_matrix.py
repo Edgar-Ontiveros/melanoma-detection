@@ -73,3 +73,16 @@ def test_backbones_exist_in_timm(name: str) -> None:
     assert backbone in timm.list_pretrained(), f"{backbone} no tiene pesos preentrenados en timm"
     model = timm.create_model(backbone, pretrained=False, num_classes=0)
     assert model.num_features > 0
+
+
+def test_f3_report_translates_commits_with_map() -> None:
+    """Tras la reescritura del historial (docs/historial.md), el reporte de F3 muestra el SHA
+    nuevo de cada corrida aunque su metrics.json guarde el original."""
+    from scripts.f3_report import commit_map, current_sha
+
+    mapping = commit_map()
+    assert mapping, "falta docs/commit-map.txt"
+    old, new = next(iter(mapping.items()))
+    assert current_sha(old[:7]) == new[:7]
+    assert current_sha(old) == new
+    assert current_sha("0000000") == "0000000"  # fuera del mapa: sin cambios

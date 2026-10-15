@@ -6,6 +6,10 @@ colapsos, anclaje en la literatura y selección del modelo final por la regla de
 Entradas: `reports/runs/<corrida>/runs/<run_name>/{metrics.json,config.yaml}` bajadas con
 `scripts/kaggle_run.py`; se agrupan por la clave `experiment` (b1_pos_weight, m1, m2, a1).
 La regla de decisión está escrita en la spec antes de ver los resultados y aquí solo se aplica.
+
+Cada corrida guarda el SHA con el que se lanzó; la columna de commit lo traduce al historial
+actual con `docs/commit-map.txt` (ver `docs/historial.md`). El nombre de corrida conserva el
+SHA original porque es también su nombre en W&B y en Kaggle.
 """
 
 from __future__ import annotations
@@ -13,6 +17,7 @@ from __future__ import annotations
 import hashlib
 import json
 import statistics
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "reports" / "runs"
 FIGURES = ROOT / "reports" / "figures"
 OUT = ROOT / "reports" / "f3_matrix.md"
+COMMIT_MAP = ROOT / "docs" / "commit-map.txt"
 TIE = 0.02  # umbral de F2/F3: diferencias menores no distinguen nada
 CONFIGS = {
     "b1_pos_weight": ("B1", "resnet50.a1_in1k", 224),
@@ -53,6 +59,22 @@ LABELS = {
 # resolución de la config, según las fichas de timm. Se mide de verdad en F6.
 CPU_COST = {"B1": 4.1, "A1": 2.9, "M1": 8.4, "M2": 13.1}
 PENDING = "_pendiente_"
+
+
+@cache
+def commit_map() -> dict[str, str]:
+    """SHA completo viejo → nuevo, tal como lo escribió git filter-repo (`old new` por línea)."""
+    if not COMMIT_MAP.exists():
+        return {}
+    pairs = (ln.split() for ln in COMMIT_MAP.read_text().splitlines()[1:] if ln.strip())
+    return dict(pairs)
+
+
+def current_sha(sha: str) -> str:
+    """SHA (corto o completo) en el historial actual, con la misma longitud; si el mapa no lo
+    tiene o es ambiguo, se devuelve tal cual."""
+    matches = {new for old, new in commit_map().items() if old.startswith(sha)}
+    return matches.pop()[: len(sha)] if len(matches) == 1 else sha
 
 
 def fmt(x: float | None, d: int = 3) -> str:
@@ -176,7 +198,7 @@ def times_table(groups: dict) -> list[str]:
                 and e["train/gpu_util"] == e["train/gpu_util"]
             ]
             lines.append(
-                f"| `{r['run_name']}` | `{r['provenance']['git_sha']}` | {r['epochs_run']} ({r.get('best_epoch')}) | "
+                f"| `{r['run_name']}` | `{current_sha(r['provenance']['git_sha'])}` | {r['epochs_run']} ({r.get('best_epoch')}) | "
                 f"{r['elapsed_s'] / 60:.0f} | {fmt(statistics.mean(epoch_min), 1) if epoch_min else 'n/d'} | "
                 f"{fmt(100 * statistics.mean(wait), 0) + ' %' if wait else 'n/d'} | "
                 f"{fmt(statistics.mean(util), 0) + ' %' if util else 'n/d'} | "
@@ -251,7 +273,7 @@ def final_model(groups: dict, winner: str | None) -> list[str]:
                 f"- **Archivo:** checkpoint de `{s0['run_name']}` aún no descargado (`scripts/kaggle_run.py checkpoint {label.lower()}-s0`)."
             )
         lines.append(
-            f"- **Corrida:** `{s0['run_name']}`, commit `{s0['provenance']['git_sha']}`, AUC-ROC {s0['metrics']['auroc']:.3f}, AUPRC {s0['metrics']['auprc']:.3f}."
+            f"- **Corrida:** `{s0['run_name']}`, commit `{current_sha(s0['provenance']['git_sha'])}`, AUC-ROC {s0['metrics']['auroc']:.3f}, AUPRC {s0['metrics']['auprc']:.3f}."
         )
         pub = ROOT / "reports" / "f3_final_model.json"
         if pub.exists():
