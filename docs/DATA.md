@@ -85,7 +85,7 @@ Conclusión: la copia de Kaggle y la descarga oficial de ISIC son byte-idéntica
 la cadena de procedencia laptop → Kaggle queda verificada.
 
 **Verificación de F2.0 (redimensionado en Kaggle, 33,126 imágenes):** corrida el **2026-09-17**
-con `notebooks/kaggle_prepare_512.ipynb` (commit `d48958f`), leyendo `resize.long_side` y
+con `notebooks/kaggle_prepare_512.ipynb` (commit `ed72cb7`), leyendo `resize.long_side` y
 `resize.jpeg_quality` de `configs/data/isic2020.yaml` y redimensionando con
 `melanoma.data.resize.resize_many`, el mismo código de F1. Salida:
 
@@ -101,7 +101,7 @@ aunque Kaggle usa Pillow 11.3.0. El dataset privado `edgaronti26/melanoma-isic20
 byte-idéntico a la copia local: todo entrenamiento en Kaggle ve exactamente las imágenes
 auditadas en la laptop.
 
-Repetido el mismo día por API (`scripts/kaggle_run.py push prepare --sha 249f256`, kernel
+Repetido el mismo día por API (`scripts/kaggle_run.py push prepare --sha 38408c3`, kernel
 `edgaronti26/melanoma-f2-prepare-512` v1): 33,126/33,126 huellas y dimensiones, 13.2 min
 (`reports/runs/prepare/resize_verification.json`, extraído del log del kernel). La versión vigente
 del dataset es la v1, creada desde la interfaz con la salida de la corrida manual; sus imágenes

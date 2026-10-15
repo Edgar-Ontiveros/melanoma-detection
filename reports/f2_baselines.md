@@ -10,7 +10,7 @@ Referencia: un clasificador aleatorio tiene AUC-ROC 0.5 y AUPRC ≈ prevalencia 
 
 | modelo | corrida | AUC-ROC [IC 95 %] | AUPRC [IC 95 %] | sens@spec 0.90 | spec@sens 0.90 | mejor época / corridas | colapso |
 |:--|:--|:--|:--|--:|--:|:--|:--|
-| **B0** metadatos (regresión logística) | `b0` commit `c1600c0` | 0.620 [0.552, 0.691] | 0.044 [0.028, 0.079] | 0.284 | 0.139 | — | — |
+| **B0** metadatos (regresión logística) | `b0` commit `9e574b6` | 0.620 [0.552, 0.691] | 0.044 [0.028, 0.079] | 0.284 | 0.139 | — | — |
 | **B1** ResNet50-224, pos_weight, semilla 0 | `resnet50-224-s0-f431f11` | 0.778 [0.729, 0.822] | 0.077 [0.048, 0.130] | 0.386 | 0.418 | 5 / 11 | no |
 | **B1** ResNet50-224, pos_weight, semilla 1 | `resnet50-224-s1-bcdbbf9` | 0.774 [0.723, 0.819] | 0.076 [0.049, 0.128] | 0.364 | 0.460 | 6 / 12 | no |
 | **B1** ResNet50-224, pos_weight, semilla 2 | `resnet50-224-s2-bcdbbf9` | 0.782 [0.730, 0.830] | 0.079 [0.050, 0.138] | 0.455 | 0.395 | 7 / 13 | no |

@@ -38,18 +38,18 @@ Umbral: diferencias de medias menores que 0.02 no distinguen nada (dos ejecucion
 
 | corrida | commit | épocas (mejor) | min entrenamiento | min/época | espera de datos | GPU media | colapso |
 |:--|:--|:--|--:|--:|--:|--:|:--|
-| `resnet50-224-s0-f431f11` | `f431f11` | 11 (5) | 22 | n/d | n/d | n/d | no |
-| `resnet50-224-s1-bcdbbf9` | `bcdbbf9` | 12 (6) | 24 | n/d | n/d | n/d | no |
-| `resnet50-224-s2-bcdbbf9` | `bcdbbf9` | 13 (7) | 26 | n/d | n/d | n/d | no |
-| `tf_efficientnetv2_s-224-s0-e153979` | `e153979` | 10 (4) | 24 | 2.3 | 0 % | 100 % | no |
-| `tf_efficientnetv2_s-224-s1-e153979` | `e153979` | 14 (8) | 33 | 2.3 | 0 % | 99 % | no |
-| `tf_efficientnetv2_s-224-s2-e153979` | `e153979` | 15 (12) | 34 | 2.2 | 0 % | 100 % | no |
-| `tf_efficientnetv2_s-384-s0-d294744` | `d294744` | 15 (12) | 95 | 6.2 | 29 % | 99 % | no |
-| `tf_efficientnetv2_s-384-s1-e153979` | `e153979` | 15 (11) | 101 | 6.6 | 29 % | 99 % | no |
-| `tf_efficientnetv2_s-384-s2-e153979` | `e153979` | 11 (5) | 73 | 6.5 | 29 % | 99 % | no |
-| `convnext_tiny-384-s0-e153979` | `e153979` | 15 (11) | 82 | 5.4 | 46 % | 99 % | no |
-| `convnext_tiny-384-s1-e153979` | `e153979` | 15 (12) | 95 | 6.2 | 46 % | 98 % | no |
-| `convnext_tiny-384-s2-e153979` | `e153979` | 15 (9) | 95 | 6.3 | 46 % | 99 % | no |
+| `resnet50-224-s0-f431f11` | `302429c` | 11 (5) | 22 | n/d | n/d | n/d | no |
+| `resnet50-224-s1-bcdbbf9` | `c954e21` | 12 (6) | 24 | n/d | n/d | n/d | no |
+| `resnet50-224-s2-bcdbbf9` | `c954e21` | 13 (7) | 26 | n/d | n/d | n/d | no |
+| `tf_efficientnetv2_s-224-s0-e153979` | `8dcb89e` | 10 (4) | 24 | 2.3 | 0 % | 100 % | no |
+| `tf_efficientnetv2_s-224-s1-e153979` | `8dcb89e` | 14 (8) | 33 | 2.3 | 0 % | 99 % | no |
+| `tf_efficientnetv2_s-224-s2-e153979` | `8dcb89e` | 15 (12) | 34 | 2.2 | 0 % | 100 % | no |
+| `tf_efficientnetv2_s-384-s0-d294744` | `d5408e7` | 15 (12) | 95 | 6.2 | 29 % | 99 % | no |
+| `tf_efficientnetv2_s-384-s1-e153979` | `8dcb89e` | 15 (11) | 101 | 6.6 | 29 % | 99 % | no |
+| `tf_efficientnetv2_s-384-s2-e153979` | `8dcb89e` | 11 (5) | 73 | 6.5 | 29 % | 99 % | no |
+| `convnext_tiny-384-s0-e153979` | `8dcb89e` | 15 (11) | 82 | 5.4 | 46 % | 99 % | no |
+| `convnext_tiny-384-s1-e153979` | `8dcb89e` | 15 (12) | 95 | 6.2 | 46 % | 98 % | no |
+| `convnext_tiny-384-s2-e153979` | `8dcb89e` | 15 (9) | 95 | 6.3 | 46 % | 99 % | no |
 
 Espera de datos: fracción del tiempo del bucle de entrenamiento que el DataLoader tiene a la GPU ociosa (`ThroughputMonitor`). Por debajo de ~70 % de GPU se documenta y se considera más `num_workers` o un redimensionado previo (F3.4).
 
@@ -86,5 +86,5 @@ Lectura: el ganador del reto es un ensamble de 18 redes grandes a resoluciones d
 - **Configuración:** A1 (`tf_efficientnetv2_s.in21k_ft_in1k` a 224 px), experimento `a1`.
 - **Checkpoint:** el de semilla 0, fijado antes de mirar los resultados (elegir la mejor semilla sería seleccionar sobre validación).
 - **Archivo:** `tf_efficientnetv2_s-224-s0-e153979-04-0.0000.ckpt` (232 MB), SHA256 `e0ecf981adaa125dd707d2e5e3b75cff003335e56aaa7356fca9e961d4710040`.
-- **Corrida:** `tf_efficientnetv2_s-224-s0-e153979`, commit `e153979`, AUC-ROC 0.834, AUPRC 0.132.
+- **Corrida:** `tf_efficientnetv2_s-224-s0-e153979`, commit `8dcb89e`, AUC-ROC 0.834, AUPRC 0.132.
 - **Publicado en Kaggle:** `edgaronti26/melanoma-f3-final` (2026-09-18), SHA256 verificado `e0ecf981adaa125d…`.

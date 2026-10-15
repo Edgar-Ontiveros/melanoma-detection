@@ -4,7 +4,7 @@ Generado por `scripts/f4_report.py`. Modelo: A1 (`tf_efficientnetv2_s.in21k_ft_i
 
 ## 1. Protocolo congelado
 
-`docs/f4_protocol.yaml`, commiteado en `23d817a 2026-09-18 15:48:29 -0600`, antes del script de evaluación del test. Copia literal:
+`docs/f4_protocol.yaml`, commiteado en `16b6a04 2026-09-18 15:48:29 -0600`, antes del script de evaluación del test. Copia literal:
 
 ```yaml
 # F4.3 — Protocolo congelado de la evaluación clínica.
@@ -89,13 +89,13 @@ ddi:
 ## 2. Bitácora del acceso al test
 
 ```
-2026-09-18T22:10:55+00:00	git=be931a6	protocol_sha256=8c45394e1219d67706076ec9a407427b15616386635b7df52be1969637515e93	split=test	reason=F4.4 evaluación clínica (primer acceso)
+2026-09-18T22:10:55+00:00	git=7fc5462	protocol_sha256=8c45394e1219d67706076ec9a407427b15616386635b7df52be1969637515e93	split=test	reason=F4.4 evaluación clínica (primer acceso)
 ```
 1 línea(s) en `logs/test_set_access.log` (presupuesto: 2).
 
 ## 3. Calibración sobre validación
 
-Ajustadas sobre validación (4,963 imágenes, 88 melanomas, 568 pacientes), commit `7377047`.
+Ajustadas sobre validación (4,963 imágenes, 88 melanomas, 568 pacientes), commit `06a67e1`.
 
 | probabilidades | Brier | ECE (10 bins uniformes) | ECE (10 bins por cuantiles) |
 |:--|--:|--:|--:|
@@ -194,7 +194,7 @@ sensibilidad 0.895 · especificidad 0.569 · VPP 0.033 · VPN 0.9969 a la preval
 
 ## 8. Evaluación externa en DDI
 
-Corrido en local, en CPU, el 2026-09-18 (commit `23d817a`, checkpoint `e0ecf981adaa125d…`). 656 imágenes clínicas con biopsia; 171 malignas (26 %); 21 melanomas en `disease` (melanoma, melanoma-acral-lentiginous, melanoma-in-situ, nodular-melanoma-(nm)). Misma transformación que validación (lado corto + CenterCrop 224), calibración Platt de ISIC tal cual, umbral τ95 de ISIC tal cual. Bootstrap a nivel imagen: DDI no tiene id de paciente (limitación declarada).
+Corrido en local, en CPU, el 2026-09-18 (commit `16b6a04`, checkpoint `e0ecf981adaa125d…`). 656 imágenes clínicas con biopsia; 171 malignas (26 %); 21 melanomas en `disease` (melanoma, melanoma-acral-lentiginous, melanoma-in-situ, nodular-melanoma-(nm)). Misma transformación que validación (lado corto + CenterCrop 224), calibración Platt de ISIC tal cual, umbral τ95 de ISIC tal cual. Bootstrap a nivel imagen: DDI no tiene id de paciente (limitación declarada).
 
 **Dos cambios a la vez, declarados:** dermatoscopía → foto clínica, y melanoma-vs-resto → maligno-vs-benigno (78 diagnósticos). La tarea primaria es un cambio de tarea respecto al entrenamiento.
 

@@ -16925,11 +16925,11 @@
     }
   ],
   "date": "2026-09-18T22:16:36+00:00",
-  "git_sha": "be931a6",
+  "git_sha": "7fc5462",
   "protocol_sha256": "8c45394e1219d67706076ec9a407427b15616386635b7df52be1969637515e93",
   "checkpoint_sha256": "e0ecf981adaa125dd707d2e5e3b75cff003335e56aaa7356fca9e961d4710040",
   "test_split_sha256": "7dedecdd0ebf1e8997eb4be12fe71af04475de2bd1b0da5d6fde8440a7742316",
-  "access_log_line": "2026-09-18T22:10:55+00:00\tgit=be931a6\tprotocol_sha256=8c45394e1219d67706076ec9a407427b15616386635b7df52be1969637515e93\tsplit=test\treason=F4.4 evaluaci\u00f3n cl\u00ednica (primer acceso)",
+  "access_log_line": "2026-09-18T22:10:55+00:00\tgit=7fc5462\tprotocol_sha256=8c45394e1219d67706076ec9a407427b15616386635b7df52be1969637515e93\tsplit=test\treason=F4.4 evaluaci\u00f3n cl\u00ednica (primer acceso)",
   "n_images": 5252,
   "n_positives": 86,
   "n_patients": 540,

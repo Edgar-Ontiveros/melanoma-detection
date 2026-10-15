@@ -3,7 +3,7 @@
 _Generado por `scripts/bench_api.py` el 2026-09-21._
 
 - Máquina: AMD Ryzen 7 250 w/ Radeon 780M Graphics, 16 hilos lógicos, Linux 6.18.33.2-microsoft-standard-WSL2.
-- Modo: en proceso (TestClient), 4 hilos intra-op. Modelo `4e7ab61-e0ecf981`; imagen `ISIC_0096201.jpg` (512×288 JPEG, 47 KB).
+- Modo: en proceso (TestClient), 4 hilos intra-op. Modelo `c62a515-e0ecf981`; imagen `ISIC_0096201.jpg` (512×288 JPEG, 47 KB).
 - 200 peticiones secuenciales a `POST /predict`, lote 1, tras 5 de calentamiento.
 
 ## Latencia total por petición (cliente, ms)

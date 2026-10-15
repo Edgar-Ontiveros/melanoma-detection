@@ -1,6 +1,6 @@
 {
   "predict_512": {
-    "model_version": "4e7ab61-e0ecf981",
+    "model_version": "c62a515-e0ecf981",
     "probability": 0.015490515414014127,
     "refer": true,
     "threshold": 0.0038890622237550752,
@@ -94,7 +94,7 @@
     "disclaimer": "Herramienta de apoyo al triage de melanoma en imágenes dermatoscópicas, con fines educativos y de investigación. No es un diagnóstico: indica si una lesión conviene referirse a valoración especializada en un punto de operación de alta sensibilidad y baja especificidad. No detecta otros cánceres de piel ni otras enfermedades. No sustituye la valoración de un dermatólogo. No cuenta con aprobación regulatoria (COFEPRIS, FDA, CE) y no debe usarse para tomar decisiones clínicas."
   },
   "predict_original": {
-    "model_version": "4e7ab61-e0ecf981",
+    "model_version": "c62a515-e0ecf981",
     "probability": 0.015490515414014127,
     "refer": true,
     "threshold": 0.0038890622237550752,
@@ -189,7 +189,7 @@
   },
   "health": {
     "status": "ok",
-    "model_version": "4e7ab61-e0ecf981"
+    "model_version": "c62a515-e0ecf981"
   },
   "model_info_keys": [
     "calibration",

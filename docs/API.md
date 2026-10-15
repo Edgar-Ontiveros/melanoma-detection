@@ -26,7 +26,7 @@ y se niega a levantar si alguno no coincide (`tests/test_api.py::test_app_refuse
 | `manifest.json` | `model_version`, SHA256 de cada archivo, SHA del checkpoint, git SHA, fecha, opset, versiones | generado |
 
 `model_version` = `{git_sha_corto}-{checkpoint_sha_8}`; el paquete actual es
-`4e7ab61-e0ecf981`. Paridad con PyTorch verificada en `reports/f6_parity.json`
+`c62a515-e0ecf981`. Paridad con PyTorch verificada en `reports/f6_parity.json`
 (`make verify-bundle`).
 
 Para CI y Docker existe un **paquete de prueba** con pesos aleatorios y la misma estructura
@@ -62,11 +62,11 @@ Multipart con un único campo `file` (JPEG, PNG o WebP; ≤ 10 MB; lado mínimo 
 curl -s -F "file=@data/processed/isic2020_512/ISIC_0096201.jpg" http://127.0.0.1:8000/api/predict
 ```
 
-Respuesta (ejemplo real con el paquete `4e7ab61-e0ecf981`, imagen de 512 px; `png_base64` y `grid` recortados; con el original de 1872 × 1053 px de la misma lesión la probabilidad es idéntica, 0.015491):
+Respuesta (ejemplo real con el paquete `c62a515-e0ecf981`, imagen de 512 px; `png_base64` y `grid` recortados; con el original de 1872 × 1053 px de la misma lesión la probabilidad es idéntica, 0.015491):
 
 ```json
 {
-  "model_version": "4e7ab61-e0ecf981",
+  "model_version": "c62a515-e0ecf981",
   "probability": 0.015490515414014127,
   "refer": true,
   "threshold": 0.0038890622237550752,
@@ -114,7 +114,7 @@ Un solo archivo por petición; sin lotes.
 
 ### `GET /api/health`
 
-`{"status": "ok", "model_version": "4e7ab61-e0ecf981"}`. 503 si el paquete no cargó.
+`{"status": "ok", "model_version": "c62a515-e0ecf981"}`. 503 si el paquete no cargó.
 Es el `HEALTHCHECK` de la imagen Docker.
 
 ### `GET /api/model-info`

@@ -188,4 +188,4 @@ make f5-figures    # reports/f5_figures.json, figures/f5_qualitative_grid.png
 make f5-report     # este archivo
 ```
 
-Config `configs/f5.yaml`; semilla 20260904; checkpoint `tf_efficientnetv2_s-224-s0-e153979-04-0.0000.ckpt` (SHA256 `e0ecf981adaa125dd707d2e5e3b75cff003335e56aaa7356fca9e961d4710040`); split de validación SHA256 `b7f727d6cf70d7a1…`. Corridas: CAM 2026-09-21 (`f08e8bc`, 1.3 min), solapamiento 2026-09-21 (0.4 min), artefactos 2026-09-21 (4.1 min), figuras 2026-09-21. Todo en CPU; el conjunto de prueba no se tocó (`logs/test_set_access.log` sigue con una línea).
+Config `configs/f5.yaml`; semilla 20260904; checkpoint `tf_efficientnetv2_s-224-s0-e153979-04-0.0000.ckpt` (SHA256 `e0ecf981adaa125dd707d2e5e3b75cff003335e56aaa7356fca9e961d4710040`); split de validación SHA256 `b7f727d6cf70d7a1…`. Corridas: CAM 2026-09-21 (`66d3024`, 1.3 min), solapamiento 2026-09-21 (0.4 min), artefactos 2026-09-21 (4.1 min), figuras 2026-09-21. Todo en CPU; el conjunto de prueba no se tocó (`logs/test_set_access.log` sigue con una línea).

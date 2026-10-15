@@ -6,7 +6,7 @@ _2026-09-21 (actualizado tras el ajuste de dos etapas). Fuentes: `reports/f6_par
 
 | | |
 |---|---|
-| `model_version` | `4e7ab61-e0ecf981` (git SHA corto + 8 hex del SHA256 del checkpoint `e0ecf981…4710040`, verificado contra `reports/f3_final_model.json`) |
+| `model_version` | `c62a515-e0ecf981` (git SHA corto + 8 hex del SHA256 del checkpoint `e0ecf981…4710040`, verificado contra `reports/f3_final_model.json`) |
 | ONNX | opset 17 (exportador TorchScript; el de `torch.export` no puede producir 17: genera 18 y el conversor falla en `Pad`), lote dinámico, salidas `logit [N,1]` y `features [N,1280,7,7]`; `onnx.checker` y una pasada en onnxruntime antes de guardar |
 | `preprocess.json` | `stage1` = redimensionado de F1 (lado largo 512, Lanczos, JPEG 95, `draft`; de `configs/data/isic2020.yaml`) + etapa 2 de timm (224, bicúbico, media/desv 0.5) |
 | Tamaño | 80.6 MB (siete archivos); tarball del release 74.9 MB |
@@ -56,7 +56,8 @@ construye la imagen, la levanta con el paquete de prueba y verifica `/health` y 
 
 ## Release
 
-Paquete real publicado como release asset de GitHub: `model-4e7ab61-e0ecf981`,
-`melanoma-bundle-4e7ab61-e0ecf981.tar.gz`, SHA256
-`a884adac90fa6924ee090702d728606c30ecbfadf3b9efab4583064dbd38465d` (en la descripción del
+Paquete real publicado como release asset de GitHub: `model-c62a515-e0ecf981`,
+`melanoma-bundle-c62a515-e0ecf981.tar.gz`, SHA256
+`ec51a043636d4b2d77f74d7943186facfd7b8600dd5b7aca9c8b562ef977ae4c` (en la descripción del
 release y como archivo `.sha256`). El release anterior (`model-6c330a8-e0ecf981`) se retiró.
+El 2026-10-15 se recreó con el SHA de commit remapeado (ver `docs/historial.md`).

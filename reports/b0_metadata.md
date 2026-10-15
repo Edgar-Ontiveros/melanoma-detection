@@ -1,6 +1,6 @@
 # B0 — Línea base de metadatos (sin imágenes)
 
-Generado por `scripts/baseline_metadata.py` (commit `c1600c0`, `configs/baseline_b0.yaml`).
+Generado por `scripts/baseline_metadata.py` (commit `9e574b6`, `configs/baseline_b0.yaml`).
 Regresión logística de scikit-learn sobre `age_approx`, `sex`, `anatom_site`; entrenada en `train.txt`
 (22,911 imágenes, 410 melanomas) y evaluada en `val.txt`
 (4,963 imágenes, 88 melanomas, 568 pacientes). Solo train y val.
