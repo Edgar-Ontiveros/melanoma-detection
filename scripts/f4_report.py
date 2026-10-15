@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import subprocess
 from pathlib import Path
 
@@ -235,13 +236,21 @@ V1_TABLE = """| | v1 (2024) | v2 (este trabajo) |
 | Dominio fuera de dermatoscopía | Una foto sin diagnóstico | 656 imágenes con biopsia |"""
 
 
+def demote_headings(markdown: str, levels: int = 2) -> str:
+    """Baja los encabezados del archivo de limitaciones para que queden dentro de la sección 10
+    (su `#` y sus `## n.` chocarían con los del reporte). El texto no cambia."""
+    return re.sub(
+        r"^(#{1,6}) ", lambda m: "#" * min(6, len(m.group(1)) + levels) + " ", markdown, flags=re.M
+    )
+
+
 def main() -> None:
     cal = json.loads(CAL.read_text())
     test = json.loads(TEST.read_text()) if TEST.exists() else None
     ddi = json.loads(DDI.read_text()) if DDI.exists() else None
     log_lines = LOG.read_text().strip().splitlines() if LOG.exists() else []
     limits = (
-        LIMITS.read_text().strip()
+        demote_headings(LIMITS.read_text().strip())
         if LIMITS.exists()
         else "_pendiente: se escriben en `docs/f4_limitations.md`_"
     )
