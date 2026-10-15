@@ -1,4 +1,4 @@
-# melanoma
+# Detección asistida de melanoma
 
 Clasificador de lesiones cutáneas con redes convolucionales, desarrollado como proyecto de tesis.
 
@@ -21,7 +21,7 @@ Plataforma de desarrollo soportada: **WSL2 con Ubuntu 24.04** (o Ubuntu nativo).
 ### Laptop / CPU (WSL/Ubuntu)
 
 ```bash
-git clone <url-del-repositorio> melanoma
+git clone https://github.com/Edgar-Ontiveros/melanoma-triage.git melanoma
 cd melanoma
 make setup        # uv sync --extra train --group dev  (ruedas CPU de PyTorch, del lockfile)
 make ci           # lint + pruebas + humo, lo mismo que GitHub Actions
@@ -97,6 +97,25 @@ paciente, historial por época, colapsos, SHA del commit y de los splits), `curv
   `logs`, `list`, `dataset-images` (publica las imágenes de 512 px como un solo zip) y
   `sync-wandb` (sube las corridas offline de W&B). Las siete corridas de F2 están en `runs:`.
 
+## Matriz, evaluación clínica, explicabilidad, paquete e interfaz (F3–F7)
+
+```bash
+make f3-report                 # reports/f3_matrix.md a partir de reports/runs/
+make f4-report                 # reports/f4_clinical_evaluation.md (el test ya se abrió; no se vuelve a abrir)
+make f5-all                    # CAM, solapamiento con la lesión, artefactos, figuras y reports/f5_explainability.md
+make export-bundle             # models/bundle/ desde el checkpoint de F3 (ONNX + calibración + umbrales + CAM)
+make verify-bundle             # paridad ONNX vs PyTorch → reports/f6_parity.json
+make test-bundle               # paquete de prueba con pesos aleatorios (CI y Docker)
+make api                       # API + interfaz en http://127.0.0.1:8000 (MODEL_BUNDLE_DIR=models/bundle)
+make docker-api                # imagen melanoma-api; make docker-run BUNDLE=models/bundle
+make web-dev                   # interfaz en modo desarrollo (Vite)
+make test-local                # pruebas @local con el checkpoint real y models/bundle
+make f7-screenshots            # capturas de la interfaz en reports/figures/f7_ui_*.png
+```
+
+El paquete real se publica como asset del release `model-…` de GitHub (con su `.sha256`);
+se descomprime en `models/`. Contrato de la API en `docs/API.md`.
+
 ## Estructura del repositorio
 
 ```
@@ -104,16 +123,16 @@ paciente, historial por época, colapsos, SHA del commit y de los splits), `curv
 configs/             Configuración Hydra: data/, model/, train/, experiment/ y composiciones raíz (config, prepare, smoke, baseline_b0)
 src/melanoma/        Paquete Python: data (manifiesto, dedup, splits, resize), models (fábrica timm), train, eval, explain, export, utils
 services/api/        API de inferencia FastAPI + onnxruntime (grupo `api`, sin torch ni core) y su Dockerfile
-services/web/        Interfaz web (F7: Vite + React + TS), servida por la API
+services/web/        Interfaz web (F7: Vite + React + TS), servida por la API bajo /
 data/manifests/      isic2020.csv, una fila por imagen con SHA256 (versionado)
 data/splits/         train.txt, val.txt, test.txt y SHA256SUMS (versionados)
 data/raw/, data/processed/   Imágenes originales y redimensionadas (NO versionadas)
-reports/             Reportes de F1, b0_metadata.md, f2_baselines.md, preprocessing_experiment.md, metrics/, predictions/, runs/ y figuras
-notebooks/           kaggle_setup.ipynb (procedencia), kaggle_prepare_512.ipynb (F2.0), kaggle_train.ipynb (F2.8)
+reports/             Reportes por fase (F1–F6), metrics/, predictions/, runs/ (salidas de Kaggle) y figures/
+notebooks/           kaggle_setup.ipynb (procedencia), kaggle_prepare_512.ipynb (F2.0), kaggle_train.ipynb (F2.8, F3)
 kaggle/              Metadatos del dataset privado de Kaggle (manifiesto + splits)
-scripts/             Pipeline de datos, train.py, baseline_metadata.py, f2_report.py, smoke_train.py y utilidades de CI
+scripts/             Pipeline de datos, entrenamiento, reportes por fase, evaluación del test y DDI, exportación, capturas y utilidades de CI
 tests/               Pruebas rápidas sin descargas (las que necesitan datos se saltan si faltan)
-docs/                DATA.md (licencia, procedencia), hardware.md, specs/ por fase
+docs/                DATA.md (licencia, procedencia), API.md, f4_protocol.yaml, hardware.md, historial.md, specs/ por fase
 logs/                test_set_access.log (versionado) y salidas de corridas (no versionadas)
 ```
 
@@ -167,7 +186,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 
 ## Licencias y atribución
 
-- **Código:** MIT (ver `LICENSE`).
+- **Código:** MIT (ver `LICENSE`). Para citar el proyecto: `CITATION.cff`.
 - **Datos:** el ISIC 2020 Challenge Dataset se distribuye bajo
   [CC-BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Cita requerida:
 
@@ -190,7 +209,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F1 | Manifiesto, deduplicación, splits por paciente, bloqueo del test, Kaggle | Completa: 10/10 criterios en verde, cerrada el 2026-09-04 (`docs/specs/F1.md`) |
 | F2 | Líneas base B0/B1, DataModule, evaluación, experimento de preprocesamiento, Kaggle por API | Cerrada el 2026-09-17: 12/12 criterios en verde (`docs/specs/F2.md`) |
 | F3 | Matriz de modelos, ablación de resolución, anclaje en literatura | Cerrada el 2026-09-18: 9/9 criterios; modelo final A1 = EfficientNetV2-S a 224 px, semilla 0 (`docs/specs/F3.md`, `reports/f3_matrix.md`) |
-| F4 | Evaluación clínica: test bloqueado, calibración, umbral, subgrupos, DDI | Pendiente |
+| F4 | Evaluación clínica: test bloqueado, calibración, umbral, subgrupos, DDI | Hecha el 2026-09-18: test abierto una vez (AUC-ROC 0.834, AUPRC 0.096), queda un acceso; falta `docs/f4_limitations.md` (`docs/specs/F4.md`, `reports/f4_clinical_evaluation.md`) |
 | F5 | Explicabilidad: CAM ≡ Grad-CAM (contrato numpy para F6), prueba de cordura, solapamiento con la lesión, artefactos por perturbación | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F5.md`, `reports/f5_explainability.md`) |
 | F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker 152 MB; preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
 | F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo | Hecha el 2026-09-21; cierre bloqueado por `docs/f4_limitations.md` (`docs/specs/F7.md`) |

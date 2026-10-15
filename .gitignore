@@ -56,3 +56,17 @@ reports/runs/**/wandb/
 
 # Paquetes de modelo exportados (F6): el real se publica como release asset; el de prueba se regenera
 models/
+
+# Configuración local de herramientas de edición y asistentes: no se versiona
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.cursor/
+.cursorrules
+.aider*
+.codex/
+.windsurf/
+.continue/
+**/scratchpad/
+**/memory/

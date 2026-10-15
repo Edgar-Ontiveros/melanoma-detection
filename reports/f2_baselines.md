@@ -34,7 +34,7 @@ Referencia: un clasificador aleatorio tiene AUC-ROC 0.5 y AUPRC ≈ prevalencia 
 | especificidad | 0.418 | 0.191 |
 | sensibilidad a especificidad 0.90 | 0.386 | 0.534 |
 
-**Decisión para F3 (Edgar, 2026-09-17): `pos_weight`.** El AUPRC resume todos los umbrales, pero el sistema opera en uno: en triage el punto de operación es de sensibilidad alta, y a sensibilidad 0.90 el muestreo ponderado deja una especificidad de 0.19 frente a 0.42 con `pos_weight`. El AUPRC puntual mayor del muestreo ponderado (0.115 vs 0.077, intervalos traslapados, una semilla) no compensa perder más de la mitad de la especificidad en el punto que importa.
+**Decisión para F3 (2026-09-17): `pos_weight`.** El AUPRC resume todos los umbrales, pero el sistema opera en uno: en triage el punto de operación es de sensibilidad alta, y a sensibilidad 0.90 el muestreo ponderado deja una especificidad de 0.19 frente a 0.42 con `pos_weight`. El AUPRC puntual mayor del muestreo ponderado (0.115 vs 0.077, intervalos traslapados, una semilla) no compensa perder más de la mitad de la especificidad en el punto que importa.
 
 ## Lectura
 

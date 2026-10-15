@@ -230,4 +230,4 @@ Corrido en local, en CPU, el 2026-09-18 (commit `23d817a`, checkpoint `e0ecf981a
 
 ## 10. Limitaciones
 
-_pendiente: las escribe Edgar en `docs/f4_limitations.md`_
+_pendiente: se escriben en `docs/f4_limitations.md`_

@@ -1,7 +1,7 @@
 # ruff: noqa: E501
 """F4.7 — `reports/f4_clinical_evaluation.md`, diez secciones en el orden de la spec. Lo que
 depende del test se marca como pendiente hasta que exista reports/f4_test_results.json. La
-sección 10 (limitaciones) la escribe Edgar en docs/f4_limitations.md y aquí solo se incluye.
+sección 10 (limitaciones) se escribe a mano en docs/f4_limitations.md y aquí solo se incluye.
 """
 
 from __future__ import annotations
@@ -243,7 +243,7 @@ def main() -> None:
     limits = (
         LIMITS.read_text().strip()
         if LIMITS.exists()
-        else "_pendiente: las escribe Edgar en `docs/f4_limitations.md`_"
+        else "_pendiente: se escriben en `docs/f4_limitations.md`_"
     )
     lines = [
         "# F4 — Evaluación clínica",

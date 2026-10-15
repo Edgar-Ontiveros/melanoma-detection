@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "Si usas este software, cítalo con los metadatos de este archivo."
+type: software
+title: "Detección asistida de melanoma"
+abstract: >-
+  Clasificador educativo de lesiones dermatoscópicas (ISIC 2020) para apoyo a la
+  priorización de lesiones con sospecha de melanoma: entrenamiento, evaluación clínica con
+  conjunto de prueba bloqueado, explicabilidad, paquete ONNX, API e interfaz web. No es un
+  dispositivo de diagnóstico.
+authors:
+  - family-names: "Ontiveros Lara"
+    given-names: "Edgar Eduardo"
+    affiliation: "Facultad de Ingeniería, Universidad Autónoma de Chihuahua"
+repository-code: "https://github.com/Edgar-Ontiveros/melanoma-triage"
+url: "https://github.com/Edgar-Ontiveros/melanoma-triage"
+license: MIT
+date-released: "2026-10-15"
+keywords:
+  - melanoma
+  - dermatoscopía
+  - aprendizaje profundo
+  - ISIC 2020
+  - explicabilidad
+preferred-citation:
+  type: thesis
+  thesis-type: "Tesis de licenciatura"
+  title: "Detección asistida de melanoma"
+  authors:
+    - family-names: "Ontiveros Lara"
+      given-names: "Edgar Eduardo"
+  institution:
+    name: "Universidad Autónoma de Chihuahua"
+  department: "Facultad de Ingeniería"
+  year: 2026
+  url: "https://github.com/Edgar-Ontiveros/melanoma-triage"

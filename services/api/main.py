@@ -126,7 +126,7 @@ def build_app(
         yield
 
     app = FastAPI(
-        title="melanoma-triage API",
+        title="API de detección asistida de melanoma",
         description="Detección asistida de melanoma (educativo, no diagnóstico).",
         version="F7",
         lifespan=lifespan,
