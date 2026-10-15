@@ -40,7 +40,7 @@ make setup                                   # instala también el grupo api
 make export-bundle                           # necesita data/models/<checkpoint> (o bajar el release)
 make api                                     # uvicorn en http://127.0.0.1:8000  (MODEL_BUNDLE_DIR=models/bundle)
 
-# Docker (imagen de 152 MB; el paquete se monta, no va dentro)
+# Docker (imagen de ~420 MB sin comprimir, ~155 MB comprimida; el paquete se monta, no va dentro)
 make docker-api
 docker run --rm -p 8000:8000 -v "$PWD/models/bundle:/bundle:ro" melanoma-api
 ```
@@ -161,7 +161,7 @@ reproduce las dos etapas leyendo todo de `preprocess.json`:
 2. **Etapa 2 (entrenamiento):** lado corto a 224 con `cv2.resize(INTER_CUBIC)`, recorte
    central, `(x / 255 − mean) / std`, CHW. Es la misma función que usó albumentations, así
    que la paridad es exacta; por eso `opencv-python-headless` está en el grupo `api`
-   (+60 MB de imagen, 152 MB en total, contra el cúbico en numpy que dejaba diferencias de
+   (≈ +150 MB de imagen sin comprimir, contra el cúbico en numpy que dejaba diferencias de
    logit de hasta 6.5e-3).
 
 Sin la etapa 1, `PIL.Image.resize` directo a 224 (con antialias) daba logits distintos en

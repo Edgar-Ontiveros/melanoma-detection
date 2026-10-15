@@ -49,8 +49,8 @@ jobs:
       - name: docker build de la API
         run: docker build -f services/api/Dockerfile -t melanoma-api .
 
-      - name: Tamaño de la imagen de la API (máx. 400 MB)
-        run: python3 scripts/check_image_size.py melanoma-api 400
+      - name: Tamaño de la imagen de la API (máx. 500 MB sin comprimir)
+        run: python3 scripts/check_image_size.py melanoma-api 500
 
       - name: Paquete de prueba (pesos aleatorios) para la imagen
         run: uv run --no-sync python scripts/make_test_bundle.py --out models/test_bundle

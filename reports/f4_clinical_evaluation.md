@@ -303,8 +303,8 @@ falso positivo.
 #### 8. Sensibilidad a artefactos
 
 En un experimento de perturbación, la
-adición de marcas de tinta sintéticas incrementó la probabilidad
-estimada de melanoma en el 84 % de las lesiones benignas, frente al
+adición de marcas de tinta sintéticas hizo que el 84 % de las lesiones
+benignas no referidas superaran el umbral de referencia, frente al
 71 % con ruido de control, comportamiento consistente con el reportado
 por Winkler et al. (2019) en un sistema comercial. Además, el ruido
 moderado provocó que 14 de 84 melanomas dejaran de superar el umbral

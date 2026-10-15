@@ -43,9 +43,10 @@ ci: web lint test smoke
 docker-api:
 	docker build -f services/api/Dockerfile -t melanoma-api .
 
-## Falla si la imagen supera 400 MB.
+## Falla si la imagen supera 500 MB sin comprimir (OpenCV la deja en ~420-450; torch solo ocupa
+## 741 MB, así que colarlo sigue haciendo fallar el límite). Ver docs/specs/F6.md.
 docker-size: docker-api
-	@python3 scripts/check_image_size.py melanoma-api 400
+	@python3 scripts/check_image_size.py melanoma-api 500
 
 clean:
 	rm -rf outputs .pytest_cache .ruff_cache .coverage htmlcov

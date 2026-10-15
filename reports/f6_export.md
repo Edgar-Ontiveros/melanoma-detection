@@ -50,7 +50,8 @@ ONNX ≈ 30 ms, PNG del CAM ≈ 7 ms. Con el cúbico en numpy la etapa 2 costaba
 ## Docker (`make docker-api`)
 
 Imagen `melanoma-api`: **152.1 MB** (límite 400; era 92.0 MB antes de agregar OpenCV, que
-cuesta ≈ 60 MB). Multietapa sobre `python:3.12-slim-bookworm`, usuario sin privilegios,
+cuesta ≈ 60 MB). Esas cifras son tamaños comprimidos (almacén de containerd); sin comprimir,
+la imagen mide ~420 MB y el límite pasó a 500 MB el 2026-10-15 (ver `docs/specs/F6.md`). Multietapa sobre `python:3.12-slim-bookworm`, usuario sin privilegios,
 `HEALTHCHECK` contra `/health`, paquete montado en `/bundle` (no va dentro de la imagen). CI
 construye la imagen, la levanta con el paquete de prueba y verifica `/health` y `/predict`.
 

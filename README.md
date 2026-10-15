@@ -119,7 +119,7 @@ se descomprime en `models/`. Contrato de la API en `docs/API.md`.
 ## Estructura del repositorio
 
 ```
-.github/workflows/   CI: ruff, pytest, humo, build de la API y límite de 400 MB
+.github/workflows/   CI: ruff, pytest, humo, build de la API y límite de 500 MB sin comprimir
 configs/             Configuración Hydra: data/, model/, train/, experiment/ y composiciones raíz (config, prepare, smoke, baseline_b0)
 src/melanoma/        Paquete Python: data (manifiesto, dedup, splits, resize), models (fábrica timm), train, eval, explain, export, utils
 services/api/        API de inferencia FastAPI + onnxruntime (grupo `api`, sin torch ni core) y su Dockerfile
@@ -211,7 +211,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F3 | Matriz de modelos, ablación de resolución, anclaje en literatura | Cerrada el 2026-09-18: 9/9 criterios; modelo final A1 = EfficientNetV2-S a 224 px, semilla 0 (`docs/specs/F3.md`, `reports/f3_matrix.md`) |
 | F4 | Evaluación clínica: test bloqueado, calibración, umbral, subgrupos, DDI | Hecha el 2026-09-18: test abierto una vez (AUC-ROC 0.834, AUPRC 0.096), queda un acceso; falta `docs/f4_limitations.md` (`docs/specs/F4.md`, `reports/f4_clinical_evaluation.md`) |
 | F5 | Explicabilidad: CAM ≡ Grad-CAM (contrato numpy para F6), prueba de cordura, solapamiento con la lesión, artefactos por perturbación | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F5.md`, `reports/f5_explainability.md`) |
-| F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker 152 MB; preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
+| F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker ~420 MB sin comprimir (~155 MB comprimida); preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
 | F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo | Hecha el 2026-09-21; cierre bloqueado por `docs/f4_limitations.md` (`docs/specs/F7.md`) |
 | F8 | Despliegue | Pendiente |
 | F9 | Documento y defensa | Pendiente |

@@ -1,6 +1,6 @@
 # Imagen de la API + interfaz (F6.5, F7.1). Tres etapas: build de la web (node), dependencias
 # del grupo `api` (uv) y la imagen final (python slim). Sin `core`: nada de pandas, hydra ni
-# omegaconf. Nunca torch/timm/lightning: el CI falla si la imagen supera 400 MB.
+# omegaconf. Nunca torch/timm/lightning: el CI falla si la imagen supera 500 MB sin comprimir.
 #
 # El paquete de modelo NO va en la imagen: se monta en /bundle (MODEL_BUNDLE_DIR). En CI se
 # monta el paquete de prueba (make test-bundle); en despliegue (F8), el real del release.
