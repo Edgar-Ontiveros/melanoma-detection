@@ -26,7 +26,7 @@ jobs:
           cache: npm
           cache-dependency-path: services/web/package-lock.json
 
-      - name: Interfaz: npm ci, lint, pruebas y build
+      - name: "Interfaz: npm ci, lint, pruebas y build"
         working-directory: services/web
         run: |
           npm ci --no-audit --no-fund
