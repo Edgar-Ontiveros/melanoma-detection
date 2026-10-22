@@ -248,8 +248,9 @@ no descartar diagnósticos.
 El conjunto de prueba contiene únicamente 86
 melanomas, con un intervalo de confianza del 95 % para el AUC de
 ±0.04. Los subgrupos por edad, sexo y localización tienen entre 7 y 51
-casos positivos, insuficientes para establecer diferencias
-concluyentes. Se estima que serían necesarios cuatro veces más casos
+casos positivos en los subgrupos evaluados; cuatro subgrupos con 0 o 1
+melanoma no se evaluaron por falta de casos. Se estima que serían
+necesarios cuatro veces más casos
 positivos. Se priorizó ISIC 2020, frente a alternativas como ISIC 2019
 que carecen de identificador de paciente, para garantizar la
 separación de pacientes y evitar fugas de datos.

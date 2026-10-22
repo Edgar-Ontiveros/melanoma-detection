@@ -172,7 +172,8 @@ b7f727d6cf70d7a12be136e3b7046b42c725eaf5541aadc0723fbac09941ffb1  val.txt
 
 `data/splits/test.txt` se usa **como máximo dos veces en todo el proyecto**, ambas desde
 `scripts/evaluate_test.py` (F4), y cada acceso se anota en `logs/test_set_access.log`
-(primer acceso: 2026-09-18, evaluación clínica de F4; queda uno en reserva). Ningún
+(primer acceso: 2026-09-18, evaluación clínica de F4; el segundo y último se asignó el
+2026-10-22 a F4b, la evaluación del ensamble bajo protocolo congelado). Ningún
 módulo de `src/` puede referenciarlo: lo vigila `tests/test_test_split_isolation.py` en CI.
 
 ### Kaggle
@@ -209,10 +210,10 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F1 | Manifiesto, deduplicación, splits por paciente, bloqueo del test, Kaggle | Completa: 10/10 criterios en verde, cerrada el 2026-09-04 (`docs/specs/F1.md`) |
 | F2 | Líneas base B0/B1, DataModule, evaluación, experimento de preprocesamiento, Kaggle por API | Cerrada el 2026-09-17: 12/12 criterios en verde (`docs/specs/F2.md`) |
 | F3 | Matriz de modelos, ablación de resolución, anclaje en literatura | Cerrada el 2026-09-18: 9/9 criterios; modelo final A1 = EfficientNetV2-S a 224 px, semilla 0 (`docs/specs/F3.md`, `reports/f3_matrix.md`) |
-| F4 | Evaluación clínica: test bloqueado, calibración, umbral, subgrupos, DDI | Hecha el 2026-09-18: test abierto una vez (AUC-ROC 0.834, AUPRC 0.096), queda un acceso; falta `docs/f4_limitations.md` (`docs/specs/F4.md`, `reports/f4_clinical_evaluation.md`) |
+| F4 | Evaluación clínica: test bloqueado, calibración, umbral, subgrupos, DDI, limitaciones | Cerrada el 2026-10-15: 10/10 criterios; test abierto una vez el 2026-09-18 (AUC-ROC 0.834, AUPRC 0.096); el acceso restante está asignado a F4b; limitaciones en `docs/f4_limitations.md` (`docs/specs/F4.md`, `reports/f4_clinical_evaluation.md`) |
 | F5 | Explicabilidad: CAM ≡ Grad-CAM (contrato numpy para F6), prueba de cordura, solapamiento con la lesión, artefactos por perturbación | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F5.md`, `reports/f5_explainability.md`) |
 | F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker ~420 MB sin comprimir (~155 MB comprimida); preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
-| F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo | Hecha el 2026-09-21; cierre bloqueado por `docs/f4_limitations.md` (`docs/specs/F7.md`) |
+| F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo con las limitaciones | Cerrada el 2026-10-15: 10/10 criterios (`docs/specs/F7.md`) |
 | F8 | Despliegue | Pendiente |
 | F9 | Documento y defensa | Pendiente |
 
