@@ -72,7 +72,7 @@ def test_access_logged_before_read(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
         pass
 
     monkeypatch.setattr(et, "ensure_protocol_committed", lambda root, protocol=None: "p" * 64)
-    monkeypatch.setattr(et, "verify_checkpoint", lambda root, pc: "c" * 64)
+    monkeypatch.setattr(et, "verify_checkpoint", lambda root, pc: ["c" * 64])
     monkeypatch.setattr(et, "append_access_log", lambda *a, **k: events.append("log") or "line")
     monkeypatch.setattr(et, "verify_split_hashes", lambda d: {})
 
@@ -94,6 +94,80 @@ def test_access_logged_before_read(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
     with pytest.raises(Stop):
         et.run(cfg, tmp_path, "prueba")
     assert events == ["log", "read"], events
+
+
+def _fake_cfg():
+    from types import SimpleNamespace
+
+    return SimpleNamespace(
+        f4=SimpleNamespace(protocol="docs/f4_protocol.yaml", access_log="logs/x.log"),
+        data={
+            "env": "local",
+            "paths": {"local": {"images_dir": "i", "manifest_path": "m", "splits_dir": "s"}},
+        },
+    )
+
+
+def test_second_access_is_last(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Bitácora simulada con dos líneas → el script aborta antes de registrar o leer nada."""
+    et = _load()
+    events: list[str] = []
+    (tmp_path / "logs").mkdir()
+    (tmp_path / "logs" / "x.log").write_text("1\tprimero\n2\tsegundo\n", encoding="utf-8")
+    monkeypatch.setattr(
+        et,
+        "ensure_protocol_committed",
+        lambda root, protocol=None: events.append("protocol") or "p" * 64,
+    )
+    monkeypatch.setattr(
+        et, "verify_checkpoint", lambda root, pc: events.append("ckpt") or ["c" * 64]
+    )
+    monkeypatch.setattr(et, "append_access_log", lambda *a, **k: events.append("log") or "line")
+    monkeypatch.setattr(et, "read_test_ids", lambda d: events.append("read") or [])
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(et.OmegaConf, "load", lambda p: SimpleNamespace(model=SimpleNamespace()))
+    with pytest.raises(SystemExit, match="No hay tercer acceso"):
+        et.run(_fake_cfg(), tmp_path, "tercero")
+    assert events == [], events
+    # Con una línea y un protocolo que declara el acceso 2, pasa el paso 0.
+    (tmp_path / "logs" / "x.log").write_text("1\tprimero\n", encoding="utf-8")
+    assert et.ensure_access_budget(tmp_path, "logs/x.log", SimpleNamespace(access_number=2)) == 1
+    with pytest.raises(SystemExit, match="acceso número 1"):
+        et.ensure_access_budget(tmp_path, "logs/x.log", SimpleNamespace(access_number=1))
+
+
+def test_f4b_protocol_committed_before_second_access() -> None:
+    """Si la bitácora ya registra el segundo acceso, docs/f4b_protocol.yaml estaba en git antes
+    de esa línea (spec F3b-F4b, criterio 6). El código de evaluate_test.py se commitea antes del
+    protocolo (decisión del 2026-10-22); lo que espera al protocolo es la ejecución."""
+    from datetime import datetime
+
+    log = ROOT / "logs" / "test_set_access.log"
+    lines = [ln for ln in log.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    assert len(lines) <= 2, "la bitácora no puede tener más de dos accesos"
+    if len(lines) < 2:
+        pytest.skip("el segundo acceso no se ha ejecutado")
+    out = (
+        subprocess.check_output(
+            [
+                "git",
+                "-C",
+                str(ROOT),
+                "log",
+                "--diff-filter=A",
+                "--format=%ct",
+                "--",
+                "docs/f4b_protocol.yaml",
+            ],
+            text=True,
+        )
+        .strip()
+        .splitlines()
+    )
+    assert out, "docs/f4b_protocol.yaml no está en git"
+    second = datetime.fromisoformat(lines[1].split("\t")[0]).timestamp()
+    assert int(out[-1]) <= second, "el protocolo de F4b debe commitearse antes del segundo acceso"
 
 
 def test_only_evaluate_test_reads_the_split_in_the_script() -> None:
