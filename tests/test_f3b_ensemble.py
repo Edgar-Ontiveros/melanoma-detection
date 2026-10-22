@@ -72,11 +72,12 @@ def _row(name, auroc, auprc, spec90, ms):
 
 
 def test_decision_rule_f3b() -> None:
-    """Entre empatados gana el más barato; quien viola el costo queda fuera aunque gane; sin
-    ganancia > 0.02 de AUPRC el ensamble no aporta."""
+    """Eᵍ es el más barato de los que empatan con el líder, cumplen el costo y superan a E0 por
+    más de 0.02 de AUPRC; quien viola el costo queda fuera aunque gane; conjunto vacío → el
+    ensamble no aporta."""
     rows = [
         _row("E0/none", 0.830, 0.130, 0.44, 30),
-        _row("E1/tta2", 0.845, 0.165, 0.50, 180),  # empata con el líder y es más barato
+        _row("E1/tta2", 0.845, 0.165, 0.50, 180),  # empata con el líder, más barato, supera a E0
         _row("E2/tta2", 0.850, 0.170, 0.52, 990),  # líder factible
         _row("E3/tta4", 0.880, 0.250, 0.60, 3000),  # el mejor, pero viola el costo
     ]
@@ -87,12 +88,24 @@ def test_decision_rule_f3b() -> None:
     assert d["leader"] == "E2/tta2"
     assert set(d["tied_with_leader"]) == {"E2/tta2", "E1/tta2"}
     assert d["winner"] == "E1/tta2" and d["ensemble_helps"]
-    # Sin ganancia suficiente sobre la referencia: se declara que el ensamble no aporta.
+    # El más barato de los empatados NO supera a E0 por más de 0.02; el siguiente sí → gana el
+    # siguiente, no la referencia ni el barato.
+    close = [
+        _row("E0/none", 0.830, 0.130, 0.44, 30),
+        _row("E1/tta2", 0.846, 0.148, 0.50, 180),  # empatado y barato, pero +0.018 sobre E0
+        _row("E2/tta2", 0.850, 0.165, 0.52, 990),  # líder: +0.035 sobre E0
+    ]
+    d1 = apply_decision_rule(close, "E0/none", 0.02, 1000, 0.02)
+    assert d1["cheapest_tied"] == "E1/tta2"
+    assert d1["eligible"] == ["E2/tta2"]
+    assert d1["winner"] == "E2/tta2" and d1["ensemble_helps"]
+    assert d1["winner_gain_auprc"] == pytest.approx(0.035)
+    # Sin ganancia suficiente sobre la referencia: el conjunto queda vacío y no aporta.
     flat = [
         _row("E0/none", 0.830, 0.130, 0.44, 30),
         _row("E1/tta2", 0.835, 0.145, 0.46, 180),
     ]
     d2 = apply_decision_rule(flat, "E0/none", 0.02, 1000, 0.02)
-    assert not d2["ensemble_helps"] and d2["winner"] == "E0/none"
+    assert not d2["ensemble_helps"] and d2["winner"] == "E0/none" and d2["eligible"] == []
     with pytest.raises(ValueError):
         apply_decision_rule(rows, "E9", 0.02, 1000, 0.02)

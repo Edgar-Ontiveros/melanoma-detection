@@ -299,6 +299,8 @@ def write_protocol(
                     "reference",
                     "leader",
                     "tied_with_leader",
+                    "cheapest_tied",
+                    "eligible",
                     "infeasible",
                     "winner_gain_auprc",
                     "best_gain_auprc",

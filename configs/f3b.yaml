@@ -45,7 +45,8 @@ f3b:
   # Regla de decisión prerregistrada (spec F3b.3). Latencia extrapolada de F6: 2.9 GFLOPs ≈ 30 ms de ONNX.
   decision:
     tie_delta: 0.02             # empate si |ΔAUC-ROC| y |ΔAUPRC| son menores que esto
-    min_gain_auprc: 0.02        # el ensamble "aporta" solo si supera a E0 por más de esto
+    min_gain_auprc: 0.02        # regla 4: Eᵍ = el más barato de los empatados con el líder, factibles
+                                # y que superan a E0 por más de esto en AUPRC; conjunto vacío → no aporta
     max_latency_ms: 1000        # restricción dura: costo estimado < 1 s en CPU
     latency_anchor: {gflops: 2.9, ms: 30}   # F6: EfficientNetV2-S 224 → ~30 ms de ONNX en la laptop
   bootstrap_resamples: 2000

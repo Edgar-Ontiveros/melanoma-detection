@@ -88,8 +88,13 @@ IC por bootstrap a nivel paciente (2,000 remuestreos), y el costo.
 3. Restricción dura: costo estimado de inferencia < **1 s** en la laptop (extrapolado de la
    latencia de F6: 2.9 GFLOPs ≈ 30 ms de ONNX). Un candidato que la viole queda fuera
    aunque gane.
-4. Si ninguna combinación supera a E0 por más de 0.02 en AUPRC, **se declara que el
-   ensamble no aporta**, F4b no se ejecuta, y el acceso de reserva se conserva.
+4. **Eᵍ es el más barato de los candidatos que (a) empatan con el líder, (b) cumplen la
+   restricción de costo y (c) superan a E0 por más de 0.02 en AUPRC.** Si ese conjunto está
+   vacío, **el ensamble no aporta**, F4b no se ejecuta y el acceso se conserva.
+
+   (Corrección del 2026-10-22, antes de ver ningún número real: la redacción anterior
+   preguntaba si «alguna combinación» superaba a E0, y el ganador por las reglas 1–3 podía ser
+   un empatado más barato que no lo superaba.)
 
 El candidato ganador se llama **Eᵍ**.
 
@@ -150,7 +155,9 @@ Sobre validación, con el modelo final de F3b (Eᵍ o Eᵍ + apilador):
 
 ### Protocolo
 
-`docs/f4b_protocol.yaml`, commiteado **antes** de cualquier cambio a `evaluate_test.py`:
+`docs/f4b_protocol.yaml`, commiteado **antes** de ejecutar `evaluate_test.py --protocol`
+(el guardarraíl y la opción `--protocol` se commitean antes, porque no dependen de los valores
+del protocolo; lo que espera al protocolo es la ejecución, no el código. Decisión del 2026-10-22):
 
 ```
 models: [lista de checkpoints con SHA256]
@@ -218,7 +225,8 @@ como está.
    por 0.02 en AUPRC, se declara y F4b no corre.
 4. Metadatos evaluados por VC agrupada; decisión por la regla.
 5. Platt y umbrales nuevos sobre validación, con la advertencia de optimismo.
-6. `docs/f4b_protocol.yaml` commiteado antes de tocar el script; el historial lo muestra.
+6. `docs/f4b_protocol.yaml` commiteado antes de ejecutar el segundo acceso; el historial y la
+   bitácora lo muestran.
 7. Segundo acceso ejecutado una vez; bitácora con exactamente dos líneas; guardarraíl de
    "no hay tercero" probado.
 8. Tabla lado a lado en el reporte de F4, con el modelo único intacto.

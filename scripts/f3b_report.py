@@ -73,20 +73,15 @@ def section_candidates(r: dict) -> list[str]:
         "### Regla de decisión aplicada (escrita antes de ver los números)",
         "",
         f"1. Orden por AUPRC y después por spec@sens0.90: líder **{d['leader']}**.",
-        f"2. Empate (|ΔAUC-ROC| y |ΔAUPRC| < {dp['tie_delta']}) con el líder: {', '.join(d['tied_with_leader'])}. Entre empatados gana el más barato: **{d['winner_by_rules_1_to_3']}**.",
+        f"2. Empate (|ΔAUC-ROC| y |ΔAUPRC| < {dp['tie_delta']}) con el líder: {', '.join(d['tied_with_leader'])}; el más barato de ellos es {d['cheapest_tied']}.",
         f"3. Restricción dura (< {dp['max_latency_ms']:.0f} ms estimados): fuera {', '.join(d['infeasible']) or 'ninguna'}.",
-        f"4. Mejor ganancia de AUPRC sobre {d['reference']} entre las factibles: {d['best_gain_auprc']:+.4f} (umbral > {dp['min_gain_auprc']}). "
+        f"4. Empatados, factibles y que superan a {d['reference']} por más de {dp['min_gain_auprc']} de AUPRC: {', '.join(d['eligible']) or 'ninguno'} (mejor ganancia entre todas las factibles: {d['best_gain_auprc']:+.4f}). "
         + (
             f"**El ensamble aporta.** Eᵍ = **{d['winner']}** ({win['label']}, {len(win['views'])} vista(s)): AUPRC {win['auprc']:.3f} contra {ref['auprc']:.3f} de la referencia ({d['winner_gain_auprc']:+.3f}), AUC-ROC {win['auroc']:.3f} contra {ref['auroc']:.3f}, spec@sens0.95 {win['spec_at_sens095']:.3f} contra {ref['spec_at_sens095']:.3f}; costo {win['cost_gflops']:.1f} GFLOPs ≈ {win['latency_ms']:.0f} ms."
             if d["ensemble_helps"]
-            else f"**El ensamble no aporta** con estos datos: ninguna combinación factible supera a la referencia por más de {dp['min_gain_auprc']} de AUPRC. F4b no se ejecuta y el acceso de reserva se conserva. Eᵍ = {d['reference']} (el modelo único de F4)."
+            else f"**El ensamble no aporta** con estos datos: ningún candidato empatado con el líder y factible supera a la referencia por más de {dp['min_gain_auprc']} de AUPRC. F4b no se ejecuta y el acceso de reserva se conserva. Eᵍ = {d['reference']} (el modelo único de F4)."
         ),
     ]
-    if d["ensemble_helps"] and d["winner_gain_auprc"] <= dp["min_gain_auprc"]:
-        lines += [
-            "",
-            f"Nota: el candidato que la regla 4 señala como «supera a E0» es {d['leader']} ({d['best_gain_auprc']:+.4f}); Eᵍ, elegido por empate y costo, le gana a E0 por {d['winner_gain_auprc']:+.4f}, menos que el umbral. Se reporta tal cual.",
-        ]
     return lines
 
 

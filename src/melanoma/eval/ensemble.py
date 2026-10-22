@@ -67,16 +67,16 @@ def apply_decision_rule(
     max_latency_ms: float,
     min_gain_auprc: float,
 ) -> dict[str, Any]:
-    """Regla prerregistrada de F3b.3 sobre una tabla de candidatos.
+    """Regla prerregistrada de F3b.3 sobre una tabla de candidatos (spec, corrección 2026-10-22).
 
     Cada fila: ``name``, ``auroc``, ``auprc``, ``spec_at_sens090``, ``latency_ms``.
 
-    1. Orden por AUPRC y después por spec@sens0.90.
-    2. Empate: |ΔAUC-ROC| < ``tie_delta`` **y** |ΔAUPRC| < ``tie_delta`` respecto al líder;
-       entre empatados gana el más barato (menor latencia).
+    1. Orden por AUPRC y después por spec@sens0.90; el primero factible es el líder.
+    2. Empate: |ΔAUC-ROC| < ``tie_delta`` **y** |ΔAUPRC| < ``tie_delta`` respecto al líder.
     3. Restricción dura: ``latency_ms`` < ``max_latency_ms``; quien la viole queda fuera.
-    4. Si ninguna combinación factible supera a la referencia por más de ``min_gain_auprc`` en
-       AUPRC, el ensamble no aporta: ``winner`` es la referencia y ``ensemble_helps`` es False.
+    4. Eᵍ es el más barato de los candidatos que (a) empatan con el líder, (b) cumplen la
+       restricción de costo y (c) superan a la referencia por más de ``min_gain_auprc`` en
+       AUPRC. Conjunto vacío → el ensamble no aporta: ``winner`` es la referencia.
     """
     by_name = {r["name"]: r for r in rows}
     if reference not in by_name:
@@ -96,21 +96,23 @@ def apply_decision_rule(
         if abs(float(r["auroc"]) - float(leader["auroc"])) < tie_delta
         and abs(float(r["auprc"]) - float(leader["auprc"])) < tie_delta
     ]
-    winner = min(tied, key=lambda r: (float(r["latency_ms"]), r["name"]))
-    best_gain = max(float(r["auprc"]) - float(ref["auprc"]) for r in feasible)
-    ensemble_helps = best_gain > min_gain_auprc and winner["name"] != reference
+    eligible = [r for r in tied if float(r["auprc"]) - float(ref["auprc"]) > min_gain_auprc]
+    cheapest_tied = min(tied, key=lambda r: (float(r["latency_ms"]), r["name"]))
+    winner = min(eligible, key=lambda r: (float(r["latency_ms"]), r["name"])) if eligible else None
     return {
         "reference": reference,
         "ranking": [r["name"] for r in ranked],
         "infeasible": infeasible,
         "leader": leader["name"],
         "tied_with_leader": [r["name"] for r in tied],
-        "winner": winner["name"] if ensemble_helps else reference,
-        "winner_by_rules_1_to_3": winner["name"],
-        "winner_gain_auprc": float(winner["auprc"]) - float(ref["auprc"]),
-        "best_gain_auprc": best_gain,
+        "cheapest_tied": cheapest_tied["name"],
+        "eligible": [r["name"] for r in eligible],
+        "winner": winner["name"] if winner else reference,
+        "winner_gain_auprc": (float(winner["auprc"]) if winner else float(ref["auprc"]))
+        - float(ref["auprc"]),
+        "best_gain_auprc": max(float(r["auprc"]) - float(ref["auprc"]) for r in feasible),
         "min_gain_auprc": min_gain_auprc,
-        "ensemble_helps": bool(ensemble_helps),
+        "ensemble_helps": winner is not None,
     }
 
 
