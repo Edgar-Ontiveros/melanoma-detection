@@ -7,7 +7,7 @@ diferencia supera la tolerancia, el miembro queda marcado como excluido y no ent
 F3b.2: logits de cada miembro para cada vista de TTA (identidad y volteos) sobre las 4,963
 imágenes de validación, en un solo npz alineado con `image_id`, `target` y `patient_id`.
 
-Solo validación: `test.txt` no se toca. Salidas: reports/f3b_checkpoints.json y
+Solo validación: el split de prueba no se toca. Salidas: reports/f3b_checkpoints.json y
 reports/predictions/f3b_val_logits.npz. Caché parcial por miembro en outputs/f3b/logits/.
 """
 
@@ -19,33 +19,16 @@ from pathlib import Path
 
 import hydra
 import numpy as np
-import pandas as pd
-import torch
 from omegaconf import DictConfig, OmegaConf
-from torch.utils.data import DataLoader
 
 from melanoma.data import read_manifest, resolve_paths
 from melanoma.data.datamodule import VAL_SPLIT, read_split_ids, verify_split_hashes
-from melanoma.data.dataset import ImageDataset
-from melanoma.data.transforms import build_transforms
+from melanoma.eval.ensemble import VIEW_FLIPS
 from melanoma.eval.metrics import auroc_auprc
-from melanoma.eval.predict import load_checkpoint, sha256_file, split_records
+from melanoma.eval.predict import load_checkpoint, predict_views, sha256_file, split_records
 from melanoma.train.run import git_sha
 
 ROOT = Path(__file__).resolve().parents[1]
-
-# Volteos sobre el tensor CHW ya normalizado: exactos (sin reinterpolar) y nombrados.
-VIEW_FLIPS: dict[str, tuple[int, ...]] = {
-    "identity": (),
-    "hflip": (-1,),
-    "vflip": (-2,),
-    "hvflip": (-2, -1),
-}
-
-
-def apply_view(x: torch.Tensor, view: str) -> torch.Tensor:
-    dims = VIEW_FLIPS[view]
-    return torch.flip(x, dims=dims) if dims else x
 
 
 def run_dir_of(runs_dir: Path, member: str) -> Path:
@@ -76,34 +59,6 @@ def member_spec(runs_dir: Path, models_dir: Path, member: str) -> dict:
         "auroc_run": float(metrics["metrics"]["auroc"]),
         "auprc_run": float(metrics["metrics"]["auprc"]),
     }
-
-
-@torch.no_grad()
-def predict_views(
-    lit,
-    data_config: dict,
-    recs: pd.DataFrame,
-    images_dir: Path,
-    spec: dict,
-    views: list[str],
-    batch_size: int,
-    num_workers: int,
-) -> np.ndarray:
-    """Logits `(n_vistas, n_imágenes)`: una sola lectura de cada imagen, una pasada por vista."""
-    transform = build_transforms(
-        data_config, spec["image_size"], None, train=False, val_resize=spec["val_resize"]
-    )
-    loader = DataLoader(
-        ImageDataset(recs, images_dir, transform),
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-    )
-    out = [[] for _ in views]
-    for x, _ in loader:
-        for i, view in enumerate(views):
-            out[i].append(lit(apply_view(x, view)).squeeze(1).float().cpu())
-    return torch.stack([torch.cat(o) for o in out]).numpy().astype(np.float32)
 
 
 @hydra.main(config_path="../configs", config_name="f3b", version_base="1.3")
@@ -157,11 +112,12 @@ def main(cfg: DictConfig) -> None:
                 data_config,
                 recs,
                 paths.images_dir,
-                spec,
+                spec["image_size"],
+                spec["val_resize"],
                 views,
-                int(cfg.data.batch_size),
-                int(cfg.data.num_workers),
-            )
+                batch_size=int(cfg.data.batch_size),
+                num_workers=int(cfg.data.num_workers),
+            ).astype(np.float32)
             np.savez(
                 partial,
                 logits=z,

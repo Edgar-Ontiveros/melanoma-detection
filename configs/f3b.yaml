@@ -30,6 +30,53 @@ f3b:
   partial_dir: outputs/f3b/logits          # caché por miembro (fuera de git), permite reanudar
   reuse_partial: true
 
+  # ---- F3b.3: candidatos. Ensamble = promedio de LOGITS. GFLOPs por imagen y vista, los de F3.5.
+  gflops_per_image: {a1: 2.9, m1: 8.4, m2: 13.1}
+  candidates:
+    E0: {members: [a1-s0], label: "A1 semilla 0 (referencia, modelo de F4)"}
+    E1: {members: [a1-s0, a1-s1, a1-s2], label: "A1 ×3"}
+    E2: {members: [a1-s0, a1-s1, a1-s2, m2-s0, m2-s1, m2-s2], label: "A1 ×3 + M2 ×3"}
+    E3: {members: [a1-s0, a1-s1, a1-s2, m1-s0, m1-s1, m1-s2, m2-s0, m2-s1, m2-s2], label: "A1 ×3 + M1 ×3 + M2 ×3"}
+  tta:
+    none: [identity]
+    tta2: [identity, hflip]
+    tta4: [identity, hflip, vflip, hvflip]
+  reference: E0/none
+  # Regla de decisión prerregistrada (spec F3b.3). Latencia extrapolada de F6: 2.9 GFLOPs ≈ 30 ms de ONNX.
+  decision:
+    tie_delta: 0.02             # empate si |ΔAUC-ROC| y |ΔAUPRC| son menores que esto
+    min_gain_auprc: 0.02        # el ensamble "aporta" solo si supera a E0 por más de esto
+    max_latency_ms: 1000        # restricción dura: costo estimado < 1 s en CPU
+    latency_anchor: {gflops: 2.9, ms: 30}   # F6: EfficientNetV2-S 224 → ~30 ms de ONNX en la laptop
+  bootstrap_resamples: 2000
+  bootstrap_seed: 20260904
+  fixed_levels: [0.90, 0.95]
+
+  # ---- F3b.4: apilador de metadatos sobre el logit del ganador (las variables de B0).
+  stacker:
+    numeric: [age_approx]
+    categorical: [sex, anatom_site]
+    impute_numeric: median
+    missing_category: missing
+    Cs: [0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
+    inner_splits: 5             # VC interna (agrupada por paciente) para elegir C
+    scoring: neg_log_loss
+    max_iter: 2000
+    outer_splits: 5             # VC externa agrupada por paciente para medir la ganancia
+    seed: 20260904
+    min_gain_auroc: 0.02        # se despliega si ΔAUC-ROC ≥ esto …
+    min_gain_spec_at_sens095: 0.05   # … o Δspec@sens0.95 ≥ esto
+  # ---- F3b.5: calibración y umbrales del modelo final, como en F4.
+  threshold_sensitivities: [0.95, 0.90]
+  ppv_npv_projection_prevalences: [0.01, 0.02, 0.05]
+
+  ensemble_json: reports/f3b_ensemble.json
+  protocol_yaml: docs/f4b_protocol.yaml
+  report_md: reports/f3b_ensemble.md
+  figures_dir: reports/figures
+  f4_protocol: docs/f4_protocol.yaml          # referencia; no se modifica
+  f4_results_json: reports/f4_test_results.json
+
 hydra:
   run:
     dir: outputs/f3b/${now:%Y-%m-%d}/${now:%H-%M-%S}

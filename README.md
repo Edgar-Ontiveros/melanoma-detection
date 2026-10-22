@@ -102,6 +102,7 @@ paciente, historial por época, colapsos, SHA del commit y de los splits), `curv
 ```bash
 make f3-report                 # reports/f3_matrix.md a partir de reports/runs/
 make f4-report                 # reports/f4_clinical_evaluation.md (el test ya se abrió; no se vuelve a abrir)
+make f3b-all                   # F3b: verifica los 9 checkpoints, cachea logits, candidatos, apilador, reports/f3b_ensemble.md
 make f5-all                    # CAM, solapamiento con la lesión, artefactos, figuras y reports/f5_explainability.md
 make export-bundle             # models/bundle/ desde el checkpoint de F3 (ONNX + calibración + umbrales + CAM)
 make verify-bundle             # paridad ONNX vs PyTorch → reports/f6_parity.json
@@ -171,7 +172,8 @@ b7f727d6cf70d7a12be136e3b7046b42c725eaf5541aadc0723fbac09941ffb1  val.txt
 ### Conjunto de prueba bloqueado
 
 `data/splits/test.txt` se usa **como máximo dos veces en todo el proyecto**, ambas desde
-`scripts/evaluate_test.py` (F4), y cada acceso se anota en `logs/test_set_access.log`
+`scripts/evaluate_test.py` (F4 y F4b; se niega a correr si la bitácora ya tiene dos líneas), y
+cada acceso se anota en `logs/test_set_access.log`
 (primer acceso: 2026-09-18, evaluación clínica de F4; el segundo y último se asignó el
 2026-10-22 a F4b, la evaluación del ensamble bajo protocolo congelado). Ningún
 módulo de `src/` puede referenciarlo: lo vigila `tests/test_test_split_isolation.py` en CI.
@@ -214,6 +216,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F5 | Explicabilidad: CAM ≡ Grad-CAM (contrato numpy para F6), prueba de cordura, solapamiento con la lesión, artefactos por perturbación | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F5.md`, `reports/f5_explainability.md`) |
 | F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker ~420 MB sin comprimir (~155 MB comprimida); preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
 | F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo con las limitaciones | Cerrada el 2026-10-15: 10/10 criterios (`docs/specs/F7.md`) |
+| F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | En curso desde 2026-10-22: F3b.1–F3b.2 hechos; F4b solo con autorización expresa (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`) |
 | F8 | Despliegue | Pendiente |
 | F9 | Documento y defensa | Pendiente |
 

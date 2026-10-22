@@ -10,7 +10,7 @@ UV_RUN = uv run --no-sync
 	data-verify data-manifest data-dedup data-splits data-resize data-eda data-all \
 	kaggle-dataset train baseline-b0 f2-report f3-report f4-report check-notebooks kaggle \
 	f5-cam f5-overlap f5-artifacts f5-figures f5-report f5-all \
-	f3b-logits export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
+	f3b-logits f3b-ensemble f3b-report f3b-all export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
 	web-install web-dev web-lint web-test web-build web f7-screenshots
 
 ## Entorno local (WSL/Ubuntu): core + train + dev con ruedas CPU del lockfile.
@@ -88,6 +88,13 @@ f4-report:
 ## de TTA; necesita los .ckpt en data/models/ (`kaggle_run.py checkpoint <corrida>`). Horas de CPU.
 f3b-logits:
 	$(UV_RUN) python scripts/f3b_logits.py
+## Candidatos (E0–E3 × TTA), regla prerregistrada, apilador por VC agrupada, Platt y umbrales del
+## ganador; escribe docs/f4b_protocol.yaml si el ensamble aporta. Solo lee el caché de logits.
+f3b-ensemble:
+	$(UV_RUN) python scripts/f3b_ensemble.py
+f3b-report:
+	$(UV_RUN) python scripts/f3b_report.py
+f3b-all: f3b-logits f3b-ensemble f3b-report
 ## ---- F5: explicabilidad sobre validación (configs/f5.yaml). Orden: cam → overlap → artifacts →
 ## figures → report; `f5-all` los encadena (~20 min de CPU).
 f5-cam:

@@ -68,6 +68,36 @@ def predict_frame(
     return out
 
 
+@torch.no_grad()
+def predict_views(
+    lit: LitBinaryClassifier,
+    data_config: dict,
+    records: pd.DataFrame,
+    images_dir: Path | str,
+    image_size: int,
+    val_resize: str,
+    views: list[str],
+    batch_size: int = 32,
+    num_workers: int = 0,
+) -> np.ndarray:
+    """Logits ``(n_vistas, n_imágenes)`` para las vistas de TTA de F3b: una sola lectura de cada
+    imagen y una pasada del modelo por vista (``melanoma.eval.ensemble.apply_view``)."""
+    from melanoma.eval.ensemble import apply_view
+
+    transform = build_transforms(data_config, image_size, None, train=False, val_resize=val_resize)
+    loader = DataLoader(
+        ImageDataset(records, images_dir, transform),
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+    )
+    out: list[list[torch.Tensor]] = [[] for _ in views]
+    for x, _ in loader:
+        for i, view in enumerate(views):
+            out[i].append(lit(apply_view(x, view)).squeeze(1).float().cpu())
+    return torch.stack([torch.cat(o) for o in out]).numpy().astype(np.float64)
+
+
 def split_records(manifest: pd.DataFrame, image_ids: list[str]) -> pd.DataFrame:
     by_id = manifest.set_index("image_id")
     cols = ["target", "patient_id"] + [c for c in META_COLUMNS if c in by_id.columns]
