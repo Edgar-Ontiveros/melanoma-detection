@@ -10,7 +10,7 @@ UV_RUN = uv run --no-sync
 	data-verify data-manifest data-dedup data-splits data-resize data-eda data-all \
 	kaggle-dataset train baseline-b0 f2-report f3-report f4-report check-notebooks kaggle \
 	f5-cam f5-overlap f5-artifacts f5-figures f5-report f5-all \
-	export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
+	f3b-logits export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
 	web-install web-dev web-lint web-test web-build web f7-screenshots
 
 ## Entorno local (WSL/Ubuntu): core + train + dev con ruedas CPU del lockfile.
@@ -83,6 +83,11 @@ f3-report:
 	$(UV_RUN) python scripts/f3_report.py
 f4-report:
 	$(UV_RUN) python scripts/f4_report.py
+## ---- F3b: ensamble sobre validación con los nueve checkpoints de F3 (configs/f3b.yaml).
+## `f3b-logits` verifica cada checkpoint (SHA256 y AUC de su corrida) y cachea los logits por vista
+## de TTA; necesita los .ckpt en data/models/ (`kaggle_run.py checkpoint <corrida>`). Horas de CPU.
+f3b-logits:
+	$(UV_RUN) python scripts/f3b_logits.py
 ## ---- F5: explicabilidad sobre validación (configs/f5.yaml). Orden: cam → overlap → artifacts →
 ## figures → report; `f5-all` los encadena (~20 min de CPU).
 f5-cam:

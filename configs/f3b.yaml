@@ -1,0 +1,37 @@
+# F3b — ensamble sobre validación con los nueve checkpoints de F3 (A1/M1/M2 × semillas 0/1/2).
+# Nada se reentrena: los checkpoints son la salida de los kernels de F3 en Kaggle, bajados con
+# `kaggle_run.py checkpoint <corrida>` a data/models/ (fuera de git). Backbone, resolución y
+# geometría de validación de cada miembro se leen de su propia corrida en reports/runs/, no se
+# repiten aquí. Todo corre en CPU local. Uso: uv run python scripts/f3b_logits.py
+defaults:
+  - data: isic2020
+  - model: effnetv2s_384
+  - train: matrix
+  - _self_
+
+data:
+  env: local
+  batch_size: 32
+  num_workers: 4
+
+f3b:
+  runs_dir: reports/runs
+  models_dir: data/models
+  members: [a1-s0, a1-s1, a1-s2, m1-s0, m1-s1, m1-s2, m2-s0, m2-s1, m2-s2]
+  # Vistas de TTA: la imagen de validación tal cual y sus volteos (en dermatoscopia no hay
+  # orientación canónica; la aumentación de entrenamiento ya volteaba en ambos ejes).
+  # TTA-2 = [identity, hflip]; TTA-4 = las cuatro.
+  views: [identity, hflip, vflip, hvflip]
+  # F3b.1: cada checkpoint debe reproducir el AUC-ROC de validación de su corrida (metrics.json)
+  # con esta tolerancia; si no, se excluye del ensamble y se reporta.
+  auroc_tolerance: 0.005
+  checkpoints_json: reports/f3b_checkpoints.json
+  logits_npz: reports/predictions/f3b_val_logits.npz
+  partial_dir: outputs/f3b/logits          # caché por miembro (fuera de git), permite reanudar
+  reuse_partial: true
+
+hydra:
+  run:
+    dir: outputs/f3b/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
