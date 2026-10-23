@@ -216,7 +216,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F5 | Explicabilidad: CAM ≡ Grad-CAM (contrato numpy para F6), prueba de cordura, solapamiento con la lesión, artefactos por perturbación | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F5.md`, `reports/f5_explainability.md`) |
 | F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker ~420 MB sin comprimir (~155 MB comprimida); preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
 | F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo con las limitaciones | Cerrada el 2026-10-15: 10/10 criterios (`docs/specs/F7.md`) |
-| F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | En curso desde 2026-10-22: F3b.1–F3b.2 hechos; F4b solo con autorización expresa (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`) |
+| F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | F3b hecha el 2026-10-23: Eᵍ = E1 (A1 ×3, sin TTA; AUPRC 0.164 contra 0.132 en validación), metadatos no se despliegan, protocolo en `docs/f4b_protocol.yaml`; **F4b pendiente de autorización** (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`) |
 | F8 | Despliegue | Pendiente |
 | F9 | Documento y defensa | Pendiente |
 

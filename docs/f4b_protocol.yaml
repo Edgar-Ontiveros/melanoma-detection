@@ -1,0 +1,151 @@
+# F4b — Protocolo congelado del segundo y último acceso al conjunto de prueba.
+# Generado por scripts/f3b_ensemble.py SOLO con validación (reports/f3b_ensemble.json).
+# Se commitea antes de ejecutar scripts/evaluate_test.py --protocol; el script se niega a
+# correr si este archivo tiene cambios sin commitear o si la bitácora ya tiene dos líneas.
+# Advertencia: validación ya se usó para elegir el ensamble, el apilador, la calibración y
+# los umbrales; su optimismo es mayor que en F4. Nada se reajusta después de ver el test.
+frozen_on: '2026-10-23'
+decided_on: val
+phase: F4b
+spec: docs/specs/F3b-F4b.md
+winner:
+  name: E1/none
+  label: A1 ×3
+  cost_gflops: 8.7
+  latency_ms_estimated: 90.0
+  decision_rule:
+    reference: E0/none
+    leader: E3/none
+    tied_with_leader:
+    - E3/none
+    - E2/none
+    - E2/tta2
+    - E1/none
+    cheapest_tied: E1/none
+    eligible:
+    - E3/none
+    - E2/none
+    - E2/tta2
+    - E1/none
+    infeasible:
+    - E2/tta4
+    - E3/tta2
+    - E3/tta4
+    winner_gain_auprc: 0.03184324732946786
+    best_gain_auprc: 0.05076537724590577
+    ensemble_helps: true
+models:
+- run: a1-s0
+  experiment: a1
+  backbone: tf_efficientnetv2_s.in21k_ft_in1k
+  image_size: 224
+  val_resize: center_crop
+  dropout: 0.2
+  num_classes: 1
+  file: tf_efficientnetv2_s-224-s0-e153979-04-0.0000.ckpt
+  sha256: e0ecf981adaa125dd707d2e5e3b75cff003335e56aaa7356fca9e961d4710040
+  bytes: 243447866
+- run: a1-s1
+  experiment: a1
+  backbone: tf_efficientnetv2_s.in21k_ft_in1k
+  image_size: 224
+  val_resize: center_crop
+  dropout: 0.2
+  num_classes: 1
+  file: tf_efficientnetv2_s-224-s1-e153979-08-0.0000.ckpt
+  sha256: cb96ff24b1b456c81c220c4cc90db291ec8b15d2e357cb3298b60a3680f0f3a6
+  bytes: 243447866
+- run: a1-s2
+  experiment: a1
+  backbone: tf_efficientnetv2_s.in21k_ft_in1k
+  image_size: 224
+  val_resize: center_crop
+  dropout: 0.2
+  num_classes: 1
+  file: tf_efficientnetv2_s-224-s2-e153979-12-0.0000.ckpt
+  sha256: a59b6ad1c174d78b7c7218e1e737e3fd8c3b139ff05909ce7aa9980ef98a1340
+  bytes: 243447866
+tta:
+- identity
+ensemble: logit_mean
+stacker: null
+stacker_decision:
+  deploy: false
+  gain_auroc: -0.008067599067599018
+  gain_spec_at_sens095: -0.14010256410256405
+  rule:
+    min_gain_auroc: 0.02
+    min_gain_spec_at_sens095: 0.05
+calibration:
+  method: platt
+  a: 0.44726452488713786
+  b: -3.355277974107637
+  fitted_on: val
+  input: ensemble_logit
+thresholds:
+  method: bootstrap-median, 2000 resamples, patient-level, on Platt-calibrated probabilities
+  seed: 20260904
+  tau_95: 0.0038507370490597575
+  tau_90: 0.005599703836441889
+  on_val:
+    tau_95:
+      sensitivity: 0.9545
+      specificity: 0.3713
+      ppv: 0.0267
+      npv: 0.9978
+    tau_90:
+      sensitivity: 0.8977
+      specificity: 0.5378
+      ppv: 0.0339
+      npv: 0.9966
+metrics:
+- auroc
+- auprc
+- sens_at_spec_090
+- sens_at_spec_095
+- spec_at_sens_090
+- spec_at_sens_095
+- ece
+- brier
+- confusion_at_tau_95
+- confusion_at_tau_90
+ppv_npv_projection_prevalences:
+- 0.01
+- 0.02
+- 0.05
+bootstrap:
+  'n': 2000
+  unit: patient
+  seed: 20260904
+  ci: 0.95
+subgroups:
+  age:
+  - <40
+  - 40-59
+  - 60+
+  - unknown
+  sex:
+  - male
+  - female
+  - unknown
+  site:
+  - as_in_manifest
+  - unknown
+  reference_rule: no se concluye nada de una diferencia cuyo IC cruce el del grupo
+    de referencia
+test_access:
+  budget_total: 2
+  access_number: 2
+  budget_after: 0
+  log: logs/test_set_access.log
+access_number: 2
+budget_after: 0
+reference_f4:
+  protocol: docs/f4_protocol.yaml
+  results: reports/f4_test_results.json
+  untouched: true
+outputs:
+  results_json: reports/f4b_test_results.json
+  predictions_csv: reports/predictions/f4b_test.csv
+  figures_prefix: f4b_test
+validation_logits_sha256: 0751612439121ee92ef03e7e3e0c20ecf36d7ca72df3ff03184b24ac2c6a86a1

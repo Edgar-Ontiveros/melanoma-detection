@@ -1,0 +1,1987 @@
+{
+  "date": "2026-10-23",
+  "git_sha": "bf7cdee",
+  "n_images": 4963,
+  "n_positives": 88,
+  "n_patients": 568,
+  "checkpoints": {
+    "date": "2026-10-23",
+    "git_sha": "bf7cdee",
+    "split": "val",
+    "split_sha256": "b7f727d6cf70d7a12be136e3b7046b42c725eaf5541aadc0723fbac09941ffb1",
+    "n_images": 4963,
+    "n_positives": 88,
+    "n_patients": 568,
+    "views": [
+      "identity",
+      "hflip",
+      "vflip",
+      "hvflip"
+    ],
+    "auroc_tolerance": 0.005,
+    "n_ok": 9,
+    "excluded": [],
+    "members": [
+      {
+        "run": "a1-s0",
+        "run_dir": "reports/runs/a1-s0/runs/a1-s0-e153979",
+        "experiment": "a1",
+        "backbone": "tf_efficientnetv2_s.in21k_ft_in1k",
+        "image_size": 224,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "tf_efficientnetv2_s-224-s0-e153979-04-0.0000.ckpt",
+        "auroc_run": 0.8335104895104896,
+        "auprc_run": 0.1321085083888966,
+        "bytes": 243447866,
+        "sha256": "e0ecf981adaa125dd707d2e5e3b75cff003335e56aaa7356fca9e961d4710040",
+        "inference_min": 14.88,
+        "auroc_reproduced": 0.8335804195804196,
+        "auprc_reproduced": 0.13208544803387215,
+        "auroc_diff": 6.993006993005757e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "a1-s1",
+        "run_dir": "reports/runs/a1-s1/runs/a1-s1-e153979",
+        "experiment": "a1",
+        "backbone": "tf_efficientnetv2_s.in21k_ft_in1k",
+        "image_size": 224,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "tf_efficientnetv2_s-224-s1-e153979-08-0.0000.ckpt",
+        "auroc_run": 0.8242016317016316,
+        "auprc_run": 0.12641284922686374,
+        "bytes": 243447866,
+        "sha256": "cb96ff24b1b456c81c220c4cc90db291ec8b15d2e357cb3298b60a3680f0f3a6",
+        "inference_min": 15.03,
+        "auroc_reproduced": 0.8242517482517482,
+        "auprc_reproduced": 0.12609327418112098,
+        "auroc_diff": 5.011655011655236e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "a1-s2",
+        "run_dir": "reports/runs/a1-s2/runs/a1-s2-e153979",
+        "experiment": "a1",
+        "backbone": "tf_efficientnetv2_s.in21k_ft_in1k",
+        "image_size": 224,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "tf_efficientnetv2_s-224-s2-e153979-12-0.0000.ckpt",
+        "auroc_run": 0.8178240093240092,
+        "auprc_run": 0.16864312170738713,
+        "bytes": 243447866,
+        "sha256": "a59b6ad1c174d78b7c7218e1e737e3fd8c3b139ff05909ce7aa9980ef98a1340",
+        "inference_min": 16.01,
+        "auroc_reproduced": 0.8176806526806526,
+        "auprc_reproduced": 0.16854197910399685,
+        "auroc_diff": -0.00014335664335662912,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "m1-s0",
+        "run_dir": "reports/runs/m1-s0/runs/m1-s0-d294744",
+        "experiment": "m1",
+        "backbone": "tf_efficientnetv2_s.in21k_ft_in1k",
+        "image_size": 384,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "tf_efficientnetv2_s-384-s0-d294744-12-0.0000.ckpt",
+        "auroc_run": 0.8378927738927738,
+        "auprc_run": 0.1637171546648271,
+        "bytes": 243447866,
+        "sha256": "5636d42dd0a77474791a0dba5d2ce879855838f45c69344d432913127f6f0159",
+        "inference_min": 58.67,
+        "auroc_reproduced": 0.8378344988344988,
+        "auprc_reproduced": 0.16390226841667718,
+        "auroc_diff": -5.8275058275047975e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "m1-s1",
+        "run_dir": "reports/runs/m1-s1/runs/m1-s1-e153979",
+        "experiment": "m1",
+        "backbone": "tf_efficientnetv2_s.in21k_ft_in1k",
+        "image_size": 384,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "tf_efficientnetv2_s-384-s1-e153979-11-0.0000.ckpt",
+        "auroc_run": 0.8096130536130536,
+        "auprc_run": 0.1329209312829145,
+        "bytes": 243447866,
+        "sha256": "73a6e0e528c84793022734b9cdcbbffe9f6e9d5efe593f60bce1e70eb0b12521",
+        "inference_min": 82.89,
+        "auroc_reproduced": 0.8095804195804196,
+        "auprc_reproduced": 0.13334522036628346,
+        "auroc_diff": -3.263403263398246e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "m1-s2",
+        "run_dir": "reports/runs/m1-s2/runs/m1-s2-e153979",
+        "experiment": "m1",
+        "backbone": "tf_efficientnetv2_s.in21k_ft_in1k",
+        "image_size": 384,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "tf_efficientnetv2_s-384-s2-e153979-05-0.0000.ckpt",
+        "auroc_run": 0.8405967365967366,
+        "auprc_run": 0.12791627399595115,
+        "bytes": 243447866,
+        "sha256": "3f0c1e18dd7cc52c7f5ca6d75121da30e4d3e47223cbce9ce8b5c84dcdda5e85",
+        "inference_min": 79.58,
+        "auroc_reproduced": 0.8405827505827507,
+        "auprc_reproduced": 0.12816234291322953,
+        "auroc_diff": -1.39860139859449e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "m2-s0",
+        "run_dir": "reports/runs/m2-s0/runs/m2-s0-e153979",
+        "experiment": "m2",
+        "backbone": "convnext_tiny.fb_in22k_ft_in1k_384",
+        "image_size": 384,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "convnext_tiny-384-s0-e153979-11-0.0000.ckpt",
+        "auroc_run": 0.8403846153846154,
+        "auprc_run": 0.15470085817015503,
+        "bytes": 334084489,
+        "sha256": "2ea49a513b0641ad0bf3cdf456b87f18d89e8fe9c0eeb987e598fd49909fa82a",
+        "inference_min": 56.28,
+        "auroc_reproduced": 0.8404568764568766,
+        "auprc_reproduced": 0.15516360081449895,
+        "auroc_diff": 7.226107226121492e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "m2-s1",
+        "run_dir": "reports/runs/m2-s1/runs/m2-s1-e153979",
+        "experiment": "m2",
+        "backbone": "convnext_tiny.fb_in22k_ft_in1k_384",
+        "image_size": 384,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "convnext_tiny-384-s1-e153979-12-0.0000.ckpt",
+        "auroc_run": 0.8315664335664334,
+        "auprc_run": 0.14772447236286676,
+        "bytes": 334084489,
+        "sha256": "0040e8f5ec8649e98a6fa25b048471511a673593308a11f284d2d27ce296f066",
+        "inference_min": 53.79,
+        "auroc_reproduced": 0.8316503496503497,
+        "auprc_reproduced": 0.14824676213505183,
+        "auroc_diff": 8.391608391622452e-05,
+        "ok": true,
+        "excluded": false
+      },
+      {
+        "run": "m2-s2",
+        "run_dir": "reports/runs/m2-s2/runs/m2-s2-e153979",
+        "experiment": "m2",
+        "backbone": "convnext_tiny.fb_in22k_ft_in1k_384",
+        "image_size": 384,
+        "val_resize": "center_crop",
+        "dropout": 0.2,
+        "num_classes": 1,
+        "file": "convnext_tiny-384-s2-e153979-09-0.0000.ckpt",
+        "auroc_run": 0.8282750582750582,
+        "auprc_run": 0.16346478233818743,
+        "bytes": 334084489,
+        "sha256": "ff2a189bfe8e28b80ade0c4dac972ce1fd0241437fbe46256c92181e02b220a0",
+        "inference_min": 76.64,
+        "auroc_reproduced": 0.8283403263403264,
+        "auprc_reproduced": 0.1632157985569901,
+        "auroc_diff": 6.526806526818696e-05,
+        "ok": true,
+        "excluded": false
+      }
+    ],
+    "logits_npz_sha256": "0751612439121ee92ef03e7e3e0c20ecf36d7ca72df3ff03184b24ac2c6a86a1"
+  },
+  "latency_anchor": {
+    "gflops": 2.9,
+    "ms": 30.0,
+    "ms_per_gflop": 10.344827586206897
+  },
+  "decision_params": {
+    "tie_delta": 0.02,
+    "min_gain_auprc": 0.02,
+    "max_latency_ms": 1000,
+    "latency_anchor": {
+      "gflops": 2.9,
+      "ms": 30
+    }
+  },
+  "candidates": [
+    {
+      "name": "E0/none",
+      "candidate": "E0",
+      "label": "A1 semilla 0 (referencia, modelo de F4)",
+      "tta": "none",
+      "views": [
+        "identity"
+      ],
+      "members": [
+        "a1-s0"
+      ],
+      "members_dropped": [],
+      "n_passes": 1,
+      "gflops_per_view": 2.9,
+      "cost_gflops": 2.9,
+      "latency_ms": 30.0,
+      "auroc": 0.8335804195804196,
+      "auprc": 0.13208544803387215,
+      "spec_at_sens090": 0.5253333333333333,
+      "spec_at_sens095": 0.4,
+      "ci": {
+        "auroc": {
+          "point": 0.8335804195804196,
+          "lo": 0.7856396617633419,
+          "hi": 0.875137815274668,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.13208544803387215,
+          "lo": 0.08499208536953028,
+          "hi": 0.2030070378606843,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6136363636363636,
+          "lo": 0.5,
+          "hi": 0.7045454545454546,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5253333333333333,
+          "lo": 0.3947648656375072,
+          "hi": 0.6717566733329431,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.375,
+          "lo": 0.25880455407969644,
+          "hi": 0.5,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.4,
+          "lo": 0.06875424245186693,
+          "hi": 0.5502181356171248,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E0/tta2",
+      "candidate": "E0",
+      "label": "A1 semilla 0 (referencia, modelo de F4)",
+      "tta": "tta2",
+      "views": [
+        "identity",
+        "hflip"
+      ],
+      "members": [
+        "a1-s0"
+      ],
+      "members_dropped": [],
+      "n_passes": 2,
+      "gflops_per_view": 2.9,
+      "cost_gflops": 5.8,
+      "latency_ms": 60.0,
+      "auroc": 0.8328554778554779,
+      "auprc": 0.14022838293160894,
+      "spec_at_sens090": 0.5091282051282051,
+      "spec_at_sens095": 0.3403076923076923,
+      "ci": {
+        "auroc": {
+          "point": 0.8328554778554779,
+          "lo": 0.7839861501460214,
+          "hi": 0.8749728290325386,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.14022838293160894,
+          "lo": 0.089394886832615,
+          "hi": 0.21436852214317464,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.5909090909090909,
+          "lo": 0.48148148148148145,
+          "hi": 0.6854095897569897,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5091282051282051,
+          "lo": 0.3427244107200516,
+          "hi": 0.7038492127809544,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.3409090909090909,
+          "lo": 0.25274725274725274,
+          "hi": 0.4713107156099367,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.3403076923076923,
+          "lo": 0.03296169625446405,
+          "hi": 0.5549567765695925,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E0/tta4",
+      "candidate": "E0",
+      "label": "A1 semilla 0 (referencia, modelo de F4)",
+      "tta": "tta4",
+      "views": [
+        "identity",
+        "hflip",
+        "vflip",
+        "hvflip"
+      ],
+      "members": [
+        "a1-s0"
+      ],
+      "members_dropped": [],
+      "n_passes": 4,
+      "gflops_per_view": 2.9,
+      "cost_gflops": 11.6,
+      "latency_ms": 120.0,
+      "auroc": 0.8343333333333333,
+      "auprc": 0.1454322621313067,
+      "spec_at_sens090": 0.4742564102564103,
+      "spec_at_sens095": 0.334974358974359,
+      "ci": {
+        "auroc": {
+          "point": 0.8343333333333333,
+          "lo": 0.7853188151414601,
+          "hi": 0.8768621383796279,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.1454322621313067,
+          "lo": 0.09149503350966497,
+          "hi": 0.2176435151875002,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.5909090909090909,
+          "lo": 0.4943718695004738,
+          "hi": 0.7,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.4742564102564103,
+          "lo": 0.3300752956155901,
+          "hi": 0.6916762284192397,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4090909090909091,
+          "lo": 0.3,
+          "hi": 0.5131667852062589,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.334974358974359,
+          "lo": 0.10581920401031902,
+          "hi": 0.5817170884638909,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E1/none",
+      "candidate": "E1",
+      "label": "A1 \u00d73",
+      "tta": "none",
+      "views": [
+        "identity"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 3,
+      "gflops_per_view": 8.7,
+      "cost_gflops": 8.7,
+      "latency_ms": 90.0,
+      "auroc": 0.8467715617715619,
+      "auprc": 0.16392869536334,
+      "spec_at_sens090": 0.5236923076923077,
+      "spec_at_sens095": 0.3712820512820513,
+      "ci": {
+        "auroc": {
+          "point": 0.8467715617715619,
+          "lo": 0.7990038311339206,
+          "hi": 0.8893127506887221,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.16392869536334,
+          "lo": 0.10934672992061024,
+          "hi": 0.24432715950274644,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6136363636363636,
+          "lo": 0.5121878629500581,
+          "hi": 0.7204301075268817,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5236923076923077,
+          "lo": 0.3595709988385093,
+          "hi": 0.718284645288594,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4659090909090909,
+          "lo": 0.349506857759285,
+          "hi": 0.588251633986928,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.3712820512820513,
+          "lo": 0.13655169027619796,
+          "hi": 0.5716507440857739,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E1/tta2",
+      "candidate": "E1",
+      "label": "A1 \u00d73",
+      "tta": "tta2",
+      "views": [
+        "identity",
+        "hflip"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 6,
+      "gflops_per_view": 8.7,
+      "cost_gflops": 17.4,
+      "latency_ms": 180.0,
+      "auroc": 0.8450769230769231,
+      "auprc": 0.1553484417550973,
+      "spec_at_sens090": 0.4978461538461538,
+      "spec_at_sens095": 0.40143589743589747,
+      "ci": {
+        "auroc": {
+          "point": 0.8450769230769231,
+          "lo": 0.7974204732516534,
+          "hi": 0.8882985689641162,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.1553484417550973,
+          "lo": 0.10323542881043586,
+          "hi": 0.23553976395120357,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6136363636363636,
+          "lo": 0.5068447488584475,
+          "hi": 0.7200107526881719,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.4978461538461538,
+          "lo": 0.3953841107365215,
+          "hi": 0.689277890490319,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.45454545454545453,
+          "lo": 0.32459415584415585,
+          "hi": 0.5869565217391305,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.40143589743589747,
+          "lo": 0.15501670126656067,
+          "hi": 0.5667238812855867,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E1/tta4",
+      "candidate": "E1",
+      "label": "A1 \u00d73",
+      "tta": "tta4",
+      "views": [
+        "identity",
+        "hflip",
+        "vflip",
+        "hvflip"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 12,
+      "gflops_per_view": 8.7,
+      "cost_gflops": 34.8,
+      "latency_ms": 360.0,
+      "auroc": 0.844993006993007,
+      "auprc": 0.15596382793753705,
+      "spec_at_sens090": 0.5448205128205128,
+      "spec_at_sens095": 0.35302564102564105,
+      "ci": {
+        "auroc": {
+          "point": 0.844993006993007,
+          "lo": 0.797553183241619,
+          "hi": 0.888246586952811,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.15596382793753705,
+          "lo": 0.10195568194567813,
+          "hi": 0.24021941639559294,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6136363636363636,
+          "lo": 0.5,
+          "hi": 0.7157924641148325,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5448205128205128,
+          "lo": 0.3433328650749203,
+          "hi": 0.6998672347616769,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.5,
+          "lo": 0.37338281698221454,
+          "hi": 0.6190605590062112,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.35302564102564105,
+          "lo": 0.09910650031416665,
+          "hi": 0.5633707283145125,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E2/none",
+      "candidate": "E2",
+      "label": "A1 \u00d73 + M2 \u00d73",
+      "tta": "none",
+      "views": [
+        "identity"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2",
+        "m2-s0",
+        "m2-s1",
+        "m2-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 6,
+      "gflops_per_view": 48.0,
+      "cost_gflops": 48.0,
+      "latency_ms": 496.55172413793105,
+      "auroc": 0.8539999999999999,
+      "auprc": 0.1806157848476306,
+      "spec_at_sens090": 0.5813333333333333,
+      "spec_at_sens095": 0.4637948717948718,
+      "ci": {
+        "auroc": {
+          "point": 0.8539999999999999,
+          "lo": 0.8086095756841469,
+          "hi": 0.8945850045909273,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.1806157848476306,
+          "lo": 0.11724414571648727,
+          "hi": 0.26609853767527175,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6477272727272727,
+          "lo": 0.5302954545454546,
+          "hi": 0.7404044117647058,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5813333333333333,
+          "lo": 0.4502024524945962,
+          "hi": 0.7058196902097197,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4659090909090909,
+          "lo": 0.3456679894179894,
+          "hi": 0.575,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.4637948717948718,
+          "lo": 0.18021827801168522,
+          "hi": 0.6089478228474754,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E2/tta2",
+      "candidate": "E2",
+      "label": "A1 \u00d73 + M2 \u00d73",
+      "tta": "tta2",
+      "views": [
+        "identity",
+        "hflip"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2",
+        "m2-s0",
+        "m2-s1",
+        "m2-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 12,
+      "gflops_per_view": 48.0,
+      "cost_gflops": 96.0,
+      "latency_ms": 993.1034482758621,
+      "auroc": 0.8536759906759908,
+      "auprc": 0.1751393532577414,
+      "spec_at_sens090": 0.5936410256410256,
+      "spec_at_sens095": 0.4217435897435897,
+      "ci": {
+        "auroc": {
+          "point": 0.8536759906759908,
+          "lo": 0.8084626902601652,
+          "hi": 0.8937228590653978,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.1751393532577414,
+          "lo": 0.11422307262586588,
+          "hi": 0.26031859729985035,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6477272727272727,
+          "lo": 0.5280744536362514,
+          "hi": 0.7391304347826086,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5936410256410256,
+          "lo": 0.41735674233292347,
+          "hi": 0.6967120698154666,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4659090909090909,
+          "lo": 0.3448275862068966,
+          "hi": 0.5842696629213483,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.4217435897435897,
+          "lo": 0.18515370564255645,
+          "hi": 0.6200428954092654,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E2/tta4",
+      "candidate": "E2",
+      "label": "A1 \u00d73 + M2 \u00d73",
+      "tta": "tta4",
+      "views": [
+        "identity",
+        "hflip",
+        "vflip",
+        "hvflip"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2",
+        "m2-s0",
+        "m2-s1",
+        "m2-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 24,
+      "gflops_per_view": 48.0,
+      "cost_gflops": 192.0,
+      "latency_ms": 1986.2068965517242,
+      "auroc": 0.8537039627039626,
+      "auprc": 0.17550919827839623,
+      "spec_at_sens090": 0.5809230769230769,
+      "spec_at_sens095": 0.4135384615384615,
+      "ci": {
+        "auroc": {
+          "point": 0.8537039627039626,
+          "lo": 0.8088849329667321,
+          "hi": 0.8935594476940286,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.17550919827839623,
+          "lo": 0.11256848415837234,
+          "hi": 0.263673273450452,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6363636363636364,
+          "lo": 0.5243486696230599,
+          "hi": 0.7319587628865979,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5809230769230769,
+          "lo": 0.4106993222694639,
+          "hi": 0.7046250742413176,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4772727272727273,
+          "lo": 0.35714285714285715,
+          "hi": 0.5897435897435898,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.4135384615384615,
+          "lo": 0.21782751626070215,
+          "hi": 0.6006727147815233,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E3/none",
+      "candidate": "E3",
+      "label": "A1 \u00d73 + M1 \u00d73 + M2 \u00d73",
+      "tta": "none",
+      "views": [
+        "identity"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2",
+        "m1-s0",
+        "m1-s1",
+        "m1-s2",
+        "m2-s0",
+        "m2-s1",
+        "m2-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 9,
+      "gflops_per_view": 73.2,
+      "cost_gflops": 73.2,
+      "latency_ms": 757.2413793103449,
+      "auroc": 0.8582820512820513,
+      "auprc": 0.18285082527977792,
+      "spec_at_sens090": 0.5803076923076923,
+      "spec_at_sens095": 0.43179487179487175,
+      "ci": {
+        "auroc": {
+          "point": 0.8582820512820513,
+          "lo": 0.8141574688920384,
+          "hi": 0.898155677382541,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.18285082527977792,
+          "lo": 0.11986850254610691,
+          "hi": 0.27224819577727577,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6704545454545454,
+          "lo": 0.5473470012239903,
+          "hi": 0.7625,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5803076923076923,
+          "lo": 0.42867892163242627,
+          "hi": 0.6886111038940875,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4659090909090909,
+          "lo": 0.3536406025824964,
+          "hi": 0.5955169674270797,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.43179487179487175,
+          "lo": 0.1777240728888449,
+          "hi": 0.605245035530935,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E3/tta2",
+      "candidate": "E3",
+      "label": "A1 \u00d73 + M1 \u00d73 + M2 \u00d73",
+      "tta": "tta2",
+      "views": [
+        "identity",
+        "hflip"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2",
+        "m1-s0",
+        "m1-s1",
+        "m1-s2",
+        "m2-s0",
+        "m2-s1",
+        "m2-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 18,
+      "gflops_per_view": 73.2,
+      "cost_gflops": 146.4,
+      "latency_ms": 1514.4827586206898,
+      "auroc": 0.857051282051282,
+      "auprc": 0.17790318254947426,
+      "spec_at_sens090": 0.5852307692307692,
+      "spec_at_sens095": 0.40738461538461535,
+      "ci": {
+        "auroc": {
+          "point": 0.857051282051282,
+          "lo": 0.812980087664882,
+          "hi": 0.8968569074686811,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.17790318254947426,
+          "lo": 0.11561245087745434,
+          "hi": 0.26818568915829843,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.6477272727272727,
+          "lo": 0.5287194885703216,
+          "hi": 0.7528122934567084,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5852307692307692,
+          "lo": 0.40495166043579384,
+          "hi": 0.6816863262000875,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.4772727272727273,
+          "lo": 0.3555482456140351,
+          "hi": 0.6067516051364366,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.40738461538461535,
+          "lo": 0.1824679761379412,
+          "hi": 0.6082909104080504,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    },
+    {
+      "name": "E3/tta4",
+      "candidate": "E3",
+      "label": "A1 \u00d73 + M1 \u00d73 + M2 \u00d73",
+      "tta": "tta4",
+      "views": [
+        "identity",
+        "hflip",
+        "vflip",
+        "hvflip"
+      ],
+      "members": [
+        "a1-s0",
+        "a1-s1",
+        "a1-s2",
+        "m1-s0",
+        "m1-s1",
+        "m1-s2",
+        "m2-s0",
+        "m2-s1",
+        "m2-s2"
+      ],
+      "members_dropped": [],
+      "n_passes": 36,
+      "gflops_per_view": 73.2,
+      "cost_gflops": 292.8,
+      "latency_ms": 3028.9655172413795,
+      "auroc": 0.8573473193473193,
+      "auprc": 0.1772819302927376,
+      "spec_at_sens090": 0.5864615384615385,
+      "spec_at_sens095": 0.39589743589743587,
+      "ci": {
+        "auroc": {
+          "point": 0.8573473193473193,
+          "lo": 0.8130562103952994,
+          "hi": 0.8975848714106813,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "auprc": {
+          "point": 0.1772819302927376,
+          "lo": 0.11559969581613332,
+          "hi": 0.26893071430273463,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec090": {
+          "point": 0.625,
+          "lo": 0.5189644654567638,
+          "hi": 0.7375,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens090": {
+          "point": 0.5864615384615385,
+          "lo": 0.3938670841969511,
+          "hi": 0.7013407972736618,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "sens_at_spec095": {
+          "point": 0.5,
+          "lo": 0.36780436312456016,
+          "hi": 0.6111274509803921,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        },
+        "spec_at_sens095": {
+          "point": 0.39589743589743587,
+          "lo": 0.18636358683715734,
+          "hi": 0.6046639474064417,
+          "n_resamples": 2000,
+          "n_skipped": 0,
+          "level": 0.95,
+          "unit": "patient"
+        }
+      }
+    }
+  ],
+  "decision": {
+    "reference": "E0/none",
+    "ranking": [
+      "E3/none",
+      "E2/none",
+      "E2/tta2",
+      "E1/none",
+      "E1/tta4",
+      "E1/tta2",
+      "E0/tta4",
+      "E0/tta2",
+      "E0/none"
+    ],
+    "infeasible": [
+      "E2/tta4",
+      "E3/tta2",
+      "E3/tta4"
+    ],
+    "leader": "E3/none",
+    "tied_with_leader": [
+      "E3/none",
+      "E2/none",
+      "E2/tta2",
+      "E1/none"
+    ],
+    "cheapest_tied": "E1/none",
+    "eligible": [
+      "E3/none",
+      "E2/none",
+      "E2/tta2",
+      "E1/none"
+    ],
+    "winner": "E1/none",
+    "winner_gain_auprc": 0.03184324732946786,
+    "best_gain_auprc": 0.05076537724590577,
+    "min_gain_auprc": 0.02,
+    "ensemble_helps": true
+  },
+  "figure": "reports/figures/f3b_auprc_vs_cost.png",
+  "stacker": {
+    "features": {
+      "numeric": [
+        "age_approx"
+      ],
+      "categorical": [
+        "sex",
+        "anatom_site"
+      ],
+      "logit": "logit_ensemble"
+    },
+    "outer_splits": 5,
+    "inner_splits": 5,
+    "Cs": [
+      0.01,
+      0.03,
+      0.1,
+      0.3,
+      1.0,
+      3.0,
+      10.0
+    ],
+    "scoring": "neg_log_loss",
+    "chosen_C_per_fold": [
+      {
+        "fold": 0,
+        "C": 0.03,
+        "n_train": 3860,
+        "n_eval": 1103,
+        "positives_eval": 24
+      },
+      {
+        "fold": 1,
+        "C": 0.03,
+        "n_train": 3976,
+        "n_eval": 987,
+        "positives_eval": 18
+      },
+      {
+        "fold": 2,
+        "C": 0.03,
+        "n_train": 4135,
+        "n_eval": 828,
+        "positives_eval": 13
+      },
+      {
+        "fold": 3,
+        "C": 0.03,
+        "n_train": 3959,
+        "n_eval": 1004,
+        "positives_eval": 17
+      },
+      {
+        "fold": 4,
+        "C": 0.03,
+        "n_train": 3922,
+        "n_eval": 1041,
+        "positives_eval": 16
+      }
+    ],
+    "per_fold": [
+      {
+        "fold": 0,
+        "n": 1103,
+        "positives": 24,
+        "auroc_stacker": 0.814643188137164,
+        "auroc_winner": 0.8172304603027495,
+        "auprc_stacker": 0.16684814383746754,
+        "auprc_winner": 0.1675057346847579,
+        "spec_at_sens095_stacker": 0.26042632066728455,
+        "spec_at_sens095_winner": 0.31510658016682114
+      },
+      {
+        "fold": 1,
+        "n": 987,
+        "positives": 18,
+        "auroc_stacker": 0.7627565646141498,
+        "auroc_winner": 0.7725031533081068,
+        "auprc_stacker": 0.17964157841482967,
+        "auprc_winner": 0.18973637041249788,
+        "spec_at_sens095_stacker": 0.09494324045407632,
+        "spec_at_sens095_winner": 0.023735810113519107
+      },
+      {
+        "fold": 2,
+        "n": 828,
+        "positives": 13,
+        "auroc_stacker": 0.8508730533270411,
+        "auroc_winner": 0.8494572911750826,
+        "auprc_stacker": 0.17088604852645212,
+        "auprc_winner": 0.1647801232750304,
+        "spec_at_sens095_stacker": 0.47239263803680986,
+        "spec_at_sens095_winner": 0.43803680981595094
+      },
+      {
+        "fold": 3,
+        "n": 1004,
+        "positives": 17,
+        "auroc_stacker": 0.9153704034805411,
+        "auroc_winner": 0.9122712914953215,
+        "auprc_stacker": 0.20699599541397135,
+        "auprc_winner": 0.2050731090342202,
+        "spec_at_sens095_stacker": 0.3343465045592705,
+        "spec_at_sens095_winner": 0.3586626139817629
+      },
+      {
+        "fold": 4,
+        "n": 1041,
+        "positives": 16,
+        "auroc_stacker": 0.905670731707317,
+        "auroc_winner": 0.9049390243902438,
+        "auprc_stacker": 0.1874852852259064,
+        "auprc_winner": 0.17764725197515174,
+        "spec_at_sens095_stacker": 0.6078048780487805,
+        "spec_at_sens095_winner": 0.6692682926829268
+      }
+    ],
+    "pooled_out_of_fold": {
+      "stacker": {
+        "auroc": 0.8387039627039629,
+        "auprc": 0.15612952317643755,
+        "spec_at_sens095": 0.23117948717948722,
+        "ci": {
+          "auroc": {
+            "point": 0.8387039627039629,
+            "lo": 0.7884445319258447,
+            "hi": 0.884421868955287,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "auprc": {
+            "point": 0.15612952317643755,
+            "lo": 0.10541472896838446,
+            "hi": 0.24253109775748333,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "sens_at_spec090": {
+            "point": 0.6363636363636364,
+            "lo": 0.5316260353180184,
+            "hi": 0.7361149267399267,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "spec_at_sens090": {
+            "point": 0.4326153846153846,
+            "lo": 0.22892210900233204,
+            "hi": 0.7129662780608996,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "sens_at_spec095": {
+            "point": 0.5113636363636364,
+            "lo": 0.3902439024390244,
+            "hi": 0.6180042803638307,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "spec_at_sens095": {
+            "point": 0.23117948717948722,
+            "lo": 0.09960684208573707,
+            "hi": 0.541990539643293,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          }
+        }
+      },
+      "winner": {
+        "auroc": 0.8467715617715619,
+        "auprc": 0.16392869536334,
+        "spec_at_sens095": 0.3712820512820513,
+        "ci": {
+          "auroc": {
+            "point": 0.8467715617715619,
+            "lo": 0.7990038311339206,
+            "hi": 0.8893127506887221,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "auprc": {
+            "point": 0.16392869536334,
+            "lo": 0.10934672992061024,
+            "hi": 0.24432715950274644,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "sens_at_spec090": {
+            "point": 0.6136363636363636,
+            "lo": 0.5121878629500581,
+            "hi": 0.7204301075268817,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "spec_at_sens090": {
+            "point": 0.5236923076923077,
+            "lo": 0.3595709988385093,
+            "hi": 0.718284645288594,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "sens_at_spec095": {
+            "point": 0.4659090909090909,
+            "lo": 0.349506857759285,
+            "hi": 0.588251633986928,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          },
+          "spec_at_sens095": {
+            "point": 0.3712820512820513,
+            "lo": 0.13655169027619796,
+            "hi": 0.5716507440857739,
+            "n_resamples": 2000,
+            "n_skipped": 0,
+            "level": 0.95,
+            "unit": "patient"
+          }
+        }
+      }
+    },
+    "gain": {
+      "auroc": -0.008067599067599018,
+      "auprc": -0.007799172186902459,
+      "spec_at_sens095": -0.14010256410256405
+    },
+    "rule": {
+      "min_gain_auroc": 0.02,
+      "min_gain_spec_at_sens095": 0.05
+    },
+    "deploy": false
+  },
+  "final": {
+    "model": "E1/none",
+    "platt": {
+      "a": 0.44726452488713786,
+      "b": -3.355277974107637
+    },
+    "calibration": {
+      "raw": {
+        "brier": 0.08980696181983318,
+        "ece_uniform": {
+          "ece": 0.12875601355764663,
+          "strategy": "uniform",
+          "edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "bins": [
+            {
+              "bin": 0,
+              "n": 3654,
+              "confidence": 0.01651251767338752,
+              "observed": 0.0049261083743842365
+            },
+            {
+              "bin": 1,
+              "n": 319,
+              "confidence": 0.1432126728423237,
+              "observed": 0.0219435736677116
+            },
+            {
+              "bin": 2,
+              "n": 146,
+              "confidence": 0.24809989361899107,
+              "observed": 0.0136986301369863
+            },
+            {
+              "bin": 3,
+              "n": 126,
+              "confidence": 0.34944815637530297,
+              "observed": 0.015873015873015872
+            },
+            {
+              "bin": 4,
+              "n": 101,
+              "confidence": 0.4436788403304582,
+              "observed": 0.0297029702970297
+            },
+            {
+              "bin": 5,
+              "n": 88,
+              "confidence": 0.5448790215702485,
+              "observed": 0.022727272727272728
+            },
+            {
+              "bin": 6,
+              "n": 82,
+              "confidence": 0.6499039416055946,
+              "observed": 0.024390243902439025
+            },
+            {
+              "bin": 7,
+              "n": 102,
+              "confidence": 0.7488036667370199,
+              "observed": 0.049019607843137254
+            },
+            {
+              "bin": 8,
+              "n": 119,
+              "confidence": 0.8526067661715254,
+              "observed": 0.08403361344537816
+            },
+            {
+              "bin": 9,
+              "n": 226,
+              "confidence": 0.959514343959627,
+              "observed": 0.16371681415929204
+            }
+          ]
+        },
+        "ece_quantile": {
+          "ece": 0.12880988238849378,
+          "strategy": "quantile",
+          "edges": [
+            0.0004474281529918469,
+            0.002475698945207773,
+            0.0038602992368757263,
+            0.00555998732325908,
+            0.008319792217662457,
+            0.01353890179248114,
+            0.02771075968596957,
+            0.06926419675025625,
+            0.1982968726680038,
+            0.634661481585967,
+            0.9991949315547866
+          ],
+          "bins": [
+            {
+              "bin": 0,
+              "n": 497,
+              "confidence": 0.0017431076383355826,
+              "observed": 0.002012072434607646
+            },
+            {
+              "bin": 1,
+              "n": 496,
+              "confidence": 0.003171795045899736,
+              "observed": 0.0020161290322580645
+            },
+            {
+              "bin": 2,
+              "n": 496,
+              "confidence": 0.004633757928276966,
+              "observed": 0.004032258064516129
+            },
+            {
+              "bin": 3,
+              "n": 496,
+              "confidence": 0.006854096101077621,
+              "observed": 0.004032258064516129
+            },
+            {
+              "bin": 4,
+              "n": 496,
+              "confidence": 0.010554238716965439,
+              "observed": 0.004032258064516129
+            },
+            {
+              "bin": 5,
+              "n": 497,
+              "confidence": 0.01960183153185693,
+              "observed": 0.008048289738430584
+            },
+            {
+              "bin": 6,
+              "n": 496,
+              "confidence": 0.044626891892052135,
+              "observed": 0.006048387096774193
+            },
+            {
+              "bin": 7,
+              "n": 496,
+              "confidence": 0.121319885568263,
+              "observed": 0.020161290322580645
+            },
+            {
+              "bin": 8,
+              "n": 496,
+              "confidence": 0.3898659156787947,
+              "observed": 0.018145161290322582
+            },
+            {
+              "bin": 9,
+              "n": 497,
+              "confidence": 0.8616065923079983,
+              "observed": 0.10865191146881288
+            }
+          ]
+        }
+      },
+      "platt": {
+        "brier": 0.016062228617440884,
+        "ece_uniform": {
+          "ece": 0.0021926738718192193,
+          "strategy": "uniform",
+          "edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "bins": [
+            {
+              "bin": 0,
+              "n": 4779,
+              "confidence": 0.011818506166642859,
+              "observed": 0.011508683825068006
+            },
+            {
+              "bin": 1,
+              "n": 140,
+              "confidence": 0.13714711915326003,
+              "observed": 0.17142857142857143
+            },
+            {
+              "bin": 2,
+              "n": 31,
+              "confidence": 0.23818576594282895,
+              "observed": 0.16129032258064516
+            },
+            {
+              "bin": 3,
+              "n": 10,
+              "confidence": 0.3577347459916624,
+              "observed": 0.2
+            },
+            {
+              "bin": 4,
+              "n": 3,
+              "confidence": 0.452970022411785,
+              "observed": 0.6666666666666666
+            },
+            {
+              "bin": 5,
+              "n": 0,
+              "confidence": null,
+              "observed": null
+            },
+            {
+              "bin": 6,
+              "n": 0,
+              "confidence": null,
+              "observed": null
+            },
+            {
+              "bin": 7,
+              "n": 0,
+              "confidence": null,
+              "observed": null
+            },
+            {
+              "bin": 8,
+              "n": 0,
+              "confidence": null,
+              "observed": null
+            },
+            {
+              "bin": 9,
+              "n": 0,
+              "confidence": null,
+              "observed": null
+            }
+          ]
+        },
+        "ece_quantile": {
+          "ece": 0.0027654776768660343,
+          "strategy": "quantile",
+          "edges": [
+            0.0011076798257075551,
+            0.002379914845602624,
+            0.00290329413886952,
+            0.0034187590955667177,
+            0.00409639216776673,
+            0.00510002245423556,
+            0.007057576236839968,
+            0.010800619773186358,
+            0.0183411892951801,
+            0.042767483867554475,
+            0.45783417457534903
+          ],
+          "bins": [
+            {
+              "bin": 0,
+              "n": 497,
+              "confidence": 0.002010183012702695,
+              "observed": 0.002012072434607646
+            },
+            {
+              "bin": 1,
+              "n": 496,
+              "confidence": 0.0026536797994361795,
+              "observed": 0.0020161290322580645
+            },
+            {
+              "bin": 2,
+              "n": 496,
+              "confidence": 0.00314638491791848,
+              "observed": 0.004032258064516129
+            },
+            {
+              "bin": 3,
+              "n": 496,
+              "confidence": 0.0037488978036515444,
+              "observed": 0.004032258064516129
+            },
+            {
+              "bin": 4,
+              "n": 496,
+              "confidence": 0.004546950137061587,
+              "observed": 0.004032258064516129
+            },
+            {
+              "bin": 5,
+              "n": 497,
+              "confidence": 0.0059983141372060836,
+              "observed": 0.008048289738430584
+            },
+            {
+              "bin": 6,
+              "n": 496,
+              "confidence": 0.008717850839359357,
+              "observed": 0.006048387096774193
+            },
+            {
+              "bin": 7,
+              "n": 496,
+              "confidence": 0.014073853008329088,
+              "observed": 0.020161290322580645
+            },
+            {
+              "bin": 8,
+              "n": 496,
+              "confidence": 0.028160470467598956,
+              "observed": 0.018145161290322582
+            },
+            {
+              "bin": 9,
+              "n": 497,
+              "confidence": 0.10413919456928263,
+              "observed": 0.10865191146881288
+            }
+          ]
+        }
+      }
+    },
+    "thresholds": {
+      "tau_95": {
+        "sensitivity_target": 0.95,
+        "tau": 0.0038507370490597575,
+        "p05": 0.0025913260112268672,
+        "p95": 0.0053431032819361846,
+        "single_cut": 0.0038507370490597575,
+        "n_resamples": 2000,
+        "unit": "patient",
+        "seed": 20260904,
+        "on_full_set": {
+          "threshold": 0.0038507370490597575,
+          "tn": 1810,
+          "fp": 3065,
+          "fn": 4,
+          "tp": 84,
+          "sensitivity": 0.9545454545454546,
+          "specificity": 0.3712820512820513,
+          "ppv": 0.02667513496348047,
+          "npv": 0.9977949283351709
+        }
+      },
+      "tau_90": {
+        "sensitivity_target": 0.9,
+        "tau": 0.005599703836441889,
+        "p05": 0.0038716725023862203,
+        "p95": 0.010714490397963917,
+        "single_cut": 0.0053431032819361846,
+        "n_resamples": 2000,
+        "unit": "patient",
+        "seed": 20260904,
+        "on_full_set": {
+          "threshold": 0.005599703836441889,
+          "tn": 2622,
+          "fp": 2253,
+          "fn": 9,
+          "tp": 79,
+          "sensitivity": 0.8977272727272727,
+          "specificity": 0.5378461538461539,
+          "ppv": 0.033876500857632934,
+          "npv": 0.9965792474344356
+        }
+      }
+    },
+    "metrics": {
+      "n_images": 4963,
+      "n_positives": 88,
+      "n_patients": 568,
+      "prevalence": 0.017731210961112232,
+      "auprc_random": 0.017731210961112232,
+      "auroc": 0.8467715617715619,
+      "auprc": 0.16392869536334,
+      "threshold_policy": "fijo",
+      "confusion": {
+        "threshold": 0.0038507370490597575,
+        "tn": 1810,
+        "fp": 3065,
+        "fn": 4,
+        "tp": 84,
+        "sensitivity": 0.9545454545454546,
+        "specificity": 0.3712820512820513,
+        "ppv": 0.02667513496348047,
+        "npv": 0.9977949283351709
+      },
+      "sens_at_spec090": 0.6136363636363636,
+      "spec_at_sens090": 0.5236923076923077,
+      "sens_at_spec095": 0.4659090909090909,
+      "spec_at_sens095": 0.3712820512820513
+    },
+    "ci": {
+      "auroc": {
+        "point": 0.8467715617715619,
+        "lo": 0.7990038311339206,
+        "hi": 0.8893127506887221,
+        "n_resamples": 2000,
+        "n_skipped": 0,
+        "level": 0.95,
+        "unit": "patient"
+      },
+      "auprc": {
+        "point": 0.16392869536334,
+        "lo": 0.10934672992061024,
+        "hi": 0.24432715950274644,
+        "n_resamples": 2000,
+        "n_skipped": 0,
+        "level": 0.95,
+        "unit": "patient"
+      },
+      "sens_at_spec090": {
+        "point": 0.6136363636363636,
+        "lo": 0.5121878629500581,
+        "hi": 0.7204301075268817,
+        "n_resamples": 2000,
+        "n_skipped": 0,
+        "level": 0.95,
+        "unit": "patient"
+      },
+      "spec_at_sens090": {
+        "point": 0.5236923076923077,
+        "lo": 0.3595709988385093,
+        "hi": 0.718284645288594,
+        "n_resamples": 2000,
+        "n_skipped": 0,
+        "level": 0.95,
+        "unit": "patient"
+      },
+      "sens_at_spec095": {
+        "point": 0.4659090909090909,
+        "lo": 0.349506857759285,
+        "hi": 0.588251633986928,
+        "n_resamples": 2000,
+        "n_skipped": 0,
+        "level": 0.95,
+        "unit": "patient"
+      },
+      "spec_at_sens095": {
+        "point": 0.3712820512820513,
+        "lo": 0.13655169027619796,
+        "hi": 0.5716507440857739,
+        "n_resamples": 2000,
+        "n_skipped": 0,
+        "level": 0.95,
+        "unit": "patient"
+      }
+    },
+    "ppv_npv_projection_tau_95": [
+      {
+        "prevalence": 0.01,
+        "ppv": 0.015104135545508265,
+        "npv": 0.9987649019332135,
+        "referred_fraction": 0.6319762237762238
+      },
+      {
+        "prevalence": 0.02,
+        "ppv": 0.03005332538761084,
+        "npv": 0.9975077387905759,
+        "referred_fraction": 0.6352344988344988
+      },
+      {
+        "prevalence": 0.05,
+        "ppv": 0.07399470201547474,
+        "npv": 0.9935977831913902,
+        "referred_fraction": 0.645009324009324
+      }
+    ],
+    "optimism_warning": "Validaci\u00f3n ya se us\u00f3 para elegir E\u1d4d, ajustar el apilador, calibrar y fijar el umbral. Su optimismo es mayor que en F4. El test es la \u00fanica estimaci\u00f3n limpia, y por eso existe F4b."
+  },
+  "elapsed_min": 9.723637760183314
+}

@@ -364,7 +364,7 @@ def write_protocol(
     header = (
         "# F4b — Protocolo congelado del segundo y último acceso al conjunto de prueba.\n"
         "# Generado por scripts/f3b_ensemble.py SOLO con validación (reports/f3b_ensemble.json).\n"
-        "# Se commitea antes de cualquier cambio a scripts/evaluate_test.py; el script se niega a\n"
+        "# Se commitea antes de ejecutar scripts/evaluate_test.py --protocol; el script se niega a\n"
         "# correr si este archivo tiene cambios sin commitear o si la bitácora ya tiene dos líneas.\n"
         "# Advertencia: validación ya se usó para elegir el ensamble, el apilador, la calibración y\n"
         "# los umbrales; su optimismo es mayor que en F4. Nada se reajusta después de ver el test.\n"
@@ -512,7 +512,9 @@ def main(cfg: DictConfig) -> None:
             decision,
             stacker,
         )
-        print(f"→ {rel(out)}, {f.protocol_yaml} (commitear ANTES de tocar evaluate_test.py)")
+        print(
+            f"→ {rel(out)}, {f.protocol_yaml} (commitear ANTES de ejecutar evaluate_test.py --protocol)"
+        )
     else:
         print(
             f"→ {rel(out)}. El ensamble no aporta (regla 4): F4b no se ejecuta y no se escribe protocolo."
