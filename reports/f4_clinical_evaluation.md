@@ -90,8 +90,9 @@ ddi:
 
 ```
 2026-09-18T22:10:55+00:00	git=7fc5462	protocol_sha256=8c45394e1219d67706076ec9a407427b15616386635b7df52be1969637515e93	split=test	reason=F4.4 evaluación clínica (primer acceso)
+2026-10-26T21:35:38+00:00	git=ef5aee1	protocol_sha256=70ecd523d78088743e879bc926304aff33cfad26683d6d2aef57ed4592068dcd	split=test	reason=F4b: ensamble E1/none bajo protocolo congelado (6c12e4c); segundo y último acceso
 ```
-1 línea(s) en `logs/test_set_access.log` (presupuesto: 2).
+2 línea(s) en `logs/test_set_access.log` (presupuesto: 2; agotado).
 
 ## 3. Calibración sobre validación
 
@@ -318,3 +319,56 @@ regulatoria ni sustituye la valoración médica. A pesar de su
 sensibilidad del 96.5 %, no identificó 3 de 86 melanomas. La API y la
 interfaz advierten estas limitaciones y evitan clasificar las lesiones
 como «benignas».
+
+## 11. Resultado con ensamble (segundo acceso)
+
+Segundo y último acceso, ejecutado el 2026-10-26 (commit `ef5aee1`) con `docs/f4b_protocol.yaml` (SHA256 `70ecd523d7808874…`): A1 ×3, promedio de logits, vistas identity, sin apilador, Platt y umbrales congelados sobre validación. Presupuesto de accesos: agotado. Los resultados de F4 (secciones 1 a 10) no se modifican.
+
+### Tabla lado a lado
+
+| | Modelo único (F4) | Ensamble (F4b) | Diferencia |
+|:--|:--|:--|--:|
+| AUC-ROC | 0.834 [0.795, 0.872] | 0.843 [0.804, 0.881] | +0.009 |
+| AUPRC | 0.096 [0.065, 0.154] | 0.113 [0.076, 0.179] | +0.017 |
+| spec@sens0.95 | 0.481 [0.377, 0.618] | 0.435 [0.354, 0.551] | -0.046 |
+| spec@sens0.90 | 0.524 [0.455, 0.695] | 0.536 [0.435, 0.665] | +0.011 |
+| Sens / spec en τ95 | 0.965 / 0.428 | 0.977 / 0.393 | +0.012 / -0.036 |
+| VPP / VPN en τ95 | 0.0273 / 0.9986 | 0.0261 / 0.9990 | -0.0013 / +0.0004 |
+| Melanomas detectados en τ95 | 83 de 86 | 84 de 86 | +1 |
+| ECE uniforme con Platt congelada | 0.0006 | 0.0030 | +0.0024 |
+| Brier con Platt congelada | 0.0155 | 0.0154 | -0.0001 |
+| Costo de inferencia | 2.9 GFLOPs | 8.7 GFLOPs | ×3.0 |
+
+IC 95 % por bootstrap a nivel paciente, 2,000 remuestreos. τ95 es el de cada protocolo (0.0039 para el modelo único, 0.0039 para el ensamble), ambos fijados sobre validación.
+
+![ROC test ensamble](figures/f4b_test_roc.png) ![PR test ensamble](figures/f4b_test_pr.png) ![fiabilidad test ensamble](figures/f4b_test_reliability.png)
+
+### Subgrupos (exploratorio)
+
+| dimensión | grupo | n | melanomas | AUC-ROC único [IC] | AUC-ROC ensamble [IC] | sens@τ95 ens. | spec@τ95 ens. |
+|:--|:--|--:|--:|:--|:--|--:|--:|
+| age | 40-59 | 2661 | 32 | 0.780 [0.704, 0.855] | 0.792 [0.714, 0.864] | 0.938 | 0.413 |
+| age | 60+ | 1668 | 42 | 0.858 [0.816, 0.898] | 0.862 [0.814, 0.905] | 1.000 | 0.387 |
+| age | <40 | 920 | 12 | 0.857 [0.761, 0.933] | 0.882 [0.786, 0.955] | 1.000 | 0.341 |
+| age | unknown | 3 | 0 | n/d [n/d, n/d] | n/d [n/d, n/d] | n/d | 0.333 |
+| sex | female | 2506 | 35 | 0.823 [0.760, 0.881] | 0.848 [0.788, 0.901] | 1.000 | 0.425 |
+| sex | male | 2746 | 51 | 0.841 [0.792, 0.886] | 0.840 [0.787, 0.888] | 0.961 | 0.363 |
+| site | head/neck | 294 | 7 | 0.875 [0.748, 0.975] | 0.918 [0.849, 0.979] | 1.000 | 0.244 |
+| site | lower extremity | 1354 | 22 | 0.817 [0.739, 0.888] | 0.808 [0.708, 0.899] | 0.955 | 0.424 |
+| site | oral/genital | 20 | 1 | 0.789 [0.647, 1.000] | 0.947 [0.875, 1.000] | 1.000 | 0.000 |
+| site | palms/soles | 66 | 0 | n/d [n/d, n/d] | n/d [n/d, n/d] | n/d | 0.212 |
+| site | torso | 2695 | 39 | 0.848 [0.790, 0.899] | 0.849 [0.791, 0.903] | 0.974 | 0.400 |
+| site | unknown | 35 | 1 | 1.000 [1.000, 1.000] | 1.000 [1.000, 1.000] | 1.000 | 0.382 |
+| site | upper extremity | 788 | 16 | 0.807 [0.708, 0.894] | 0.850 [0.766, 0.921] | 1.000 | 0.394 |
+
+Mismos intervalos anchos que en la sección 7: no se concluye nada de una diferencia cuyo intervalo cruce el del grupo de referencia.
+
+### Qué aportó cada cosa
+
+Sobre validación (F3b, `reports/f3b_ensemble.md`), de dónde sale cada décima: las **tres semillas** del mismo backbone (E0 → E1) aportan +0.032 de AUPRC y +0.013 de AUC-ROC; **sumar ConvNeXt-T** (E1 → E2) añade +0.017 y +0.007 a 5.5× el costo; **sumar también EfficientNetV2-S a 384 px** (E2 → E3) añade +0.002 y +0.004, dentro del ruido; el **TTA** por volteos no ayuda (mejor variante de E1: -0.008 de AUPRC) y los **metadatos** apilados restan (-0.008 de AUC-ROC, -0.140 de spec@sens0.95 por VC agrupada). La regla prerregistrada eligió E1 por empate con E2 y E3 y menor costo. En el test, la diferencia ensamble − único fue +0.009 de AUC-ROC y +0.017 de AUPRC, contra +0.013 y +0.032 que prometía validación.
+
+### Decisión de despliegue
+
+Criterio fijado en el protocolo antes de abrir el test: «El ensamble se despliega solo si en el test su AUC-ROC y su AUPRC no son menores que las del modelo único (F4). Si cualquiera de las dos es menor, se despliega el modelo único y el ensamble solo se reporta.»
+
+**Se despliega el ensamble** (E1/none): en el test su AUC-ROC (0.843 ≥ 0.834) y su AUPRC (0.113 ≥ 0.096) no son menores que las del modelo único. F6b (pendiente, con decisión aparte) empaquetará los tres checkpoints.

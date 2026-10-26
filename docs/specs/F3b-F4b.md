@@ -275,3 +275,31 @@ honesto.
 Lo que **no** cambia con nada de esto: el modelo sigue siendo una herramienta de
 priorización, no un filtro autónomo. Con 0.55 de especificidad refieres a 45 de cada 100
 sanos en lugar de 57. Mejor; no distinto en naturaleza.
+
+---
+
+## Estado y desviaciones respecto a la spec
+
+- **F3b (2026-10-22 → 2026-10-23).** Los nueve checkpoints bajados de las salidas de los
+  kernels de F3 y verificados (|ΔAUC-ROC| ≤ 0.00014). Caché de logits 9 × 4 × 4,963 en
+  `reports/predictions/f3b_val_logits.npz` (454 min de CPU, no la hora estimada: M1 y M2 a
+  384 px cuestan 4–5× A1). Doce combinaciones, no trece: E0 sin TTA es a la vez una de las
+  4 × 3 y la referencia. Líder E3/none (AUPRC 0.183); empatan E2/none, E2/tta2 y E1/none;
+  **Eᵍ = E1/none** (A1 ×3, 8.7 GFLOPs): AUPRC 0.164 [0.109, 0.244], AUC-ROC 0.847. El TTA
+  por volteos bajó el AUPRC en las cuatro familias. Metadatos por VC agrupada: ΔAUC-ROC −0.008,
+  Δspec@sens0.95 −0.140 → no se despliegan. Platt a 0.4473, b −3.3553; τ95 0.003851, τ90
+  0.005600. Reporte en `reports/f3b_ensemble.md`.
+- **Regla 4 corregida el 2026-10-22**, antes de ver números reales (commit d826bf2).
+- **Orden de commits (2026-10-22):** el guardarraíl y `--protocol` se commitearon antes del
+  protocolo; lo que esperó al protocolo fue la ejecución. `test_f4b_protocol_committed_before_second_access`
+  compara el commit del protocolo con la segunda línea de la bitácora.
+- **Criterio de despliegue fijado el 2026-10-26, antes de abrir el test** (commit ef5aee1):
+  el ensamble se despliega solo si su AUC-ROC y su AUPRC en el test no son menores que las
+  del modelo único.
+- **F4b ejecutado el 2026-10-26** (una vez, autorizado por el autor; bitácora con dos líneas,
+  presupuesto agotado): AUC-ROC 0.843 [0.804, 0.881] y AUPRC 0.113 [0.076, 0.179] contra
+  0.834 y 0.096 del modelo único; en τ95, sensibilidad 0.977 (84 de 86) y especificidad 0.393
+  (contra 0.965 / 0.428); spec@sens0.95 0.435 contra 0.481. Ambas métricas del criterio no
+  son menores → **se despliega el ensamble**; F6b (paquete con los tres checkpoints) queda
+  pendiente y se decide aparte. Sección 11 de `reports/f4_clinical_evaluation.md`; F4 intacto.
+- Criterios de aceptación: 1–7 y 9 cumplidos; el 8 (tabla lado a lado) está en la sección 11.

@@ -19,6 +19,9 @@ TEST = ROOT / "reports" / "f4_test_results.json"
 DDI = ROOT / "reports" / "f4_ddi_results.json"
 LIMITS = ROOT / "docs" / "f4_limitations.md"
 LOG = ROOT / "logs" / "test_set_access.log"
+TEST_B = ROOT / "reports" / "f4b_test_results.json"  # F4b: segundo acceso, ensamble
+ENSEMBLE = ROOT / "reports" / "f3b_ensemble.json"  # F3b: números de validación
+PROTOCOL_B = ROOT / "docs" / "f4b_protocol.yaml"
 OUT = ROOT / "reports" / "f4_clinical_evaluation.md"
 PENDING = "_pendiente: el conjunto de prueba no se ha abierto (sesión 3 de F4)_"
 
@@ -236,6 +239,105 @@ V1_TABLE = """| | v1 (2024) | v2 (este trabajo) |
 | Dominio fuera de dermatoscopía | Una foto sin diagnóstico | 656 imágenes con biopsia |"""
 
 
+def _gflops(protocol_b) -> float:
+    return float(protocol_b.winner.cost_gflops)
+
+
+def section_f4b(test: dict | None, test_b: dict | None, ens: dict | None) -> list[str]:
+    """Sección 11: el ensamble sobre el test, lado a lado con el modelo único. F4 no se reescribe."""
+    if not (test and test_b):
+        return ["_pendiente: el segundo acceso (F4b) no se ha ejecutado_"]
+    from omegaconf import OmegaConf
+
+    pb = OmegaConf.load(PROTOCOL_B)
+    cost_a, cost_b = 2.9, _gflops(pb)
+    ma, mb, ca, cb = test["metrics"], test_b["metrics"], test["ci"], test_b["ci"]
+    oa, ob = test["confusion_tau_95"], test_b["confusion_tau_95"]
+    rows = [
+        "| | Modelo único (F4) | Ensamble (F4b) | Diferencia |",
+        "|:--|:--|:--|--:|",
+    ]
+    for key, label in (
+        ("auroc", "AUC-ROC"),
+        ("auprc", "AUPRC"),
+        ("spec_at_sens095", "spec@sens0.95"),
+        ("spec_at_sens090", "spec@sens0.90"),
+    ):
+        rows.append(f"| {label} | {ci(ca, key)} | {ci(cb, key)} | {mb[key] - ma[key]:+.3f} |")
+    rows += [
+        f"| Sens / spec en τ95 | {oa['sensitivity']:.3f} / {oa['specificity']:.3f} | {ob['sensitivity']:.3f} / {ob['specificity']:.3f} | {ob['sensitivity'] - oa['sensitivity']:+.3f} / {ob['specificity'] - oa['specificity']:+.3f} |",
+        f"| VPP / VPN en τ95 | {oa['ppv']:.4f} / {oa['npv']:.4f} | {ob['ppv']:.4f} / {ob['npv']:.4f} | {ob['ppv'] - oa['ppv']:+.4f} / {ob['npv'] - oa['npv']:+.4f} |",
+        f"| Melanomas detectados en τ95 | {oa['tp']} de {oa['tp'] + oa['fn']} | {ob['tp']} de {ob['tp'] + ob['fn']} | {ob['tp'] - oa['tp']:+d} |",
+        f"| ECE uniforme con Platt congelada | {test['calibration']['ece_uniform']['ece']:.4f} | {test_b['calibration']['ece_uniform']['ece']:.4f} | {test_b['calibration']['ece_uniform']['ece'] - test['calibration']['ece_uniform']['ece']:+.4f} |",
+        f"| Brier con Platt congelada | {test['calibration']['brier']:.4f} | {test_b['calibration']['brier']:.4f} | {test_b['calibration']['brier'] - test['calibration']['brier']:+.4f} |",
+        f"| Costo de inferencia | {cost_a} GFLOPs | {cost_b} GFLOPs | ×{cost_b / cost_a:.1f} |",
+    ]
+    # Regla de despliegue, tal como quedó escrita en el protocolo antes de abrir el test.
+    ok_auroc, ok_auprc = mb["auroc"] >= ma["auroc"], mb["auprc"] >= ma["auprc"]
+    deploy_ensemble = ok_auroc and ok_auprc
+    decision = (
+        f"**Se despliega el ensamble** ({pb.winner.name}): en el test su AUC-ROC ({mb['auroc']:.3f} ≥ {ma['auroc']:.3f}) y su AUPRC ({mb['auprc']:.3f} ≥ {ma['auprc']:.3f}) no son menores que las del modelo único. F6b (pendiente, con decisión aparte) empaquetará los tres checkpoints."
+        if deploy_ensemble
+        else "**Se despliega el modelo único** (F4) y el ensamble solo se reporta: en el test "
+        + (
+            f"el AUC-ROC del ensamble ({mb['auroc']:.3f}) es menor que el del modelo único ({ma['auroc']:.3f})"
+            if not ok_auroc
+            else f"el AUPRC del ensamble ({mb['auprc']:.3f}) es menor que el del modelo único ({ma['auprc']:.3f})"
+        )
+        + (" y también su AUPRC" if (not ok_auroc and not ok_auprc) else "")
+        + ". F6b no se ejecuta; el paquete publicado no cambia."
+    )
+    # Subgrupos lado a lado.
+    sub_a = {(r["dimension"], r["group"]): r for r in test["subgroups"]}
+    sub_rows = [
+        "| dimensión | grupo | n | melanomas | AUC-ROC único [IC] | AUC-ROC ensamble [IC] | sens@τ95 ens. | spec@τ95 ens. |",
+        "|:--|:--|--:|--:|:--|:--|--:|--:|",
+    ]
+    for r in test_b["subgroups"]:
+        a = sub_a.get((r["dimension"], r["group"]))
+        a_txt = f"{fmt(a['auroc'])} [{fmt(a['auroc_lo'])}, {fmt(a['auroc_hi'])}]" if a else "n/d"
+        sub_rows.append(
+            f"| {r['dimension']} | {r['group']} | {r['n']} | {r['positives']} | {a_txt} | {fmt(r['auroc'])} [{fmt(r['auroc_lo'])}, {fmt(r['auroc_hi'])}] | {fmt(r['sensitivity_at_tau95'])} | {fmt(r['specificity_at_tau95'])} |"
+        )
+    # Descomposición con los números de validación de F3b.
+    decomposition = ["_pendiente: falta reports/f3b_ensemble.json_"]
+    if ens:
+        c = {x["name"]: x for x in ens["candidates"]}
+        g = ens["stacker"]["gain"]
+        e0, e1, e2, e3 = c["E0/none"], c["E1/none"], c["E2/none"], c["E3/none"]
+        tta = max(c[k]["auprc"] for k in ("E1/tta2", "E1/tta4")) - e1["auprc"]
+        decomposition = [
+            f"Sobre validación (F3b, `reports/f3b_ensemble.md`), de dónde sale cada décima: las **tres semillas** del mismo backbone (E0 → E1) aportan {e1['auprc'] - e0['auprc']:+.3f} de AUPRC y {e1['auroc'] - e0['auroc']:+.3f} de AUC-ROC; **sumar ConvNeXt-T** (E1 → E2) añade {e2['auprc'] - e1['auprc']:+.3f} y {e2['auroc'] - e1['auroc']:+.3f} a 5.5× el costo; **sumar también EfficientNetV2-S a 384 px** (E2 → E3) añade {e3['auprc'] - e2['auprc']:+.3f} y {e3['auroc'] - e2['auroc']:+.3f}, dentro del ruido; el **TTA** por volteos no ayuda (mejor variante de E1: {tta:+.3f} de AUPRC) y los **metadatos** apilados restan ({g['auroc']:+.3f} de AUC-ROC, {g['spec_at_sens095']:+.3f} de spec@sens0.95 por VC agrupada). La regla prerregistrada eligió E1 por empate con E2 y E3 y menor costo. En el test, la diferencia ensamble − único fue {mb['auroc'] - ma['auroc']:+.3f} de AUC-ROC y {mb['auprc'] - ma['auprc']:+.3f} de AUPRC, contra {e1['auroc'] - e0['auroc']:+.3f} y {e1['auprc'] - e0['auprc']:+.3f} que prometía validación.",
+        ]
+    return [
+        f"Segundo y último acceso, ejecutado el {test_b['date'][:10]} (commit `{test_b['git_sha']}`) con `docs/f4b_protocol.yaml` (SHA256 `{test_b['protocol_sha256'][:16]}…`): {pb.winner.label}, promedio de logits, vistas {', '.join(test_b['tta'])}, sin apilador, Platt y umbrales congelados sobre validación. Presupuesto de accesos: agotado. Los resultados de F4 (secciones 1 a 10) no se modifican.",
+        "",
+        "### Tabla lado a lado",
+        "",
+        *rows,
+        "",
+        f"IC 95 % por bootstrap a nivel paciente, 2,000 remuestreos. τ95 es el de cada protocolo ({oa['threshold']:.4f} para el modelo único, {ob['threshold']:.4f} para el ensamble), ambos fijados sobre validación.",
+        "",
+        "![ROC test ensamble](figures/f4b_test_roc.png) ![PR test ensamble](figures/f4b_test_pr.png) ![fiabilidad test ensamble](figures/f4b_test_reliability.png)",
+        "",
+        "### Subgrupos (exploratorio)",
+        "",
+        *sub_rows,
+        "",
+        "Mismos intervalos anchos que en la sección 7: no se concluye nada de una diferencia cuyo intervalo cruce el del grupo de referencia.",
+        "",
+        "### Qué aportó cada cosa",
+        "",
+        *decomposition,
+        "",
+        "### Decisión de despliegue",
+        "",
+        f"Criterio fijado en el protocolo antes de abrir el test: «{pb.deployment_rule}»",
+        "",
+        decision,
+    ]
+
+
 def demote_headings(markdown: str, levels: int = 2) -> str:
     """Baja los encabezados del archivo de limitaciones para que queden dentro de la sección 10
     (su `#` y sus `## n.` chocarían con los del reporte). El texto no cambia."""
@@ -247,6 +349,8 @@ def demote_headings(markdown: str, levels: int = 2) -> str:
 def main() -> None:
     cal = json.loads(CAL.read_text())
     test = json.loads(TEST.read_text()) if TEST.exists() else None
+    test_b = json.loads(TEST_B.read_text()) if TEST_B.exists() else None
+    ens = json.loads(ENSEMBLE.read_text()) if ENSEMBLE.exists() else None
     ddi = json.loads(DDI.read_text()) if DDI.exists() else None
     log_lines = LOG.read_text().strip().splitlines() if LOG.exists() else []
     limits = (
@@ -272,7 +376,7 @@ def main() -> None:
         *(
             [
                 f"```\n{chr(10).join(log_lines)}\n```",
-                f"{len(log_lines)} línea(s) en `logs/test_set_access.log` (presupuesto: 2).",
+                f"{len(log_lines)} línea(s) en `logs/test_set_access.log` (presupuesto: 2{'; agotado' if len(log_lines) >= 2 else ''}).",
             ]
             if log_lines
             else ["`logs/test_set_access.log` está vacío: el test no se ha abierto."]
@@ -313,6 +417,10 @@ def main() -> None:
         "## 10. Limitaciones",
         "",
         limits,
+        "",
+        "## 11. Resultado con ensamble (segundo acceso)",
+        "",
+        *section_f4b(test, test_b, ens),
         "",
     ]
     OUT.write_text("\n".join(lines), encoding="utf-8")

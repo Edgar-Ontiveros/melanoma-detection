@@ -174,8 +174,8 @@ b7f727d6cf70d7a12be136e3b7046b42c725eaf5541aadc0723fbac09941ffb1  val.txt
 `data/splits/test.txt` se usa **como máximo dos veces en todo el proyecto**, ambas desde
 `scripts/evaluate_test.py` (F4 y F4b; se niega a correr si la bitácora ya tiene dos líneas), y
 cada acceso se anota en `logs/test_set_access.log`
-(primer acceso: 2026-09-18, evaluación clínica de F4; el segundo y último se asignó el
-2026-10-22 a F4b, la evaluación del ensamble bajo protocolo congelado). Ningún
+(primer acceso: 2026-09-18, evaluación clínica de F4; segundo y último: 2026-10-26, ensamble de
+F4b bajo `docs/f4b_protocol.yaml`). **El presupuesto está agotado: no existe un tercer acceso.** Ningún
 módulo de `src/` puede referenciarlo: lo vigila `tests/test_test_split_isolation.py` en CI.
 
 ### Kaggle
@@ -216,7 +216,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F5 | Explicabilidad: CAM ≡ Grad-CAM (contrato numpy para F6), prueba de cordura, solapamiento con la lesión, artefactos por perturbación | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F5.md`, `reports/f5_explainability.md`) |
 | F6 | Paquete de modelo (ONNX opset 17 + calibración + umbrales + pesos CAM + manifiesto SHA256), paridad con PyTorch, API FastAPI/onnxruntime sin torch, Docker ~420 MB sin comprimir (~155 MB comprimida); preprocesamiento en dos etapas con paridad exacta hasta con originales de 6,000 px | Cerrada el 2026-09-21: 10/10 criterios (`docs/specs/F6.md`, `docs/API.md`) |
 | F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo con las limitaciones | Cerrada el 2026-10-15: 10/10 criterios (`docs/specs/F7.md`) |
-| F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | F3b hecha el 2026-10-23: Eᵍ = E1 (A1 ×3, sin TTA; AUPRC 0.164 contra 0.132 en validación), metadatos no se despliegan, protocolo en `docs/f4b_protocol.yaml`; **F4b pendiente de autorización** (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`) |
+| F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | F3b el 2026-10-23: Eᵍ = E1 (A1 ×3, sin TTA), metadatos no. F4b el 2026-10-26, test abierto por segunda y última vez: AUC-ROC 0.843 [0.804, 0.881] y AUPRC 0.113 [0.076, 0.179] contra 0.834 y 0.096 del modelo único; por el criterio fijado antes de abrir, **se despliega el ensamble** (F6b pendiente) (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`, `reports/f4_clinical_evaluation.md` §11) |
 | F8 | Despliegue | Pendiente |
 | F9 | Documento y defensa | Pendiente |
 
