@@ -51,11 +51,11 @@ export default function Uploader({
       }}
     >
       <UploadIcon />
-      <p className="lead">Arrastre una dermatoscopía aquí</p>
-      <p className="hint">JPEG, PNG o WebP; hasta 10 MB. Puede ser la foto original sin recortar.</p>
+      <p className="lead">Arrastre una dermatoscopía o seleccione un archivo</p>
+      <p className="hint">JPEG, PNG o WebP · hasta 10 MB</p>
       <button
         type="button"
-        className="secondary"
+        className="secondary sm"
         disabled={disabled}
         onClick={(e) => {
           e.stopPropagation();

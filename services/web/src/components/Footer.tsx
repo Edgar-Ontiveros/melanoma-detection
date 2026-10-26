@@ -11,38 +11,23 @@ function EoMonogram() {
   );
 }
 
-export default function Footer({
-  onModel,
-  modelVersion,
-}: {
-  onModel: (e: React.MouseEvent) => void;
-  modelVersion: string | null;
-}) {
+export default function Footer({ onModel }: { onModel: (e: React.MouseEvent) => void }) {
   return (
     <footer className="bottom">
       <div className="container">
         <p className="legal">
-          Apoyo a la priorización de lesiones con sospecha de melanoma en dermatoscopía, con fines educativos. No es un
-          diagnóstico, no detecta otros cánceres de piel, no sustituye a un dermatólogo y no tiene
-          aprobación regulatoria. Las imágenes no se almacenan.{" "}
+          Apoyo a la decisión de referir lesiones con sospecha de melanoma en dermatoscopía, con
+          fines educativos. No es un diagnóstico, no detecta otros cánceres de piel, no sustituye a
+          un dermatólogo y no tiene aprobación regulatoria. Las imágenes no se almacenan.{" "}
           <a href="/modelo" onClick={onModel}>
-            Ficha del modelo, desempeño y limitaciones
+            Ficha del modelo
           </a>
           .
         </p>
-        <div className="row">
-          <p className="credit">
-            <EoMonogram />
-            <a href="https://edgar-ontiveros.com/" rel="author">
-              Edgar Eduardo Ontiveros Lara
-            </a>
-          </p>
-          {modelVersion && (
-            <span className="version" title="Versión del modelo servido">
-              {modelVersion}
-            </span>
-          )}
-        </div>
+        <p className="credit">
+          <span>Edgar Eduardo Ontiveros Lara · a335951 · Facultad de Ingeniería, UACH</span>
+          <EoMonogram />
+        </p>
       </div>
     </footer>
   );

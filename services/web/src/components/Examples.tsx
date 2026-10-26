@@ -12,7 +12,7 @@ interface ExamplesFile {
   items: Example[];
 }
 
-/** Cuatro imágenes de validación de ISIC 2020 (CC-BY-NC), listadas en
+/** Cuatro imágenes de validación de ISIC 2020 (CC BY-NC), listadas en
  * public/examples/examples.json con su image_id y su diagnóstico confirmado. */
 export default function Examples({
   onPick,
@@ -41,12 +41,14 @@ export default function Examples({
     }
   };
 
-  if (error) return <p className="small muted">{error}</p>;
+  if (error) return <p className="help">{error}</p>;
   if (!data) return null;
 
   return (
     <section aria-labelledby="ejemplos-title">
-      <h2 id="ejemplos-title">O pruebe con un ejemplo</h2>
+      <h2 id="ejemplos-title" className="examples-title">
+        Ejemplos
+      </h2>
       <div className="examples">
         {data.items.map((ex) => (
           <button
@@ -62,11 +64,11 @@ export default function Examples({
               src={`/${ex.file}`}
               alt={`Dermatoscopía ${ex.image_id}, lesión ${ex.truth} confirmada`}
             />
-            <span className="meta">
-              <code>{ex.image_id}</code>
-              <span className="pill">
-                {ex.truth === "melanoma" ? "Melanoma confirmado" : "Benigna confirmada"}
-              </span>
+            <code>{ex.image_id}</code>
+            <span className="truth">
+              {ex.truth === "melanoma" ? "Melanoma confirmado" : "Benigna confirmada"}
+              <br />
+              ISIC 2020, CC BY-NC
             </span>
           </button>
         ))}

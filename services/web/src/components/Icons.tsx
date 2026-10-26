@@ -1,28 +1,48 @@
-/** Íconos propios, inline SVG (sin marcas ajenas ni recursos externos). */
+/** Íconos propios, inline SVG de trazo (1.5 px, currentColor). Sin marcas ajenas ni recursos
+ * externos. El símbolo «lente» es el mismo dibujo que public/mark.svg (F7b.3). */
 
-/** Un círculo con un punto descentrado: una lesión bajo el dermatoscopio. */
-export function LesionIcon({ size = 26 }: { size?: number }) {
+const stroke = {
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.5,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+};
+
+/** Símbolo «lente»: anillo y punto descentrado. */
+export function Mark({ size = 20 }: { size?: number }) {
   return (
     <svg viewBox="0 0 32 32" width={size} height={size} aria-hidden="true" focusable="false">
-      <circle cx="16" cy="16" r="13" fill="#fff" stroke="currentColor" strokeWidth="2.5" />
-      <circle cx="19" cy="14" r="4.5" fill="currentColor" />
+      <circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" strokeWidth="3" />
+      <circle cx="19.5" cy="19.5" r="4" fill="currentColor" />
     </svg>
   );
 }
 
-/** Flecha de subida dentro de un círculo. */
-export function UploadIcon({ size = 40 }: { size?: number }) {
+/** Flecha hacia arriba (zona de carga). */
+export function UploadIcon({ size = 20 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 40 40" width={size} height={size} aria-hidden="true" focusable="false">
-      <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M20 27V13m0 0-6 6m6-6 6 6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg viewBox="0 0 20 20" width={size} height={size} aria-hidden="true" focusable="false">
+      <path d="M10 16V4m0 0-5 5m5-5 5 5" {...stroke} />
+    </svg>
+  );
+}
+
+/** Chevron hacia la derecha (detalles plegados). */
+export function ChevronIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} aria-hidden="true" focusable="false">
+      <path d="M6 3l5 5-5 5" {...stroke} />
+    </svg>
+  );
+}
+
+/** Círculo con una i (avisos y errores). */
+export function InfoIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 20 20" width={size} height={size} aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="8" {...stroke} />
+      <path d="M10 9v5M10 6.5v.5" {...stroke} />
     </svg>
   );
 }

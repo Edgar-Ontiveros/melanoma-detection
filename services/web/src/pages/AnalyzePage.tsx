@@ -19,7 +19,13 @@ interface Pending {
   example: Example | null;
 }
 
-export default function AnalyzePage({ state }: { state: ModelInfoState }) {
+export default function AnalyzePage({
+  state,
+  onBusy,
+}: {
+  state: ModelInfoState;
+  onBusy?: (busy: boolean) => void;
+}) {
   const [pending, setPending] = useState<Pending | null>(null);
   const [result, setResult] = useState<PredictResponse | null>(null);
   const [error, setError] = useState<unknown>(null);
@@ -28,12 +34,13 @@ export default function AnalyzePage({ state }: { state: ModelInfoState }) {
   const startedAt = useRef(0);
 
   useEffect(() => {
+    onBusy?.(loading);
     if (!loading) return;
     startedAt.current = performance.now();
     setElapsed(0);
     const id = window.setInterval(() => setElapsed(performance.now() - startedAt.current), 100);
     return () => window.clearInterval(id);
-  }, [loading]);
+  }, [loading, onBusy]);
 
   useEffect(
     () => () => {

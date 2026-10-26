@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ApiError, modelInfo, type ModelInfo } from "./api";
 import DisclaimerModal from "./components/DisclaimerModal";
 import Footer from "./components/Footer";
-import { LesionIcon } from "./components/Icons";
+import { Mark } from "./components/Icons";
 import AnalyzePage from "./pages/AnalyzePage";
 import ModelPage from "./pages/ModelPage";
 
@@ -27,6 +27,7 @@ export default function App() {
   const [info, setInfo] = useState<ModelInfo | null>(null);
   const [infoError, setInfoError] = useState<string | null>(null);
   const [infoLoading, setInfoLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
 
   const loadInfo = useCallback(() => {
     setInfoLoading(true);
@@ -65,9 +66,9 @@ export default function App() {
       <DisclaimerModal disclaimer={info?.disclaimer ?? null} />
       <header className="top">
         <div className="container">
-          <a href="/" className="brand" onClick={navigate("/")} style={{ color: "var(--accent)" }}>
-            <LesionIcon />
-            <span style={{ color: "var(--text)" }}>Detección asistida de melanoma</span>
+          <a href="/" className="brand" onClick={navigate("/")}>
+            <Mark />
+            <span>Detección asistida de melanoma</span>
           </a>
           <nav aria-label="Secciones">
             <a href="/" onClick={navigate("/")} aria-current={route === "/" ? "page" : undefined}>
@@ -83,10 +84,15 @@ export default function App() {
           </nav>
         </div>
       </header>
+      <div className={`progress${busy ? " on" : ""}`} aria-hidden="true" />
       <main className="container" id="main">
-        {route === "/modelo" ? <ModelPage state={infoState} /> : <AnalyzePage state={infoState} />}
+        {route === "/modelo" ? (
+          <ModelPage state={infoState} />
+        ) : (
+          <AnalyzePage state={infoState} onBusy={setBusy} />
+        )}
       </main>
-      <Footer onModel={navigate("/modelo")} modelVersion={info?.model_version ?? null} />
+      <Footer onModel={navigate("/modelo")} />
     </>
   );
 }

@@ -1,0 +1,77 @@
+/* F7b.1 — Tokens del sistema visual. Único archivo con colores y tamaños: el resto del CSS
+   solo usa estas variables (tests/test_web.py::test_web_tokens_only). */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/InterVariable-latin.woff2") format("woff2");
+}
+
+:root {
+  /* color */
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --text-2: #475569;
+  --accent: #1d4ed8;
+  --accent-hover: #1e40af;
+  --accent-tint: #eff6ff;
+  --accent-tint-border: #bfdbfe;
+  --on-accent: #ffffff;
+  --backdrop: rgba(15, 23, 42, 0.55);
+  --chip-bg: rgba(255, 255, 255, 0.9);
+
+  /* tipografía */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  --t-label: 12px; /* etiquetas, mayúsculas, tracking 0.04em, 600 */
+  --t-help: 13px;
+  --t-ui: 14px;
+  --t-body: 15px;
+  --t-wordmark: 17px; /* 600 */
+  --t-h2: 18px; /* 600, filete inferior en /modelo */
+  --t-rec: 22px; /* recomendación, 600 */
+  --t-h1: 28px; /* 600 */
+  --t-prob: 52px; /* probabilidad, 700, tracking -0.02em, interlínea 1 */
+  --lh-body: 1.5;
+  --tracking-label: 0.04em;
+  --tracking-prob: -0.02em;
+
+  /* espacio */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --container: 1120px;
+  --gutter: 24px;
+  --header-h: 64px;
+
+  /* forma */
+  --r-card: 10px;
+  --r-button: 8px;
+  --r-chip: 6px;
+  --r-bar: 999px;
+  --r-modal: 12px;
+  --border-w: 1px;
+  --shadow-modal: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+
+  /* control */
+  --control-h: 40px;
+  --control-h-sm: 36px;
+  --thumb: 96px;
+  --result-image: 480px;
+  --dropzone-min: 200px;
+  --pre-max: 320px;
+  --modal-max: 520px;
+
+  /* movimiento */
+  --ease: 150ms ease;
+}
