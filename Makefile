@@ -11,6 +11,7 @@ UV_RUN = uv run --no-sync
 	kaggle-dataset train baseline-b0 f2-report f3-report f4-report check-notebooks kaggle \
 	f5-cam f5-overlap f5-artifacts f5-figures f5-report f5-all \
 	f3b-logits f3b-ensemble f3b-report f3b-all export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
+	demo demo-stop \
 	web-install web-dev web-lint web-test web-build web f7-screenshots
 
 ## Entorno local (WSL/Ubuntu): core + train + dev con ruedas CPU del lockfile.
@@ -125,6 +126,22 @@ api:
 ## Corre la imagen con un paquete montado en /bundle. Ej.: make docker-run BUNDLE=models/test_bundle
 docker-run:
 	docker run --rm -p 8000:8000 -v $(PWD)/$(or $(BUNDLE),models/bundle):/bundle:ro melanoma-api
+## ---- Demo local para el examen (docs/DEMO.md). Construye la imagen con la misma Dockerfile que
+## CI, la levanta con el paquete real montado y espera a /api/health. El 8000 lo usa otro servicio
+## en la laptop, por eso 8010; `make demo PORT=8020` cambia el puerto. `make demo-stop` la apaga.
+DEMO_PORT ?= $(or $(PORT),8010)
+DEMO_NAME ?= melanoma-demo
+demo: docker-api
+	@if ss -ltn 2>/dev/null | awk '{print $$4}' | grep -qE "[:.]$(DEMO_PORT)$$" && ! docker ps --format '{{.Names}} {{.Ports}}' | grep -q "^$(DEMO_NAME) .*:$(DEMO_PORT)->"; then \
+	  echo "El puerto $(DEMO_PORT) está ocupado por otro proceso. Usa: make demo PORT=<otro>"; exit 1; fi
+	@docker rm -f $(DEMO_NAME) >/dev/null 2>&1 || true
+	@docker run -d --name $(DEMO_NAME) --restart unless-stopped -p 127.0.0.1:$(DEMO_PORT):8000 \
+	  -v "$(PWD)/$(or $(BUNDLE),models/bundle):/bundle:ro" melanoma-api >/dev/null
+	@for i in $$(seq 1 40); do curl -fsS http://127.0.0.1:$(DEMO_PORT)/api/health >/dev/null 2>&1 && break; sleep 1; done
+	@curl -fsS http://127.0.0.1:$(DEMO_PORT)/api/health >/dev/null || { echo "la API no respondió; docker logs $(DEMO_NAME)"; docker logs $(DEMO_NAME) | tail -20; exit 1; }
+	@echo "Demo lista: http://127.0.0.1:$(DEMO_PORT)  (ficha: http://127.0.0.1:$(DEMO_PORT)/modelo)"
+demo-stop:
+	@docker rm -f $(DEMO_NAME) >/dev/null 2>&1 && echo "demo apagada" || echo "no había demo corriendo"
 ## Pruebas @local (checkpoint real y models/bundle).
 test-local:
 	$(UV_RUN) pytest --run-local -m local
