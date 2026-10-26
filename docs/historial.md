@@ -67,3 +67,18 @@ El release `model-4e7ab61-e0ecf981` pasó a `model-c62a515-e0ecf981`, con el tag
 CAM y las métricas son los mismos archivos, con los mismos SHA256 en el manifiesto. El tarball
 nuevo `melanoma-bundle-c62a515-e0ecf981.tar.gz` tiene SHA256
 `ec51a043636d4b2d77f74d7943186facfd7b8600dd5b7aca9c8b562ef977ae4c`.
+
+---
+
+# Paquetes de modelo publicados
+
+| Release | Fecha | Contenido | Estado |
+|---|---|---|---|
+| `model-6c330a8-e0ecf981` | 2026-09-21 | modelo único, preprocesamiento de una etapa | retirado (sustituido el mismo día) |
+| `model-c62a515-e0ecf981` | 2026-09-21 (recreado 2026-10-15 con el SHA remapeado) | modelo único A1 semilla 0, dos etapas de preprocesamiento (F6) | conservado como release anterior |
+| `model-28a90b4-4264e888` | 2026-10-26 | ensamble E1/none: A1 semillas 0, 1 y 2, promedio de logits (F6b, `docs/f4b_protocol.yaml`) | vigente; es el que sirve la API |
+
+El 2026-10-26 (F4b) se usó el segundo y último acceso al conjunto de prueba; desde entonces
+`scripts/evaluate_test.py` se niega a correr. El ensamble se desplegó porque su AUC-ROC y su
+AUPRC en el test no fueron menores que los del modelo único, según el criterio fijado antes
+de abrir el test.
