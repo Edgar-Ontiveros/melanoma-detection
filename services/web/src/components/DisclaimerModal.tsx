@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const KEY = "melanoma-triage:aviso-aceptado";
+const KEY = "melanoma-detection:aviso-aceptado";
 
 /** Aviso al cargar la aplicación. Se recuerda en sessionStorage (cada sesión lo vuelve a
  * mostrar). El texto es el `disclaimer` de la API; mientras no llega, un texto mínimo. */

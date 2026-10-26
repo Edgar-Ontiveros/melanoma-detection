@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports" / "figures"
 EXAMPLE = "ISIC_5037784"
 VIEWPORTS = {"1280": (1280, 900), "390": (390, 844)}
-ACCEPT_MODAL = "window.sessionStorage.setItem('melanoma-triage:aviso-aceptado', '1')"
+ACCEPT_MODAL = "window.sessionStorage.setItem('melanoma-detection:aviso-aceptado', '1')"
 
 
 def shoot(page, path: Path) -> None:

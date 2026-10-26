@@ -5,7 +5,7 @@
 #   uv run python scripts/kaggle_run.py status b1-s0 | wait b1-s0 | output b1-s0 | logs b1-s0
 #   uv run python scripts/kaggle_run.py dataset-images   # publica data/processed/isic2020_512
 username: edgaronti26
-repo_url: https://github.com/Edgar-Ontiveros/melanoma-triage.git
+repo_url: https://github.com/Edgar-Ontiveros/melanoma-detection.git
 competition: siim-isic-melanoma-classification
 datasets:
   splits: edgaronti26/melanoma-isic2020-splits

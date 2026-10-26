@@ -21,7 +21,7 @@ Plataforma de desarrollo soportada: **WSL2 con Ubuntu 24.04** (o Ubuntu nativo).
 ### Laptop / CPU (WSL/Ubuntu)
 
 ```bash
-git clone https://github.com/Edgar-Ontiveros/melanoma-triage.git melanoma
+git clone https://github.com/Edgar-Ontiveros/melanoma-detection.git melanoma
 cd melanoma
 make setup        # uv sync --extra train --group dev  (ruedas CPU de PyTorch, del lockfile)
 make ci           # lint + pruebas + humo, lo mismo que GitHub Actions

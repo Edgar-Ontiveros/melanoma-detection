@@ -11,8 +11,8 @@ authors:
   - family-names: "Ontiveros Lara"
     given-names: "Edgar Eduardo"
     affiliation: "Facultad de Ingeniería, Universidad Autónoma de Chihuahua"
-repository-code: "https://github.com/Edgar-Ontiveros/melanoma-triage"
-url: "https://github.com/Edgar-Ontiveros/melanoma-triage"
+repository-code: "https://github.com/Edgar-Ontiveros/melanoma-detection"
+url: "https://github.com/Edgar-Ontiveros/melanoma-detection"
 license: MIT
 date-released: "2026-10-15"
 keywords:
@@ -32,4 +32,4 @@ preferred-citation:
     name: "Universidad Autónoma de Chihuahua"
   department: "Facultad de Ingeniería"
   year: 2026
-  url: "https://github.com/Edgar-Ontiveros/melanoma-triage"
+  url: "https://github.com/Edgar-Ontiveros/melanoma-detection"

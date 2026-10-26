@@ -6,7 +6,7 @@ import type { ModelInfoState } from "../App";
 import ErrorBox from "../components/ErrorBox";
 import { formatDateEs, formatInt, formatPercent } from "../lib/format";
 
-const REPO = "https://github.com/Edgar-Ontiveros/melanoma-triage";
+const REPO = "https://github.com/Edgar-Ontiveros/melanoma-detection";
 
 function ci(x: Interval, decimals = 3): string {
   const f = (v: number) => v.toFixed(decimals).replace(".", ",");

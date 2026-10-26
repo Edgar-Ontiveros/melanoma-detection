@@ -151,7 +151,7 @@ def baselines_report(b0: dict | None, groups: dict[str, list[dict]]) -> str:
             f"{b['metrics']['sens_at_spec090']:.3f} |",
             "",
             "**Decisión para F3 (2026-09-17): `pos_weight`.** El AUPRC resume todos los umbrales, "
-            "pero el sistema opera en uno: en triage el punto de operación es de sensibilidad alta, y a "
+            "pero el sistema opera en uno: en el apoyo a la decisión de referir, el punto de operación es de sensibilidad alta, y a "
             f"sensibilidad 0.90 el muestreo ponderado deja una especificidad de {sb:.2f} frente a {sa:.2f} con "
             "`pos_weight`. El AUPRC puntual mayor del muestreo ponderado "
             f"({b['metrics']['auprc']:.3f} vs {a['metrics']['auprc']:.3f}, intervalos traslapados, una semilla) no "

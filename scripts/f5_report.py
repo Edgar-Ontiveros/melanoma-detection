@@ -332,7 +332,7 @@ def conclusion_artifact_bullets(art: dict) -> list[str]:
             for c in lose
         )
         out.append(
-            f"- **Pérdida de sensibilidad ante degradación (limitación medida):** melanomas referidos en τ95 que dejan de serlo con el artefacto: {parts}; con ruido, {ctrl_m['n_lose_referral']} de {ctrl_m['n_referred_original']}. Cubrir la lesión con vello sintético o con ruido destruye la evidencia positiva y el modelo tiende a «benigno»: en un triage de alta sensibilidad ese es el error caro, y aparece con perturbaciones que no son raras en la práctica."
+            f"- **Pérdida de sensibilidad ante degradación (limitación medida):** melanomas referidos en τ95 que dejan de serlo con el artefacto: {parts}; con ruido, {ctrl_m['n_lose_referral']} de {ctrl_m['n_referred_original']}. Cubrir la lesión con vello sintético o con ruido destruye la evidencia positiva y el modelo tiende a «benigno»: en un apoyo a la decisión de referir de alta sensibilidad ese es el error caro, y aparece con perturbaciones que no son raras en la práctica."
         )
     robust = [c for c in names if c not in learned and c not in lose]
     if robust:
