@@ -82,3 +82,18 @@ El 2026-10-26 (F4b) se usó el segundo y último acceso al conjunto de prueba; d
 `scripts/evaluate_test.py` se niega a correr. El ensamble se desplegó porque su AUC-ROC y su
 AUPRC en el test no fueron menores que los del modelo único, según el criterio fijado antes
 de abrir el test.
+
+---
+
+# Cronología de fases posteriores a la entrega del 2026-10-15
+
+| Fecha | Fase | Qué quedó |
+|---|---|---|
+| 2026-10-15 | F4, F7 | Cerradas con `docs/f4_limitations.md` del autor. |
+| 2026-10-22 | F3b | Spec de ensamble; regla 4 corregida antes de ver números; guardarraíl de dos accesos en `evaluate_test.py`. |
+| 2026-10-23 | F3b | Nueve checkpoints verificados, logits en caché, Eᵍ = E1/none, protocolo `docs/f4b_protocol.yaml`. |
+| 2026-10-26 | F4b | Segundo y último acceso al test; se despliega el ensamble; sección 11 del reporte de F4. |
+| 2026-10-26 | F6b | Paquete con tres ONNX, API con promedio de logits, release `model-28a90b4-4264e888`. |
+| 2026-10-26 | — | Repositorio renombrado a `melanoma-detection`; «triage» retirado de los textos. |
+| 2026-10-26 | F7b | Sistema visual (tokens, Inter, símbolo, componentes, contraste AA). |
+| 2026-10-26 | F8 | Imagen en ghcr y `deploy/`; infraestructura detenida hasta tener el perfil `personal` de AWS. |

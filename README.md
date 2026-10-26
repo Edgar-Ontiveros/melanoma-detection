@@ -221,7 +221,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | F3b el 2026-10-23: Eᵍ = E1 (A1 ×3, sin TTA), metadatos no. F4b el 2026-10-26, test abierto por segunda y última vez: AUC-ROC 0.843 [0.804, 0.881] y AUPRC 0.113 [0.076, 0.179] contra 0.834 y 0.096 del modelo único; por el criterio fijado antes de abrir, **se despliega el ensamble** (F6b) (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`, `reports/f4_clinical_evaluation.md` §11) |
 | F6b | Paquete con el ensamble (tres ONNX, manifiesto verificado contra `docs/f4b_protocol.yaml`), API con promedio de logits y CAM promediado, `/model-info` con tabla lado a lado, release `model-28a90b4-4264e888` | Hecha el 2026-10-26: 8/8 criterios; paridad máx 2.2e-5, p50 99 / p95 118 ms, imagen 437 MB sin comprimir (`docs/specs/F6b.md`, `reports/f6b_parity.json`, `reports/f6b_latency.md`) |
 | F7b | Sistema visual: tokens, Inter empaquetada, símbolo y favicons, componentes de análisis y ficha, contraste AA | Hecha el 2026-10-26: 8/8 criterios; 12 pares de contraste ≥ AA; tres pruebas nuevas (`docs/specs/F7b.md`, `reports/f7b_visual.md`) |
-| F8 | Despliegue | Pendiente |
+| F8 | Despliegue: imagen en ghcr publicada por el CI, `deploy/` (compose + Caddy + install.sh), objetivos `make deploy*`, Lightsail + Cloudflare + Let's Encrypt | En curso desde 2026-10-26: F8.1 y F8.2 hechos; F8.3 detenido en la pausa obligatoria (falta el perfil `personal` de la CLI de AWS); demo local en `make demo` (`docs/specs/F8.md`, `docs/DEPLOY.md`, `docs/DEMO.md`) |
 | F9 | Documento y defensa | Pendiente |
 
 Diagnóstico del hardware de desarrollo: `docs/hardware.md`.
