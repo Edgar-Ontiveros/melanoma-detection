@@ -1,16 +1,16 @@
 import { recommendation } from "../lib/recommendation";
 
-/** Bloque 2: recomendación de priorización. Texto fijo; por debajo del umbral, «1 de cada N» desde
- * el VPN del test (/model-info). */
+/** Tarjeta de recomendación. Texto fijo (F7); por encima del umbral, fondo con tinte del
+ * acento; por debajo, superficie neutra. Sin números por encima del umbral. */
 export default function Recommendation({ refer, npvTest }: { refer: boolean; npvTest: number | null }) {
   const r = recommendation({ refer, npvTest });
   return (
-    <section className="card" aria-labelledby="rec-title">
-      <h2 id="rec-title" className="block-title">
-        2 · Recomendación de priorización
-      </h2>
+    <section className={`card rec${refer ? " refer" : ""}`} aria-labelledby="rec-title">
+      <p id="rec-title" className="label">
+        Recomendación
+      </p>
       <p className="rec-headline">{r.headline}</p>
-      <p>{r.body}</p>
+      <p className="rec-body">{r.body}</p>
     </section>
   );
 }

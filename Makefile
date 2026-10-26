@@ -11,7 +11,7 @@ UV_RUN = uv run --no-sync
 	kaggle-dataset train baseline-b0 f2-report f3-report f4-report check-notebooks kaggle \
 	f5-cam f5-overlap f5-artifacts f5-figures f5-report f5-all \
 	f3b-logits f3b-ensemble f3b-report f3b-all export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
-	demo demo-stop \
+	demo demo-stop f7b-icons f7b-visual \
 	web-install web-dev web-lint web-test web-build web f7-screenshots
 
 ## Entorno local (WSL/Ubuntu): core + train + dev con ruedas CPU del lockfile.
@@ -126,6 +126,11 @@ api:
 ## Corre la imagen con un paquete montado en /bundle. Ej.: make docker-run BUNDLE=models/test_bundle
 docker-run:
 	docker run --rm -p 8000:8000 -v $(PWD)/$(or $(BUNDLE),models/bundle):/bundle:ro melanoma-api
+## ---- F7b: símbolo y favicons desde el SVG; reporte de contraste y capturas (reports/f7b_visual.md).
+f7b-icons:
+	$(UV_RUN) python scripts/f7b_icons.py
+f7b-visual:
+	$(UV_RUN) python scripts/f7b_visual.py
 ## ---- Demo local para el examen (docs/DEMO.md). Construye la imagen con la misma Dockerfile que
 ## CI, la levanta con el paquete real montado y espera a /api/health. El 8000 lo usa otro servicio
 ## en la laptop, por eso 8010; `make demo PORT=8020` cambia el puerto. `make demo-stop` la apaga.
@@ -170,3 +175,4 @@ check-notebooks:
 ## Corridas en Kaggle por API (configs/kaggle.yaml). Ej.: make kaggle ARGS="push b1-s0 --sha <SHA> --wait"
 kaggle:
 	$(UV_RUN) python scripts/kaggle_run.py $(ARGS)
+

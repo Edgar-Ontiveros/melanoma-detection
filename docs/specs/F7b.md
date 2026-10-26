@@ -56,3 +56,43 @@ Sombras en tarjetas, degradados, iconos de color o emojis, bordes izquierdos de 
 Sesión 1: F7b.1, F7b.3, encabezado, pie, zona de carga, botones. Sesión 2: resultado, /modelo, modal, errores, pruebas, capturas, cierre.
 
 Al cerrar F7b repórtame las capturas (análisis y /modelo, escritorio y teléfono), la tabla de contraste y el estado de las pruebas.
+
+---
+
+## Estado y desviaciones respecto a la spec
+
+Dos sesiones el 2026-10-26 (commits de la sesión 1 y 2).
+
+1. **F7b.1.** `services/web/src/styles/tokens.css` con los diez colores, la escala 12/13/14/15/17/22/52
+   (más 18 para h2 y 28 para h1), espacio 4–48, contenedor 1120, radios 10/8/6/999, bordes de
+   1 px, sombra solo del modal, movimiento de 150 ms y `prefers-reduced-motion`. Inter variable
+   4.1 en subconjunto latín (`pyftsubset`, 100 KB woff2) en `public/fonts/` con su licencia OFL;
+   `font-feature-settings: "tnum"` en todo número; fallback system-ui. `test_web_tokens_only`.
+2. **F7b.2.** Encabezado de 64 px sin fijar con el símbolo en currentColor; botones de 40 y 36 px
+   en tres variantes; zona de carga de 200 px con borde discontinuo e icono de trazo;
+   ejemplos de 96 × 96 con id monoespaciado y «ISIC 2020, CC BY-NC»; línea de progreso de 2 px
+   bajo el encabezado y «Analizando… 0,4 s» (sin spinner ni esqueleto); resultado en dos
+   columnas (imagen 480 px) apiladas en teléfono; tarjetas de probabilidad (52/700, barra con
+   umbral sólido y tasa base discontinua, «Escala logarítmica»), recomendación (tinte por encima
+   del umbral, textos de F7 intactos), mapa de activación con chip y fila de controles, detalles
+   técnicos como `<details>` con chevron y lista de definiciones; pie en dos bloques; modal de
+   520 px con la única sombra; errores en banda neutra con icono. `/modelo` con h1 28, h2 18 con
+   filete, tablas solo con filetes horizontales, intervalos en `--text-2`, tabla lado a lado y
+   limitaciones numeradas. **Desviaciones:** la zona de carga conserva un botón secundario de
+   36 px «Seleccionar archivo» (objetivo de toque en teléfono); las miniaturas llevan además la
+   etiqueta real («Melanoma confirmado» / «Benigna confirmada»), que la demo necesita para
+   mostrar las cuatro celdas; el pie no muestra la versión del modelo (va en la ficha y en los
+   detalles técnicos).
+3. **F7b.3.** `scripts/f7b_icons.py` (`make f7b-icons`) genera `mark.svg`, `favicon.svg` con
+   `prefers-color-scheme: dark`, `favicon.ico` (16 y 32) y `apple-touch-icon.png` (180, 20 % de
+   margen) desde el mismo dibujo; `index.html` con el título, los tres iconos y `theme-color`.
+   `test_web_icons_present`.
+4. **F7b.4.** Sin sombras en tarjetas, sin degradados, sin iconos de color, sin bordes de color,
+   sin esqueleto animado, un solo acento. El CAM conserva su mapa de calor (es el dato).
+5. **F7b.5.** `test_web_no_external_requests`, `test_web_icons_present`, `test_web_tokens_only`
+   en verde junto con las de F7 y las 13 de Vitest. `reports/f7b_visual.md`
+   (`make f7b-visual`): 12 pares de contraste, todos ≥ 4.5:1 (mínimo 6.70:1, enlaces sobre
+   blanco); capturas regeneradas a 1280 y 390 px.
+6. Imagen Docker: 437 MB sin comprimir (límite 650). `make ci` en verde.
+
+Criterios de aceptación: 8/8.

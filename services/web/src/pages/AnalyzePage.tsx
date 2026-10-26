@@ -8,7 +8,6 @@ import ErrorBox from "../components/ErrorBox";
 import Examples, { type Example } from "../components/Examples";
 import ProbabilityBlock from "../components/ProbabilityBlock";
 import Recommendation from "../components/Recommendation";
-import Skeleton from "../components/Skeleton";
 import Uploader from "../components/Uploader";
 import { formatSeconds } from "../lib/format";
 
@@ -75,67 +74,59 @@ export default function AnalyzePage({
   };
 
   const metrics = state.info?.metrics ?? null;
-  const showInput = !pending;
+
+  if (!pending) {
+    return (
+      <>
+        <h1>Analizar una dermatoscopía</h1>
+        <p className="subtitle">Apoyo a la decisión de referir lesiones en dermatoscopía. No es un diagnóstico.</p>
+        <Uploader onFile={(f) => submit(f, f.name, null)} disabled={loading} />
+        <Examples onPick={(ex, blob) => submit(blob, `${ex.image_id}.jpg`, ex)} disabled={loading} />
+      </>
+    );
+  }
 
   return (
     <>
-      <h1>Analizar una dermatoscopía</h1>
-      <p className="subtitle">
-        Apoyo a la priorización de lesiones en dermatoscopía. No es un diagnóstico.
-      </p>
+      <h1 className="sr-only">Resultado del análisis</h1>
+      <div className="result-line">
+        <span className="id">
+          <code>{pending.name}</code>
+          {loading && (
+            <span className="elapsed" aria-live="polite">
+              Analizando… {formatSeconds(elapsed)}
+            </span>
+          )}
+        </span>
+        <button type="button" className="secondary" onClick={reset} disabled={loading}>
+          Analizar otra imagen
+        </button>
+      </div>
 
-      {showInput && (
-        <>
-          <Uploader onFile={(f) => submit(f, f.name, null)} disabled={loading} />
-          <Examples onPick={(ex, blob) => submit(blob, `${ex.image_id}.jpg`, ex)} disabled={loading} />
-        </>
-      )}
-
-      {pending && (
-        <section className="card" aria-labelledby="entrada-title">
-          <h2 id="entrada-title" className="sr-only">
-            Imagen enviada
-          </h2>
-          <div className="result-bar">
-            <img src={pending.previewUrl} alt={`Vista previa de ${pending.name}`} />
-            <div className="name">
-              <code>{pending.name}</code>
-              {pending.example && (
-                <p className="caption" style={{ margin: "4px 0 0" }}>
-                  Ejemplo de validación de ISIC 2020 (CC-BY-NC): {pending.example.note}.
-                </p>
-              )}
-              {loading && (
-                <p className="small muted" aria-live="polite" style={{ margin: "4px 0 0" }}>
-                  <span className="spinner" aria-hidden="true" />
-                  Analizando… {formatSeconds(elapsed)}
-                </p>
-              )}
-            </div>
-            <button type="button" className="secondary" onClick={reset} disabled={loading}>
-              Analizar otra
-            </button>
-          </div>
-        </section>
-      )}
-
-      {loading && <Skeleton />}
-
-      {error !== null && pending && <ErrorBox error={error} onRetry={() => void analyze(pending)} />}
-
-      {result && (
-        <>
-          <ProbabilityBlock
-            probability={result.probability}
-            threshold={result.threshold}
-            prevalence={metrics?.prevalence ?? null}
-          />
-          <Recommendation refer={result.refer} npvTest={metrics?.tau_95.npv ?? null} />
-          <CamViewer cam={result.cam} />
-          <Details result={result} />
-          <p className="caption">{result.disclaimer}</p>
-        </>
-      )}
+      <div className="result">
+        <div className="image">
+          <img src={pending.previewUrl} alt={`Vista previa de ${pending.name}`} />
+          {pending.example && (
+            <p className="caption">Ejemplo de validación de ISIC 2020, CC BY-NC: {pending.example.note}.</p>
+          )}
+        </div>
+        <div className="panels">
+          {error !== null && <ErrorBox error={error} onRetry={() => void analyze(pending)} />}
+          {result && (
+            <>
+              <ProbabilityBlock
+                probability={result.probability}
+                threshold={result.threshold}
+                prevalence={metrics?.prevalence ?? null}
+              />
+              <Recommendation refer={result.refer} npvTest={metrics?.tau_95.npv ?? null} />
+              <CamViewer cam={result.cam} />
+              <Details result={result} />
+              <p className="caption">{result.disclaimer}</p>
+            </>
+          )}
+        </div>
+      </div>
     </>
   );
 }

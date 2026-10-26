@@ -93,6 +93,82 @@ def spa_client(test_bundle: Path, tmp_path: Path):  # noqa: F811
         yield c
 
 
+# ---------------------------------------------------------------- F7b: sistema visual
+
+DIST = WEB / "dist"
+TOKENS = WEB / "src" / "styles" / "tokens.css"
+
+
+def _dist_or_skip() -> Path:
+    if not (DIST / "index.html").exists():
+        pytest.skip("services/web/dist no existe (make web-build)")
+    return DIST
+
+
+def test_web_no_external_requests() -> None:
+    """El build no pide nada a terceros: sin fuentes de Google, sin <link>/<script> externos,
+    sin @import ni url(https://…) en el CSS; la fuente va dentro de dist. Los href de enlaces
+    del contenido (repositorio, DOI, DDI, UACH) sí se permiten."""
+    dist = _dist_or_skip()
+    html = (dist / "index.html").read_text(encoding="utf-8")
+    assert "fonts.googleapis" not in html and "gstatic" not in html
+    for tag, attr in (("link", "href"), ("script", "src")):
+        for m in re.finditer(rf"<{tag}\b[^>]*\b{attr}=\"([^\"]+)\"", html):
+            assert not re.match(r"https?://|//", m.group(1)), f"{tag} externo: {m.group(1)}"
+    for css in dist.glob("assets/*.css"):
+        text = css.read_text(encoding="utf-8")
+        assert "@import" not in text, css.name
+        assert not re.search(r"url\(\s*[\"']?(https?:)?//", text), f"url externa en {css.name}"
+        assert "/fonts/InterVariable-latin.woff2" in text, "la fuente no se referencia desde el CSS"
+    for js in dist.glob("assets/*.js"):
+        text = js.read_text(encoding="utf-8")
+        assert "fonts.googleapis" not in text and "gstatic.com" not in text
+    assert (dist / "fonts" / "InterVariable-latin.woff2").exists()
+    assert (dist / "fonts" / "LICENSE-Inter.txt").exists()
+
+
+def test_web_icons_present() -> None:
+    """mark.svg, favicon.svg, favicon.ico y apple-touch-icon.png existen en dist y los tres
+    últimos están referenciados en index.html; el título es el del sistema."""
+    dist = _dist_or_skip()
+    for name in ("mark.svg", "favicon.svg", "favicon.ico", "apple-touch-icon.png"):
+        assert (dist / name).exists(), name
+    html = (dist / "index.html").read_text(encoding="utf-8")
+    assert 'href="/favicon.svg"' in html and 'href="/favicon.ico"' in html
+    assert 'rel="apple-touch-icon" href="/apple-touch-icon.png"' in html
+    assert "<title>Detección asistida de melanoma</title>" in html
+    assert 'name="theme-color" content="#1D4ED8"' in html
+    svg = (dist / "favicon.svg").read_text(encoding="utf-8")
+    assert 'r="11' in svg and 'r="4' in svg and "prefers-color-scheme: dark" in svg
+
+
+def test_web_tokens_only() -> None:
+    """Ningún color hexadecimal ni rgb() en el CSS de componentes fuera de tokens.css."""
+    pattern = re.compile(r"#[0-9a-fA-F]{3,8}\b|rgba?\(")
+    offenders = []
+    for path in sorted((WEB / "src").rglob("*.css")):
+        if path == TOKENS:
+            continue
+        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if pattern.search(line):
+                offenders.append(f"{path.relative_to(ROOT)}:{lineno}: {line.strip()}")
+    assert not offenders, "colores fuera de tokens.css:\n" + "\n".join(offenders)
+    tokens = TOKENS.read_text(encoding="utf-8")
+    for name, value in (
+        ("--bg", "#ffffff"),
+        ("--surface", "#f8fafc"),
+        ("--border", "#e2e8f0"),
+        ("--border-strong", "#cbd5e1"),
+        ("--text", "#0f172a"),
+        ("--text-2", "#475569"),
+        ("--accent", "#1d4ed8"),
+        ("--accent-hover", "#1e40af"),
+        ("--accent-tint", "#eff6ff"),
+        ("--accent-tint-border", "#bfdbfe"),
+    ):
+        assert f"{name}: {value};" in tokens, name
+
+
 def test_api_prefix_and_spa(spa_client: TestClient) -> None:
     assert spa_client.get("/api/health").status_code == 200
     assert spa_client.get("/api/model-info").json()["model_version"]

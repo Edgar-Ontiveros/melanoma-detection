@@ -1,6 +1,8 @@
 import { ApiError } from "../api";
 
-/** Mensajes de error para el usuario (F7.4). Nunca un stack trace. */
+import { InfoIcon } from "./Icons";
+
+/** Mensajes de error para el usuario (F7.4). Nunca un stack trace; sin rellenos rojos. */
 export function messageFor(e: unknown): { text: string; retry: boolean } {
   if (e instanceof ApiError) {
     if (e.status === 0) return { text: "El servicio no está disponible.", retry: true };
@@ -17,12 +19,17 @@ export default function ErrorBox({ error, onRetry }: { error: unknown; onRetry?:
   const m = messageFor(error);
   return (
     <div className="error" role="alert">
-      <p>{m.text}</p>
-      {m.retry && onRetry && (
-        <button type="button" className="secondary" onClick={onRetry}>
-          Reintentar
-        </button>
-      )}
+      <InfoIcon />
+      <div>
+        <p>{m.text}</p>
+        {m.retry && onRetry && (
+          <p className="actions">
+            <button type="button" className="secondary sm" onClick={onRetry}>
+              Reintentar
+            </button>
+          </p>
+        )}
+      </div>
     </div>
   );
 }

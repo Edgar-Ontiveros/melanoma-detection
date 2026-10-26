@@ -983,10 +983,23 @@ footer.bottom .credit svg {
     flex-direction: column;
     gap: var(--s-3);
   }
+  footer.bottom .legal {
+    flex: 0 0 auto;
+  }
+  main.container {
+    min-height: 0;
+  }
   footer.bottom .credit {
     white-space: normal;
   }
   dl.defs {
     grid-template-columns: 1fr;
+  }
+  td.num {
+    white-space: normal;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
   }
 }

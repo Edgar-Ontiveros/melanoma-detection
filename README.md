@@ -103,6 +103,8 @@ paciente, historial por época, colapsos, SHA del commit y de los splits), `curv
 make f3-report                 # reports/f3_matrix.md a partir de reports/runs/
 make f4-report                 # reports/f4_clinical_evaluation.md (el test ya se abrió; no se vuelve a abrir)
 make f3b-all                   # F3b: verifica los 9 checkpoints, cachea logits, candidatos, apilador, reports/f3b_ensemble.md
+make f7b-icons f7b-visual      # F7b: favicons desde el símbolo; contraste de tokens y capturas (reports/f7b_visual.md)
+make demo                      # demo local en http://127.0.0.1:8010 con la imagen de CI y el paquete real (docs/DEMO.md)
 make f5-all                    # CAM, solapamiento con la lesión, artefactos, figuras y reports/f5_explainability.md
 make export-bundle             # models/bundle/ desde el checkpoint de F3 (ONNX + calibración + umbrales + CAM)
 make verify-bundle             # paridad ONNX vs PyTorch → reports/f6_parity.json
@@ -218,6 +220,7 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F7 | Interfaz web (Vite + React + TS) servida por la API: análisis con probabilidad calibrada, tasa base, recomendación, CAM y ficha del modelo con las limitaciones | Cerrada el 2026-10-15: 10/10 criterios (`docs/specs/F7.md`) |
 | F3b/F4b | Ensamble de los nueve checkpoints de F3, TTA, metadatos apilados; segundo y último acceso al test con protocolo propio | F3b el 2026-10-23: Eᵍ = E1 (A1 ×3, sin TTA), metadatos no. F4b el 2026-10-26, test abierto por segunda y última vez: AUC-ROC 0.843 [0.804, 0.881] y AUPRC 0.113 [0.076, 0.179] contra 0.834 y 0.096 del modelo único; por el criterio fijado antes de abrir, **se despliega el ensamble** (F6b) (`docs/specs/F3b-F4b.md`, `reports/f3b_ensemble.md`, `reports/f4_clinical_evaluation.md` §11) |
 | F6b | Paquete con el ensamble (tres ONNX, manifiesto verificado contra `docs/f4b_protocol.yaml`), API con promedio de logits y CAM promediado, `/model-info` con tabla lado a lado, release `model-28a90b4-4264e888` | Hecha el 2026-10-26: 8/8 criterios; paridad máx 2.2e-5, p50 99 / p95 118 ms, imagen 437 MB sin comprimir (`docs/specs/F6b.md`, `reports/f6b_parity.json`, `reports/f6b_latency.md`) |
+| F7b | Sistema visual: tokens, Inter empaquetada, símbolo y favicons, componentes de análisis y ficha, contraste AA | Hecha el 2026-10-26: 8/8 criterios; 12 pares de contraste ≥ AA; tres pruebas nuevas (`docs/specs/F7b.md`, `reports/f7b_visual.md`) |
 | F8 | Despliegue | Pendiente |
 | F9 | Documento y defensa | Pendiente |
 

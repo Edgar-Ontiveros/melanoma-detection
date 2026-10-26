@@ -1,7 +1,9 @@
 import type { PredictResponse } from "../api";
 
-/** Bloque 4, plegado: versión, latencia, dimensiones de entrada y el JSON completo (sin las
- * imágenes en base64, que se resumen para que el texto sea legible). */
+import { ChevronIcon } from "./Icons";
+
+/** Detalles técnicos, plegados: versión, latencia, dimensiones de entrada, estado del mapa y
+ * el JSON completo (sin las imágenes en base64, que se resumen). */
 export default function Details({ result }: { result: PredictResponse }) {
   const compact = {
     ...result,
@@ -12,39 +14,30 @@ export default function Details({ result }: { result: PredictResponse }) {
     },
   };
   return (
-    <section className="card">
-      <details>
-        <summary className="block-title" style={{ marginBottom: 0 }}>
-          4 · Detalles técnicos
-        </summary>
-        <table>
-          <tbody>
-            <tr>
-              <th scope="row">Versión del modelo</th>
-              <td>
-                <code>{result.model_version}</code>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Latencia en el servidor</th>
-              <td>{result.latency_ms.toFixed(0)} ms</td>
-            </tr>
-            <tr>
-              <th scope="row">Imagen recibida</th>
-              <td>
-                {result.input.width} × {result.input.height} px, {result.input.format}
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Estado del mapa</th>
-              <td>
-                <code>{result.cam.status}</code>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <details className="tech">
+      <summary>
+        <ChevronIcon />
+        Detalles técnicos
+      </summary>
+      <div className="body">
+        <dl className="defs">
+          <dt>Versión del modelo</dt>
+          <dd>
+            <code>{result.model_version}</code>
+          </dd>
+          <dt>Latencia en el servidor</dt>
+          <dd className="num">{result.latency_ms.toFixed(0)} ms</dd>
+          <dt>Imagen recibida</dt>
+          <dd className="num">
+            {result.input.width} × {result.input.height} px, {result.input.format}
+          </dd>
+          <dt>Estado del mapa</dt>
+          <dd>
+            <code>{result.cam.status}</code>
+          </dd>
+        </dl>
         <pre>{JSON.stringify(compact, null, 2)}</pre>
-      </details>
-    </section>
+      </div>
+    </details>
   );
 }
