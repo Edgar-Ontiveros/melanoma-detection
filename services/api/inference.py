@@ -1,6 +1,8 @@
 """Cadena de inferencia de la API: bytes → PIL → etapa 1 (F1: lado largo 512, Lanczos, JPEG 95)
-→ etapa 2 (cúbico a 224 + recorte central + normalización) → ONNX → Platt → decisión en τ95
-→ CAM. Devuelve además el desglose de tiempos para F6.4."""
+→ etapa 2 (cúbico a 224 + recorte central + normalización) → ONNX de cada miembro → logit =
+media de logits (F6b; con un solo miembro es el logit) → Platt → decisión en τ95 → CAM (media
+de los mapas crudos de los miembros, luego ReLU y máximo). Devuelve además el desglose de
+tiempos para F6.4."""
 
 from __future__ import annotations
 
@@ -13,7 +15,7 @@ import numpy as np
 import onnxruntime as ort
 from PIL import Image, UnidentifiedImageError
 from services.api.bundle import Bundle
-from services.api.cam import cam_from_features, upsample
+from services.api.cam import ensemble_cam, upsample
 from services.api.preprocess import Preprocessor
 
 ACCEPTED_FORMATS = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}
@@ -31,6 +33,7 @@ class InputError(ValueError):
 @dataclass
 class Prediction:
     logit: float
+    member_logits: list[float]
     probability: float
     refer: bool
     cam_grid: np.ndarray
@@ -79,14 +82,25 @@ class Predictor:
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = int(intra_op_threads)
         opts.inter_op_num_threads = 1
-        self.session = ort.InferenceSession(
-            str(bundle.onnx_path), sess_options=opts, providers=["CPUExecutionProvider"]
-        )
+        self.sessions = [
+            ort.InferenceSession(
+                str(m.onnx_path), sess_options=opts, providers=["CPUExecutionProvider"]
+            )
+            for m in bundle.members
+        ]
+        self.cam_weights = [m.cam_weights for m in bundle.members]
         self.input_name = bundle.manifest["onnx"]["input"]
         self.output_names = list(bundle.manifest["onnx"]["outputs"])
         self.platt_a = float(bundle.calibration["a"])
         self.platt_b = float(bundle.calibration["b"])
         self.threshold = float(bundle.operating["threshold"])
+
+    @property
+    def session(self) -> ort.InferenceSession:
+        """La sesión del paquete de un solo modelo (F6); un ensamble tiene ``sessions``."""
+        if len(self.sessions) != 1:
+            raise ValueError("el paquete es un ensamble: usar predictor.sessions")
+        return self.sessions[0]
 
     def calibrate(self, logit: float) -> float:
         z = self.platt_a * logit + self.platt_b
@@ -100,16 +114,21 @@ class Predictor:
         crop, x = self.pre(rgb)
         t["preprocess"] = (time.perf_counter() - t0) * 1000
         t1 = time.perf_counter()
-        logit_arr, feats = self.session.run(self.output_names, {self.input_name: x})
+        logits, feats = [], []
+        for session in self.sessions:
+            logit_arr, f = session.run(self.output_names, {self.input_name: x})
+            logits.append(float(logit_arr[0, 0]))
+            feats.append(f[0])
         t["onnx"] = (time.perf_counter() - t1) * 1000
         t2 = time.perf_counter()
-        logit = float(logit_arr[0, 0])
+        logit = float(np.mean(logits))  # promedio de LOGITS (F6b: ensemble = logit_mean)
         prob = self.calibrate(logit)
-        grid = cam_from_features(feats[0], self.bundle.cam_weights)
+        grid = ensemble_cam(feats, self.cam_weights)
         status = "ok" if grid.max() > 0 else "no_positive_evidence"
         t["cam"] = (time.perf_counter() - t2) * 1000
         return Prediction(
             logit=logit,
+            member_logits=logits,
             probability=prob,
             refer=bool(prob >= self.threshold),
             cam_grid=grid,

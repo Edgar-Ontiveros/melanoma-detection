@@ -87,6 +87,10 @@ def main() -> None:
     ap.add_argument("--image", default=f"data/processed/isic2020_512/{DEFAULT_IMAGE}.jpg")
     ap.add_argument("--url", default=None)
     ap.add_argument("--out", default="reports/f6_latency.md")
+    ap.add_argument(
+        "--target-ms", type=float, default=500.0, help="objetivo p95 (F6: 500; F6b: 200)"
+    )
+    ap.add_argument("--title", default="F6 — Latencia de la API en CPU")
     a = ap.parse_args()
     image = ROOT / a.image
     data = image.read_bytes()
@@ -111,16 +115,17 @@ def main() -> None:
     except Exception:  # noqa: BLE001
         model_name = cpu
     verdict = (
-        "**cumple** el objetivo p95 < 500 ms"
-        if q["p95"] < 500
-        else "**NO cumple** el objetivo p95 < 500 ms"
+        f"**cumple** el objetivo p95 < {a.target_ms:.0f} ms"
+        if q["p95"] < a.target_ms
+        else f"**NO cumple** el objetivo p95 < {a.target_ms:.0f} ms"
     )
-    md = f"""# F6 — Latencia de la API en CPU
+    members = first.get("model_version", "")
+    md = f"""# {a.title}
 
 _Generado por `scripts/bench_api.py` el {time.strftime("%Y-%m-%d")}._
 
 - Máquina: {model_name}, {os.cpu_count()} hilos lógicos, {platform.system()} {platform.release()}.
-- Modo: {mode}. Modelo `{first["model_version"]}`; imagen `{image.name}` ({first["input"]["width"]}×{first["input"]["height"]} {first["input"]["format"]}, {len(data) / 1024:.0f} KB).
+- Modo: {mode}. Modelo `{members}`; imagen `{image.name}` ({first["input"]["width"]}×{first["input"]["height"]} {first["input"]["format"]}, {len(data) / 1024:.0f} KB).
 - {a.n} peticiones secuenciales a `POST /predict`, lote 1, tras 5 de calentamiento.
 
 ## Latencia total por petición (cliente, ms)

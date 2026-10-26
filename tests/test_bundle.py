@@ -49,6 +49,25 @@ def negative_bundle(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return out
 
 
+@pytest.fixture(scope="session")
+def ensemble_bundle(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """Paquete de prueba con ensamble de tres (F6b): semillas 0, 1 y 2."""
+    from scripts.make_test_bundle import build
+
+    out = tmp_path_factory.mktemp("bundle_ens")
+    build(out, seed=0, members=3)
+    return out
+
+
+@pytest.fixture(scope="session")
+def negative_ensemble_bundle(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    from scripts.make_test_bundle import build
+
+    out = tmp_path_factory.mktemp("bundle_ens_neg")
+    build(out, seed=0, negative_bias=-50.0, zero_weights=True, members=3)
+    return out
+
+
 def synthetic_rgb(h: int = 512, w: int = 768, seed: int = 0) -> np.ndarray:
     rng = np.random.default_rng(seed)
     img = np.full((h, w, 3), (210, 165, 150), dtype=np.float32)
@@ -274,9 +293,9 @@ def test_predictor_rejects_bad_bytes(test_bundle: Path, tmp_path: Path) -> None:
 def test_real_bundle_matches_checkpoint_and_parity() -> None:
     """Con el checkpoint real: el paquete existe, su manifiesto es válido y la paridad de
     F6.2 pasó en las cuatro comparaciones de tensores con decisiones idénticas."""
-    bundle_dir = ROOT / "models" / "bundle"
+    bundle_dir = ROOT / "models" / "bundle_single"
     if not bundle_dir.exists():
-        pytest.skip("models/bundle no existe (make export-bundle)")
+        pytest.skip("models/bundle_single no existe (make export-bundle f6.mode=single)")
     bundle = load_bundle(bundle_dir)
     expected = json.loads((ROOT / "reports" / "f3_final_model.json").read_text())["sha256"]
     assert bundle.manifest["checkpoint"]["sha256"] == expected
@@ -285,3 +304,133 @@ def test_real_bundle_matches_checkpoint_and_parity() -> None:
     for key in ("logit", "platt", "cam", "decision_tau95"):
         assert parity[key]["pass"], key
     assert parity["full_chain"]["decisions_identical"]
+
+
+# ---------------------------------------------------------------- F6b: ensamble
+
+
+def test_ensemble_bundle_manifest(ensemble_bundle: Path) -> None:
+    """Tres ONNX y tres vectores de pesos nombrados por miembro, archivos JSON compartidos,
+    `ensemble: logit_mean`, SHA256 de todo; un miembro alterado → no arranca."""
+    manifest = json.loads((ensemble_bundle / "manifest.json").read_text())
+    assert manifest["ensemble"]["method"] == "logit_mean" and manifest["ensemble"]["n_members"] == 3
+    assert [m["run"] for m in manifest["members"]] == ["test-s0", "test-s1", "test-s2"]
+    for m in manifest["members"]:
+        assert (ensemble_bundle / m["onnx"]).exists() and (
+            ensemble_bundle / m["cam_weights"]
+        ).exists()
+        assert manifest["files"][m["onnx"]] == m["onnx_sha256"]
+        assert len(m["checkpoint"]["sha256"]) == 64
+    assert manifest["onnx"]["features_shape"] == [1280, 7, 7]
+    bundle = load_bundle(ensemble_bundle)
+    assert bundle.n_members == 3 and bundle.ensemble == "logit_mean"
+    with pytest.raises(BundleError, match="ensamble"):
+        _ = bundle.onnx_path
+    import shutil
+
+    broken = tmp_dir = ensemble_bundle.parent / "broken_member"
+    if tmp_dir.exists():
+        shutil.rmtree(tmp_dir)
+    shutil.copytree(ensemble_bundle, broken)
+    w = np.load(broken / "cam_weights_test-s1.npy")
+    np.save(broken / "cam_weights_test-s1.npy", w * 2)
+    with pytest.raises(BundleError, match="SHA256"):
+        load_bundle(broken)
+
+
+def test_parity_ensemble(ensemble_bundle: Path) -> None:
+    """F6b.2 en sintético: la API promedia los LOGITS de los tres ONNX (no las probabilidades)
+    y su CAM es la media de los mapas crudos w_i·A_i, luego ReLU y máximo; igual al cálculo
+    con los mismos pesos en torch."""
+    from scripts.make_test_bundle import random_model
+    from services.api.cam import ensemble_cam
+
+    bundle = load_bundle(ensemble_bundle)
+    predictor = Predictor(bundle, intra_op_threads=2)
+    pre = Preprocessor(bundle.preprocess)
+    img = synthetic_rgb(seed=7)
+    _, x = pre(img)
+    xt = torch.tensor(x)
+    feats_t, logits_t, weights = [], [], []
+    for i in range(3):
+        model, _ = random_model(i, None, False)
+        with torch.no_grad():
+            f = model.backbone.forward_features(xt)
+            z = model.head(f.mean(dim=(2, 3)))
+        feats_t.append(f[0].numpy())
+        logits_t.append(float(z[0, 0]))
+        weights.append(model.head.fc.weight.detach().numpy().reshape(-1))
+    pred = predictor.predict_array(img)
+    scale = max(1.0, max(abs(v) for v in logits_t))
+    assert len(pred.member_logits) == 3
+    for got, ref in zip(pred.member_logits, logits_t, strict=True):
+        assert abs(got - ref) / scale < 1e-4
+    assert pred.logit == pytest.approx(float(np.mean(pred.member_logits)), abs=1e-9)
+    # promedio de probabilidades ≠ promedio de logits (con logits distintos)
+    probs = [predictor.calibrate(z) for z in pred.member_logits]
+    if max(logits_t) - min(logits_t) > 1e-3:
+        assert pred.probability != pytest.approx(float(np.mean(probs)), abs=1e-12)
+    cam_ref = ensemble_cam(feats_t, weights)
+    if cam_ref.max() > 0:
+        assert np.corrcoef(cam_ref.ravel(), pred.cam_grid.ravel())[0, 1] > 0.999
+    assert pred.cam_grid.shape == (7, 7)
+    # Linealidad: media de mapas crudos == mapa crudo del "modelo promedio" en cada celda
+    from services.api.cam import raw_cam
+
+    raws = np.mean([raw_cam(f, w) for f, w in zip(feats_t, weights, strict=True)], axis=0)
+    assert raws.shape == (7, 7)
+
+
+def test_bundle_matches_protocol() -> None:
+    """El exportador compara el paquete con el protocolo valor por valor (F6b.1)."""
+    from melanoma.export.bundle import protocol_mismatches
+
+    shas = [f"{i:064x}" for i in range(3)]
+    manifest = {
+        "ensemble": {"method": "logit_mean"},
+        "members": [
+            {"run": f"a1-s{i}", "checkpoint": {"file": f"a1-s{i}.ckpt", "sha256": s}}
+            for i, s in enumerate(shas)
+        ],
+    }
+    calibration = {"a": 0.5, "b": -3.0}
+    thresholds = {"tau_95": {"tau": 0.004}, "tau_90": {"tau": 0.006}}
+    protocol = {
+        "models": [{"file": f"a1-s{i}.ckpt", "sha256": s} for i, s in enumerate(shas)],
+        "ensemble": "logit_mean",
+        "tta": ["identity"],
+        "stacker": None,
+        "calibration": {"a": 0.5, "b": -3.0},
+        "thresholds": {"tau_95": 0.004, "tau_90": 0.006},
+    }
+    assert protocol_mismatches(manifest, calibration, thresholds, protocol) == []
+    bad = json.loads(json.dumps(protocol))
+    bad["calibration"]["a"] = 0.51
+    bad["thresholds"]["tau_90"] = 0.0061
+    bad["tta"] = ["identity", "hflip"]
+    bad["models"][2]["sha256"] = "f" * 64
+    found = protocol_mismatches(manifest, calibration, thresholds, bad)
+    assert (
+        len(found) == 4 and any("Platt a" in f for f in found) and any("tau_90" in f for f in found)
+    )
+
+
+@pytest.mark.local
+def test_real_ensemble_bundle_matches_protocol_and_parity() -> None:
+    """Con los checkpoints reales: models/bundle es el ensamble del protocolo de F4b y la
+    paridad de F6b.2 pasó, incluida la comparación con el caché de logits de F3b."""
+    from omegaconf import OmegaConf
+
+    from melanoma.export.bundle import protocol_mismatches
+
+    bundle_dir = ROOT / "models" / "bundle"
+    if not bundle_dir.exists():
+        pytest.skip("models/bundle no existe (make export-bundle)")
+    bundle = load_bundle(bundle_dir)
+    protocol = OmegaConf.to_container(OmegaConf.load(ROOT / "docs" / "f4b_protocol.yaml"))
+    assert (
+        protocol_mismatches(bundle.manifest, bundle.calibration, bundle.thresholds, protocol) == []
+    )
+    parity = json.loads((ROOT / "reports" / "f6b_parity.json").read_text())
+    assert parity["model_version"] == bundle.model_version and parity["all_pass"]
+    assert parity["vs_val_logits_cache"]["pass"]

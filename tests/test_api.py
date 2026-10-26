@@ -17,7 +17,13 @@ from PIL import Image
 from services.api.bundle import BundleError
 from services.api.main import DISCLAIMER, build_app
 
-from tests.test_bundle import negative_bundle, synthetic_rgb, test_bundle  # noqa: F401
+from tests.test_bundle import (  # noqa: F401
+    ensemble_bundle,
+    negative_bundle,
+    negative_ensemble_bundle,
+    synthetic_rgb,
+    test_bundle,
+)
 
 REQUIRED = {
     "model_version",
@@ -152,3 +158,45 @@ def test_app_refuses_to_start_with_tampered_bundle(test_bundle: Path, tmp_path: 
     with pytest.raises(BundleError, match="calibration.json"):
         with TestClient(build_app(broken, intra_op_threads=1)):
             pass
+
+
+# ---------------------------------------------------------------- F6b: ensamble
+
+
+def test_api_ensemble(ensemble_bundle: Path, negative_ensemble_bundle: Path) -> None:  # noqa: F811
+    """Tres miembros: /predict cumple el contrato de F6 (CAM 7×7, recorte, decisión), el logit
+    y la probabilidad cruda nunca salen, y `no_positive_evidence` funciona con el ensamble."""
+    with TestClient(build_app(ensemble_bundle, intra_op_threads=2)) as c:
+        assert c.get("/api/health").json()["status"] == "ok"
+        body = c.post(
+            "/api/predict", files={"file": ("x.jpg", encode(synthetic_rgb()), "image/jpeg")}
+        ).json()
+        assert REQUIRED <= set(body)
+        assert len(body["cam"]["grid"]) == 7 and all(len(r) == 7 for r in body["cam"]["grid"])
+        assert body["refer"] == (body["probability"] >= body["threshold"])
+        assert "logit" not in body and "member_logits" not in body
+        with Image.open(io.BytesIO(base64.b64decode(body["cam"]["crop_png_base64"]))) as im:
+            assert im.size == (224, 224)
+    with TestClient(build_app(negative_ensemble_bundle, intra_op_threads=2)) as c:
+        body = c.post(
+            "/api/predict", files={"file": ("x.jpg", encode(synthetic_rgb()), "image/jpeg")}
+        ).json()
+    assert body["cam"]["status"] == "no_positive_evidence" and body["cam"]["png_base64"] is None
+    assert not any(v for row in body["cam"]["grid"] for v in row) and body["refer"] is False
+
+
+def test_model_info_ensemble(ensemble_bundle: Path, client: TestClient) -> None:  # noqa: F811
+    """/model-info declara el ensamble, trae `previous_model` para la tabla lado a lado y el
+    punto de operación del protocolo; con un solo modelo `ensemble` es null."""
+    with TestClient(build_app(ensemble_bundle, intra_op_threads=2)) as c:
+        info = c.get("/api/model-info").json()
+    assert info["ensemble"] == {"members": 3, "method": "logit_mean"}
+    assert info["manifest"]["ensemble"]["n_members"] == 3
+    assert [m["run"] for m in info["manifest"]["members"]] == ["test-s0", "test-s1", "test-s2"]
+    prev = info["previous_model"]
+    assert prev and {"auroc", "auprc", "tau_95", "label"} <= set(prev)
+    op = info["operating_point"]
+    assert op["key"] == "tau_95" and op["threshold"] == info["thresholds"]["tau_95"]["tau"]
+    assert info["disclaimer"] == DISCLAIMER
+    single = client.get("/api/model-info").json()
+    assert single["ensemble"] is None and single["previous_model"] is None

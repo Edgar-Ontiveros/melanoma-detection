@@ -13,21 +13,30 @@ y se niega a levantar si alguno no coincide (`tests/test_api.py::test_app_refuse
 ## El paquete de modelo
 
 `models/bundle/` (fuera de git; release asset con SHA256), generado por
-`make export-bundle` (`scripts/export_bundle.py`, `melanoma.export.bundle`):
+`make export-bundle` (`scripts/export_bundle.py`, `melanoma.export.bundle`). Desde F6b el
+paquete es un **ensamble de tres** (E1/none de `docs/f4b_protocol.yaml`: A1 semillas 0, 1 y 2,
+promedio de logits, sin TTA, sin apilador); el exportador compara miembros, Platt y umbrales con
+el protocolo valor por valor y se detiene si algo difiere:
 
 | Archivo | Contenido | Origen |
 |---|---|---|
-| `model.onnx` | Backbone + cabeza, opset 17, lote dinámico, dos salidas: `logit [N, 1]` y `features [N, 1280, 7, 7]` (salida de `backbone.bn2`) | checkpoint de F3 en `eval()`, exportador TorchScript |
-| `preprocess.json` | `stage1` (lado largo 512, Lanczos, JPEG 95: el redimensionado de F1), `input_size` 224, `interpolation` bicubic, `mean`/`std` (0.5, 0.5, 0.5), `val_resize` center_crop | `configs/data/isic2020.yaml` (resize) y `timm.data.resolve_data_config` |
-| `calibration.json` | Platt `a`, `b` ajustados sobre validación | `reports/f4_calibration.json` |
-| `thresholds.json` | τ95 (operación) y τ90 con sensibilidad/especificidad en validación | `reports/f4_calibration.json` |
-| `cam_weights.npy` | los 1280 pesos de la capa lineal | checkpoint |
-| `metrics.json` | AUC-ROC, AUPRC (IC 95 % por paciente), sens/spec/VPP/VPN en τ95 **del test** | `reports/f4_test_results.json` |
-| `manifest.json` | `model_version`, SHA256 de cada archivo, SHA del checkpoint, git SHA, fecha, opset, versiones | generado |
+| `model_<corrida>.onnx` (×3) | Backbone + cabeza de cada miembro, opset 17, lote dinámico, dos salidas: `logit [N, 1]` y `features [N, 1280, 7, 7]` (salida de `backbone.bn2`) | checkpoints de F3 en `eval()`, exportador TorchScript |
+| `cam_weights_<corrida>.npy` (×3) | los 1280 pesos de la capa lineal de cada miembro (el CAM del ensamble promedia los mapas crudos `w_i·A_i` antes de ReLU y normalización) | checkpoints |
+| `preprocess.json` | `stage1` (lado largo 512, Lanczos, JPEG 95: el redimensionado de F1), `input_size` 224, `interpolation` bicubic, `mean`/`std` (0.5, 0.5, 0.5), `val_resize` center_crop; **uno solo** para los tres miembros | `configs/data/isic2020.yaml` (resize) y `timm.data.resolve_data_config` |
+| `calibration.json` | Platt `a`, `b` sobre el logit promedio, ajustados sobre validación | `docs/f4b_protocol.yaml` |
+| `thresholds.json` | τ95 (operación) y τ90 con sensibilidad/especificidad en validación | `docs/f4b_protocol.yaml` (p5/p95 de `reports/f3b_ensemble.json`) |
+| `metrics.json` | AUC-ROC, AUPRC y sens/spec/VPP/VPN en τ95 **del test de F4b** con IC 95 % por paciente, `base_rate`, y `previous_model` con las del modelo único de F4 | `reports/f4b_test_results.json`, `reports/f4_test_results.json` y sus predicciones |
+| `manifest.json` | `model_version`, `ensemble` (`logit_mean`, 3 miembros), `members` (ONNX, pesos y checkpoint con SHA256), SHA256 de cada archivo, git SHA, fecha, opset, versiones | generado |
 
-`model_version` = `{git_sha_corto}-{checkpoint_sha_8}`; el paquete actual es
-`c62a515-e0ecf981`. Paridad con PyTorch verificada en `reports/f6_parity.json`
-(`make verify-bundle`).
+`model_version` = `{git_sha_corto}-{sha8}`, con `sha8` = los ocho primeros caracteres del
+SHA256 de los SHA256 de los tres checkpoints (en un paquete de un solo modelo, los del
+checkpoint). Paridad con PyTorch verificada en `reports/f6b_parity.json` (`make verify-bundle`):
+media de logits ONNX vs torch, Platt, CAM promediado, cadena completa desde bytes, originales de
+hasta 6,000 px y, por miembro, contra el caché de logits de F3b.
+
+El paquete de un solo modelo de F6 (`c62a515-e0ecf981`, `model.onnx` + `cam_weights.npy`)
+sigue siendo válido para la misma API (`make export-bundle f6.mode=single` →
+`models/bundle_single/`) y se conserva como release anterior.
 
 Para CI y Docker existe un **paquete de prueba** con pesos aleatorios y la misma estructura
 (`make test-bundle` → `models/test_bundle/`, `manifest.kind = "test"`, métricas marcadas
@@ -40,7 +49,7 @@ make setup                                   # instala también el grupo api
 make export-bundle                           # necesita data/models/<checkpoint> (o bajar el release)
 make api                                     # uvicorn en http://127.0.0.1:8000  (MODEL_BUNDLE_DIR=models/bundle)
 
-# Docker (imagen de ~420 MB sin comprimir, ~155 MB comprimida; el paquete se monta, no va dentro)
+# Docker (imagen de ~440 MB sin comprimir, ~155 MB comprimida, límite 650; el paquete se monta, no va dentro)
 make docker-api
 docker run --rm -p 8000:8000 -v "$PWD/models/bundle:/bundle:ro" melanoma-api
 ```
@@ -119,17 +128,21 @@ Es el `HEALTHCHECK` de la imagen Docker.
 
 ### `GET /api/model-info`
 
-La API se describe a sí misma: `manifest.json` completo, `metrics.json` (métricas del test
-con intervalos), `thresholds.json`, `calibration.json`, `preprocess.json` y el `disclaimer`.
-Con el paquete actual:
+La API se describe a sí misma: `ensemble` (`{"members": 3, "method": "logit_mean"}`, o `null`
+con un paquete de un solo modelo), `manifest.json` completo, `metrics.json` (métricas del test
+con intervalos; `tau_95.ci` trae los IC de sensibilidad, especificidad, VPP y VPN),
+`previous_model` (las del modelo único de F4, para la tabla lado a lado), `operating_point`
+(τ95 del protocolo con su sensibilidad objetivo), `thresholds.json`, `calibration.json`,
+`preprocess.json` y el `disclaimer`. Con el paquete actual (ensamble, test del 2026-10-26) y el
+anterior (modelo único, 2026-09-18):
 
-| Métrica (test, 5,252 imágenes, 86 melanomas) | Valor [IC 95 % por paciente] |
-|---|---|
-| AUC-ROC | 0.834 [0.795, 0.872] |
-| AUPRC | 0.096 [0.065, 0.154] |
-| Sensibilidad en τ95 | 0.965 (83 de 86) |
-| Especificidad en τ95 | 0.428 |
-| VPP / VPN en τ95 | 0.027 / 0.9986 |
+| Métrica (test, 5,252 imágenes, 86 melanomas) | Modelo único (F4) | Ensamble (F4b) |
+|---|---|---|
+| AUC-ROC | 0.834 [0.795, 0.872] | 0.843 [0.804, 0.881] |
+| AUPRC | 0.096 [0.065, 0.154] | 0.113 [0.076, 0.179] |
+| Sensibilidad en τ95 | 0.965 (83 de 86) | 0.977 (84 de 86) |
+| Especificidad en τ95 | 0.428 | 0.393 |
+| VPP / VPN en τ95 | 0.027 / 0.9986 | 0.026 / 0.9990 |
 
 ### `GET /api/limitations`
 

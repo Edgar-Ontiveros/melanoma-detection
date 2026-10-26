@@ -1,7 +1,7 @@
 import { marked } from "marked";
 import { useEffect, useState } from "react";
 
-import { ApiError, limitations, type Interval, type Limitations, type ModelInfo } from "../api";
+import { ApiError, limitations, type Interval, type Limitations, type Metrics, type ModelInfo } from "../api";
 import type { ModelInfoState } from "../App";
 import ErrorBox from "../components/ErrorBox";
 import { formatDateEs, formatInt, formatPercent } from "../lib/format";
@@ -13,41 +13,68 @@ function ci(x: Interval, decimals = 3): string {
   return `${f(x.point)} [${f(x.lo)}, ${f(x.hi)}]`;
 }
 
-function Performance({ info }: { info: ModelInfo }) {
-  const m = info.metrics;
+/** Porcentaje con su intervalo cuando la API lo trae. */
+function pctCi(value: number, interval: Interval | undefined, decimals = 1): string {
+  const v = formatPercent(value, decimals);
+  if (!interval) return v;
+  return `${v} [${formatPercent(interval.lo, decimals)}, ${formatPercent(interval.hi, decimals)}]`;
+}
+
+function metricRows(m: Metrics): [string, string][] {
   const t = m.tau_95;
-  const rows: [string, string][] = [
+  return [
     ["AUC-ROC", ci(m.auroc)],
     ["AUPRC", ci(m.auprc)],
-    ["Sensibilidad en τ95", `${formatPercent(t.sensitivity)} (${t.tp} de ${t.tp + t.fn} melanomas)`],
-    ["Especificidad en τ95", `${formatPercent(t.specificity)} (${formatInt(t.tn)} de ${formatInt(t.tn + t.fp)} benignas)`],
-    ["Valor predictivo positivo", formatPercent(t.ppv)],
-    ["Valor predictivo negativo", formatPercent(t.npv, 2)],
+    ["Sensibilidad en τ95", `${pctCi(t.sensitivity, t.ci?.sensitivity)} (${t.tp} de ${t.tp + t.fn} melanomas)`],
+    ["Especificidad en τ95", `${pctCi(t.specificity, t.ci?.specificity)} (${formatInt(t.tn)} de ${formatInt(t.tn + t.fp)} benignas)`],
+    ["Valor predictivo positivo", pctCi(t.ppv, t.ci?.ppv)],
+    ["Valor predictivo negativo", pctCi(t.npv, t.ci?.npv, 2)],
     ["Prevalencia en el conjunto de prueba", formatPercent(m.prevalence, 2)],
   ];
+}
+
+function Performance({ info }: { info: ModelInfo }) {
+  const m = info.metrics;
+  const prev = info.previous_model ?? m.previous_model ?? null;
+  const level = Math.round(m.ci.level * 100);
+  const rows = metricRows(m);
+  const prevRows = prev ? metricRows(prev) : null;
   return (
     <>
+      {info.ensemble && (
+        <p>
+          El modelo es un <strong>ensamble de {info.ensemble.members} redes</strong> de la misma
+          arquitectura, entrenadas con semillas distintas; su salida es el promedio de los logits.
+          {prev && " La tabla compara su desempeño con el del modelo único anterior, medido sobre el mismo conjunto de prueba."}
+        </p>
+      )}
       <table>
         <thead>
           <tr>
             <th scope="col">Métrica</th>
-            <th scope="col">Valor [intervalo de confianza del {Math.round(m.ci.level * 100)} %]</th>
+            {prevRows && <th scope="col">{prev?.label ?? "Modelo anterior"}</th>}
+            <th scope="col">
+              {prevRows ? m.label ?? "Modelo actual" : `Valor [intervalo de confianza del ${level} %]`}
+            </th>
           </tr>
         </thead>
         <tbody>
-          {rows.map(([k, v]) => (
+          {rows.map(([k, v], i) => (
             <tr key={k}>
               <th scope="row">{k}</th>
+              {prevRows && <td className="num">{prevRows[i][1]}</td>}
               <td className="num">{v}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <p>
-        Medido una sola vez sobre {formatInt(m.n_images)} imágenes de {formatInt(m.n_patients)}{" "}
-        pacientes que el modelo nunca vio, el {formatDateEs(m.date)}. Intervalos por bootstrap por
-        paciente ({formatInt(m.ci.n_resamples)} remuestreos). El umbral τ95 se fijó sobre
-        validación para una sensibilidad objetivo de {formatPercent(info.thresholds.tau_95.sensitivity_target, 0)}.
+        Medido {prev ? "en el segundo y último acceso al conjunto de prueba" : "una sola vez"} sobre{" "}
+        {formatInt(m.n_images)} imágenes de {formatInt(m.n_patients)} pacientes que el modelo nunca vio, el{" "}
+        {formatDateEs(m.date)}
+        {prev && `; el modelo anterior, el ${formatDateEs(prev.date)}`}. Intervalos del {level} % por bootstrap por
+        paciente ({formatInt(m.ci.n_resamples)} remuestreos). El umbral τ95 se fijó sobre validación para una
+        sensibilidad objetivo de {formatPercent(info.thresholds.tau_95.sensitivity_target, 0)}.
       </p>
     </>
   );
@@ -182,6 +209,18 @@ export default function ModelPage({ state }: { state: ModelInfoState }) {
                   {info.manifest.kind === "test" && " (paquete de prueba con pesos aleatorios)"}
                 </td>
               </tr>
+              {info.ensemble && info.manifest.members && (
+                <tr>
+                  <th scope="row">Miembros</th>
+                  <td>
+                    {info.manifest.members.map((mb) => (
+                      <div key={mb.run}>
+                        <code>{mb.run}</code> · <code>{mb.checkpoint.sha256.slice(0, 12)}…</code>
+                      </div>
+                    ))}
+                  </td>
+                </tr>
+              )}
               <tr>
                 <th scope="row">Commit</th>
                 <td>

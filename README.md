@@ -120,7 +120,7 @@ se descomprime en `models/`. Contrato de la API en `docs/API.md`.
 ## Estructura del repositorio
 
 ```
-.github/workflows/   CI: ruff, pytest, humo, build de la API y límite de 500 MB sin comprimir
+.github/workflows/   CI: ruff, pytest, humo, build de la API y límite de 650 MB sin comprimir
 configs/             Configuración Hydra: data/, model/, train/, experiment/ y composiciones raíz (config, prepare, smoke, baseline_b0)
 src/melanoma/        Paquete Python: data (manifiesto, dedup, splits, resize), models (fábrica timm), train, eval, explain, export, utils
 services/api/        API de inferencia FastAPI + onnxruntime (grupo `api`, sin torch ni core) y su Dockerfile
@@ -221,3 +221,12 @@ El entrenamiento corre en Kaggle. Ahí se adjunta la distribución oficial de la
 | F9 | Documento y defensa | Pendiente |
 
 Diagnóstico del hardware de desarrollo: `docs/hardware.md`.
+
+## Imagen Docker: límite de 650 MB sin comprimir
+
+La imagen de la API (`services/api/Dockerfile`) debe medir **menos de 650 MB sin comprimir**
+(`make docker-size`, mismo criterio en CI: suma de capas de `docker history`). El límite subió
+de 500 a 650 MB en F6b por margen para el ensamble (el paquete se monta, no va dentro; la imagen
+no crece por él). La regla sigue cumpliendo su función: `torch` instalado ocupa 741 MB, así que
+colarlo en el grupo `api` sigue haciendo fallar el CI. Tamaño actual: ~440 MB sin comprimir,
+~155 MB comprimida.

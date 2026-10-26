@@ -2,7 +2,8 @@
 de modelo, y la interfaz web (build de Vite) servida como archivos estáticos.
 
 Endpoints bajo ``/api``: ``POST /api/predict`` (una imagen), ``GET /api/health``,
-``GET /api/model-info``, ``GET /api/limitations`` (docs/f4_limitations.md en Markdown).
+``GET /api/model-info`` (con ``ensemble`` y ``previous_model`` desde F6b), ``GET /api/limitations``
+(docs/f4_limitations.md en Markdown).
 La SPA se sirve en ``/`` desde ``WEB_DIST_DIR`` (si existe) con *fallback* a ``index.html``
 para las rutas del cliente (``/modelo``). Un solo contenedor, un solo puerto.
 
@@ -128,7 +129,7 @@ def build_app(
     app = FastAPI(
         title="API de detección asistida de melanoma",
         description="Detección asistida de melanoma (educativo, no diagnóstico).",
-        version="F7",
+        version="F6b",
         lifespan=lifespan,
         docs_url=f"{API_PREFIX}/docs",
         openapi_url=f"{API_PREFIX}/openapi.json",
@@ -150,10 +151,20 @@ def build_app(
     @api.get("/model-info")
     async def model_info() -> dict[str, Any]:
         b: Bundle = app.state.bundle
+        op = b.operating
         return {
             "model_version": b.model_version,
+            "ensemble": ({"members": b.n_members, "method": b.ensemble} if b.ensemble else None),
             "manifest": b.manifest,
             "metrics": b.metrics,
+            "previous_model": b.metrics.get("previous_model"),
+            "operating_point": {
+                "key": op["key"],
+                "threshold": op["threshold"],
+                "sensitivity_target": op["sensitivity_target"],
+                "sensitivity_test": op["sensitivity_test"],
+                "specificity_test": op["specificity_test"],
+            },
             "thresholds": b.thresholds,
             "calibration": dict(b.calibration),
             "preprocess": b.preprocess,

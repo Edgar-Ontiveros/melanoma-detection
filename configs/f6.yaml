@@ -34,6 +34,23 @@ f6:
   parity_json: reports/f6_parity.json
   latency_md: reports/f6_latency.md
   bench_requests: 200
+  # ---- F6b: paquete con el ensamble E1/none (docs/specs/F6b.md). `mode: ensemble` es el
+  # paquete que se despliega; `mode: single` reexporta el de F6 a single_bundle_dir.
+  mode: ensemble
+  ensemble:
+    protocol: docs/f4b_protocol.yaml           # fuente de miembros, Platt, τ95/τ90; se compara valor por valor
+    ensemble_json: reports/f3b_ensemble.json  # p5/p95 de los umbrales y n de validación
+    test_results_json: reports/f4b_test_results.json
+    test_predictions: reports/predictions/f4b_test.csv     # IC de sens/spec/VPP/VPN en τ95
+    previous_test_results_json: reports/f4_test_results.json
+    previous_test_predictions: reports/predictions/f4_test.csv
+    bundle_dir: models/bundle                  # el que sirve la API y se publica (F6b.6)
+    single_bundle_dir: models/bundle_single    # el paquete de F6, conservado
+    val_logits_npz: reports/predictions/f3b_val_logits.npz
+    tolerance_vs_cache: 1.0e-3                 # F6b.2: API por miembro vs caché (vista identity)
+    parity_json: reports/f6b_parity.json
+    latency_md: reports/f6b_latency.md
+    latency_target_ms: 200
 
 hydra:
   run:

@@ -1,6 +1,7 @@
-"""Carga del paquete de modelo (F6.3). La API no conoce ningún número del modelo: todo se
-lee de aquí, y antes de servir se verifica el SHA256 de cada archivo contra el manifiesto.
-Un paquete a medias o alterado no levanta."""
+"""Carga del paquete de modelo (F6.3, F6b). La API no conoce ningún número del modelo: todo
+se lee de aquí, y antes de servir se verifica el SHA256 de cada archivo contra el manifiesto.
+Un paquete a medias o alterado no levanta. Un paquete puede traer un modelo (F6: ``model.onnx``)
+o varios (F6b: ``members`` en el manifiesto, ensamble por promedio de logits)."""
 
 from __future__ import annotations
 
@@ -14,14 +15,9 @@ from typing import Any
 import numpy as np
 
 ENV_BUNDLE_DIR = "MODEL_BUNDLE_DIR"
-REQUIRED_FILES = (
-    "model.onnx",
-    "preprocess.json",
-    "calibration.json",
-    "thresholds.json",
-    "cam_weights.npy",
-    "metrics.json",
-)
+REQUIRED_JSON = ("preprocess.json", "calibration.json", "thresholds.json", "metrics.json")
+SINGLE_MODEL_FILES = ("model.onnx", "cam_weights.npy")
+REQUIRED_FILES = SINGLE_MODEL_FILES + REQUIRED_JSON  # paquete de un solo modelo (F6)
 
 
 class BundleError(RuntimeError):
@@ -43,7 +39,14 @@ def verify_manifest(bundle_dir: Path) -> dict[str, Any]:
         raise BundleError(f"falta {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     files = manifest.get("files", {})
-    missing = [f for f in REQUIRED_FILES if f not in files]
+    required = list(REQUIRED_JSON)
+    members = manifest.get("members")
+    if members:  # ensamble (F6b): un ONNX y unos pesos por miembro
+        for m in members:
+            required += [str(m["onnx"]), str(m["cam_weights"])]
+    else:
+        required += list(SINGLE_MODEL_FILES)
+    missing = [f for f in required if f not in files]
     if missing:
         raise BundleError(f"el manifiesto no lista {missing}")
     for name, expected in files.items():
@@ -57,6 +60,16 @@ def verify_manifest(bundle_dir: Path) -> dict[str, Any]:
 
 
 @dataclass(frozen=True)
+class Member:
+    """Un modelo del paquete: su ONNX y los pesos de la cabeza lineal para el CAM."""
+
+    run: str
+    onnx_path: Path
+    cam_weights: np.ndarray
+    checkpoint_sha256: str
+
+
+@dataclass(frozen=True)
 class Bundle:
     dir: Path
     manifest: dict[str, Any]
@@ -64,15 +77,34 @@ class Bundle:
     calibration: dict[str, Any]
     thresholds: dict[str, Any]
     metrics: dict[str, Any]
-    cam_weights: np.ndarray
+    members: tuple[Member, ...]
 
     @property
     def model_version(self) -> str:
         return str(self.manifest["model_version"])
 
     @property
+    def ensemble(self) -> str | None:
+        """Método del ensamble (``logit_mean``) o ``None`` si el paquete es de un solo modelo."""
+        e = self.manifest.get("ensemble")
+        return str(e["method"]) if e else None
+
+    @property
+    def n_members(self) -> int:
+        return len(self.members)
+
+    @property
     def onnx_path(self) -> Path:
-        return self.dir / "model.onnx"
+        """El ONNX del paquete de un solo modelo (F6). Un ensamble tiene ``members``."""
+        if self.n_members != 1:
+            raise BundleError("el paquete es un ensamble: usar bundle.members")
+        return self.members[0].onnx_path
+
+    @property
+    def cam_weights(self) -> np.ndarray:
+        if self.n_members != 1:
+            raise BundleError("el paquete es un ensamble: usar bundle.members")
+        return self.members[0].cam_weights
 
     @property
     def operating(self) -> dict[str, Any]:
@@ -105,7 +137,28 @@ def load_bundle(bundle_dir: Path | None = None) -> Bundle:
     def read(name: str) -> dict[str, Any]:
         return json.loads((d / name).read_text(encoding="utf-8"))
 
-    w = np.load(d / "cam_weights.npy").astype(np.float32).reshape(-1)
+    def weights(name: str) -> np.ndarray:
+        return np.load(d / name).astype(np.float32).reshape(-1)
+
+    if manifest.get("members"):
+        members = tuple(
+            Member(
+                run=str(m["run"]),
+                onnx_path=d / str(m["onnx"]),
+                cam_weights=weights(str(m["cam_weights"])),
+                checkpoint_sha256=str(m["checkpoint"]["sha256"]),
+            )
+            for m in manifest["members"]
+        )
+    else:
+        members = (
+            Member(
+                run="model",
+                onnx_path=d / "model.onnx",
+                cam_weights=weights("cam_weights.npy"),
+                checkpoint_sha256=str(manifest["checkpoint"]["sha256"]),
+            ),
+        )
     return Bundle(
         dir=d,
         manifest=manifest,
@@ -113,5 +166,5 @@ def load_bundle(bundle_dir: Path | None = None) -> Bundle:
         calibration=read("calibration.json"),
         thresholds=read("thresholds.json"),
         metrics=read("metrics.json"),
-        cam_weights=w,
+        members=members,
     )

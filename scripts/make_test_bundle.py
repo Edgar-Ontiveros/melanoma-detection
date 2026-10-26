@@ -3,10 +3,12 @@
 descargar nada), preprocess.json real de timm y calibración/umbrales/métricas sintéticos y
 marcados como tales. Misma estructura y tamaño que el paquete real.
 
-Uso: uv run python scripts/make_test_bundle.py [--out models/test_bundle] [--negative-bias B]
+Uso: uv run python scripts/make_test_bundle.py [--out models/test_bundle] [--members N] [--negative-bias B]
 ``--negative-bias`` fija el sesgo de la capa lineal (p. ej. −50) para que toda imagen dé logit
 muy negativo y ``--zero-weights`` anula los pesos de la capa lineal, con lo que el CAM es nulo
-→ caso ``no_positive_evidence``. Se usa también en las pruebas (``make_test_bundle.build``).
+→ caso ``no_positive_evidence``. ``--members N`` (F6b) produce un ensamble de N modelos con
+semillas ``seed, seed+1, …`` y un bloque ``previous_model`` sintético en metrics.json. Se usa
+también en las pruebas (``make_test_bundle.build``).
 """
 
 from __future__ import annotations
@@ -17,7 +19,7 @@ from pathlib import Path
 import torch
 from omegaconf import OmegaConf
 
-from melanoma.export.bundle import stage1_spec, write_bundle
+from melanoma.export.bundle import stage1_spec, write_bundle, write_ensemble_bundle
 from melanoma.models import build_model
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,6 +79,13 @@ SYNTHETIC_METRICS = {
     "ci": {"level": 0.95, "unit": "patient", "n_resamples": 0},
     "source": "make_test_bundle.py (SINTÉTICO)",
 }
+# Bloque `previous_model` sintético para el paquete de prueba con ensamble (F6b): la ficha
+# muestra la tabla lado a lado también con pesos aleatorios.
+SYNTHETIC_PREVIOUS = {
+    **{k: v for k, v in SYNTHETIC_METRICS.items() if k != "source"},
+    "label": "modelo único (SINTÉTICO)",
+    "source": "make_test_bundle.py (SINTÉTICO)",
+}
 
 
 def _stage1_from_config() -> dict:
@@ -85,12 +94,8 @@ def _stage1_from_config() -> dict:
     return stage1_spec(int(resize["long_side"]), int(resize["jpeg_quality"]))
 
 
-def build(
-    out: Path,
-    seed: int = 0,
-    negative_bias: float | None = None,
-    zero_weights: bool = False,
-) -> dict:
+def random_model(seed: int, negative_bias: float | None, zero_weights: bool):
+    """El backbone con pesos aleatorios reproducibles por semilla (las pruebas lo reconstruyen)."""
     torch.manual_seed(seed)
     model, data_config = build_model(BACKBONE, pretrained=False, num_classes=1, dropout=0.2)
     with torch.no_grad():
@@ -99,25 +104,60 @@ def build(
         if negative_bias is not None:
             model.head.fc.bias.fill_(float(negative_bias))
     model.eval()
-    return write_bundle(
-        model,
+    return model, data_config
+
+
+def build(
+    out: Path,
+    seed: int = 0,
+    negative_bias: float | None = None,
+    zero_weights: bool = False,
+    members: int = 1,
+) -> dict:
+    common = {
+        "image_size": IMAGE_SIZE,
+        "val_resize": "center_crop",
+        "stage1": _stage1_from_config(),
+        "opset": OPSET,
+        "calibration": SYNTHETIC_CALIBRATION,
+        "thresholds": SYNTHETIC_THRESHOLDS,
+        "git_sha": "test",
+    }
+    extra = {
+        "kind": "test",
+        "backbone": BACKBONE,
+        "warning": "PESOS ALEATORIOS: solo para CI y pruebas",
+    }
+    if members == 1:
+        model, data_config = random_model(seed, negative_bias, zero_weights)
+        return write_bundle(
+            model,
+            data_config,
+            out,
+            metrics=SYNTHETIC_METRICS,
+            checkpoint_sha256="0" * 64,
+            checkpoint_file=f"none (pesos aleatorios, semilla {seed})",
+            extra=extra,
+            **common,
+        )
+    entries = []
+    for i in range(members):
+        model, data_config = random_model(seed + i, negative_bias, zero_weights)
+        entries.append(
+            {
+                "run": f"test-s{seed + i}",
+                "model": model,
+                "checkpoint_file": f"none (pesos aleatorios, semilla {seed + i})",
+                "checkpoint_sha256": f"{seed + i:064x}",
+            }
+        )
+    return write_ensemble_bundle(
+        entries,
         data_config,
         out,
-        image_size=IMAGE_SIZE,
-        val_resize="center_crop",
-        stage1=_stage1_from_config(),
-        opset=OPSET,
-        calibration=SYNTHETIC_CALIBRATION,
-        thresholds=SYNTHETIC_THRESHOLDS,
-        metrics=SYNTHETIC_METRICS,
-        checkpoint_sha256="0" * 64,
-        checkpoint_file=f"none (pesos aleatorios, semilla {seed})",
-        git_sha="test",
-        extra={
-            "kind": "test",
-            "backbone": BACKBONE,
-            "warning": "PESOS ALEATORIOS: solo para CI y pruebas",
-        },
+        metrics={**SYNTHETIC_METRICS, "previous_model": SYNTHETIC_PREVIOUS},
+        extra=extra,
+        **common,
     )
 
 
@@ -127,11 +167,15 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--negative-bias", type=float, default=None)
     ap.add_argument("--zero-weights", action="store_true")
+    ap.add_argument("--members", type=int, default=1, help="N > 1 → ensamble de prueba (F6b)")
     a = ap.parse_args()
     out = (ROOT / a.out) if not Path(a.out).is_absolute() else Path(a.out)
-    m = build(out, a.seed, a.negative_bias, a.zero_weights)
+    m = build(out, a.seed, a.negative_bias, a.zero_weights, a.members)
     size = sum((out / f).stat().st_size for f in m["files"]) / 1e6
-    print(f"→ {out} · {m['model_version']} · {size:.1f} MB · opset {m['onnx']['opset']}")
+    print(
+        f"→ {out} · {m['model_version']} · {size:.1f} MB · opset {m['onnx']['opset']} · "
+        f"{len(m.get('members', [])) or 1} miembro(s)"
+    )
 
 
 if __name__ == "__main__":

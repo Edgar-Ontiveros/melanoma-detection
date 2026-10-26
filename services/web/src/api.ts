@@ -35,37 +35,54 @@ export interface Interval {
   hi: number;
 }
 
+export interface Tau95 {
+  threshold: number;
+  sensitivity: number;
+  specificity: number;
+  ppv: number;
+  npv: number;
+  tp: number;
+  fn: number;
+  fp: number;
+  tn: number;
+  /** IC por bootstrap de las cuatro métricas en τ95 (desde F6b). */
+  ci?: Record<"sensitivity" | "specificity" | "ppv" | "npv", Interval>;
+}
+
 export interface Metrics {
   split: string;
   date: string;
+  label?: string;
+  access_number?: number;
   n_images: number;
   n_positives: number;
   n_patients: number;
   auroc: Interval;
   auprc: Interval;
   prevalence: number;
-  tau_95: {
-    threshold: number;
-    sensitivity: number;
-    specificity: number;
-    ppv: number;
-    npv: number;
-    tp: number;
-    fn: number;
-    fp: number;
-    tn: number;
-  };
+  tau_95: Tau95;
   ci: { level: number; unit: string; n_resamples: number };
+  /** Métricas del modelo único de F4, para la tabla lado a lado (F6b). */
+  previous_model?: Metrics | null;
+}
+
+export interface EnsembleInfo {
+  members: number;
+  method: string;
 }
 
 export interface ModelInfo {
   model_version: string;
+  ensemble: EnsembleInfo | null;
+  previous_model?: Metrics | null;
+  operating_point?: { key: string; threshold: number; sensitivity_target: number };
   manifest: {
     model_version: string;
     git_sha: string;
     date: string;
     kind?: string;
     checkpoint: { file: string; sha256: string };
+    members?: { run: string; onnx: string; checkpoint: { file: string; sha256: string } }[];
     onnx: { opset: Record<string, number>; features_shape: number[] };
     versions: Record<string, string>;
   };
