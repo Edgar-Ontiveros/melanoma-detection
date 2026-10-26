@@ -168,6 +168,7 @@ calibration: {method: platt, a, b}
 thresholds: {tau_95, tau_90}
 access_number: 2
 budget_after: 0
+deployment_rule: "El ensamble se despliega solo si … (el criterio de despliegue de abajo)"
 ```
 
 ### Guardarraíles nuevos
@@ -200,8 +201,10 @@ ensamble (segundo acceso)". Tabla lado a lado:
 Y un párrafo que diga qué aportó cada cosa, con los números de validación de F3b para
 descomponerlo (seeds, arquitecturas, TTA, metadatos).
 
-**El despliegue (F6b) usa el que sea mejor en el test.** Si es el modelo único, se queda
-como está.
+**Criterio de despliegue (fijado el 2026-10-26, antes de abrir el test):** El ensamble se
+despliega solo si en el test su AUC-ROC y su AUPRC no son menores que las del modelo único
+(F4). Si cualquiera de las dos es menor, se despliega el modelo único y el ensamble solo se
+reporta. Si es el modelo único, se queda como está.
 
 ---
 

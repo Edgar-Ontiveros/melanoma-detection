@@ -349,6 +349,11 @@ def write_protocol(
         },
         "access_number": 2,
         "budget_after": 0,
+        "deployment_rule": (
+            "El ensamble se despliega solo si en el test su AUC-ROC y su AUPRC no son menores que las "
+            "del modelo único (F4). Si cualquiera de las dos es menor, se despliega el modelo único y "
+            "el ensamble solo se reporta."
+        ),
         "reference_f4": {
             "protocol": str(f.f4_protocol),
             "results": str(f.f4_results_json),
