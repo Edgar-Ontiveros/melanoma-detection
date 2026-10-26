@@ -148,23 +148,24 @@ def test_f4b_protocol_committed_before_second_access() -> None:
     assert len(lines) <= 2, "la bitácora no puede tener más de dos accesos"
     if len(lines) < 2:
         pytest.skip("el segundo acceso no se ha ejecutado")
-    out = (
-        subprocess.check_output(
-            [
-                "git",
-                "-C",
-                str(ROOT),
-                "log",
-                "--diff-filter=A",
-                "--format=%ct",
-                "--",
-                "docs/f4b_protocol.yaml",
-            ],
-            text=True,
-        )
-        .strip()
-        .splitlines()
+    import hashlib
+
+    def git(*args: str) -> str:
+        return subprocess.check_output(["git", "-C", str(ROOT), *args], text=True).strip()
+
+    # 1. El protocolo con el que se ejecutó (SHA256 en la bitácora) es el que está commiteado.
+    fields = dict(f.split("=", 1) for f in lines[1].split("\t")[1:] if "=" in f)
+    committed = hashlib.sha256(
+        subprocess.check_output(["git", "-C", str(ROOT), "show", "HEAD:docs/f4b_protocol.yaml"])
+    ).hexdigest()
+    assert fields["protocol_sha256"] == committed, (
+        "la bitácora registra un protocolo distinto del commiteado"
     )
+    # 2. El commit que añadió el protocolo precede a la segunda línea. Solo con historial
+    #    completo: en un clon superficial (fetch-depth 1) git atribuye el archivo al único commit.
+    if git("rev-parse", "--is-shallow-repository") == "true":
+        pytest.skip("clon superficial: no hay historial para fechar el commit del protocolo")
+    out = git("log", "--diff-filter=A", "--format=%ct", "--", "docs/f4b_protocol.yaml").splitlines()
     assert out, "docs/f4b_protocol.yaml no está en git"
     second = datetime.fromisoformat(lines[1].split("\t")[0]).timestamp()
     assert int(out[-1]) <= second, "el protocolo de F4b debe commitearse antes del segundo acceso"
