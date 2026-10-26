@@ -1,0 +1,28 @@
+# F8 — Caddy delante de la API. TLS automático con Let's Encrypt para el dominio (registro A en
+# Cloudflare en modo solo DNS). Cuerpo máximo 10 MB (el límite de /api/predict), encabezados de
+# seguridad básicos y logs rotados.
+{$DOMAIN} {
+	encode zstd gzip
+	request_body {
+		max_size 10MB
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(self), microphone=(), geolocation=()"
+		-Server
+	}
+	reverse_proxy api:8000 {
+		header_up X-Forwarded-Proto {scheme}
+	}
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 10MiB
+			roll_keep 5
+			roll_keep_for 720h
+		}
+		format json
+	}
+}

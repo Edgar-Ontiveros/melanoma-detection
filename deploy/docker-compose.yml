@@ -1,0 +1,56 @@
+# F8 — Despliegue en la instancia (docs/DEPLOY.md). El servidor solo hace `pull` de la imagen que
+# publica el CI en ghcr; nunca compila. El paquete de modelo se descarga del release y se monta
+# en /bundle (solo lectura). Sin estado: nada se escribe fuera de los certificados de Caddy.
+services:
+  api:
+    image: ghcr.io/edgar-ontiveros/melanoma-detection:${MELANOMA_TAG:-latest}
+    restart: unless-stopped
+    volumes:
+      - ./bundle:/bundle:ro
+    environment:
+      ORT_INTRA_OP_THREADS: "2"
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=4).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - caddy_logs:/var/log/caddy
+    environment:
+      DOMAIN: ${DOMAIN:-melanoma.edgar-ontiveros.com}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  caddy_data:
+  caddy_config:
+  caddy_logs:

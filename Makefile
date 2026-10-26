@@ -11,7 +11,7 @@ UV_RUN = uv run --no-sync
 	kaggle-dataset train baseline-b0 f2-report f3-report f4-report check-notebooks kaggle \
 	f5-cam f5-overlap f5-artifacts f5-figures f5-report f5-all \
 	f3b-logits f3b-ensemble f3b-report f3b-all export-bundle verify-bundle test-bundle bench-api api docker-run test-local \
-	demo demo-stop f7b-icons f7b-visual \
+	demo demo-stop f7b-icons f7b-visual deploy-install deploy deploy-logs deploy-stop deploy-start \
 	web-install web-dev web-lint web-test web-build web f7-screenshots
 
 ## Entorno local (WSL/Ubuntu): core + train + dev con ruedas CPU del lockfile.
@@ -176,3 +176,26 @@ check-notebooks:
 kaggle:
 	$(UV_RUN) python scripts/kaggle_run.py $(ARGS)
 
+## ---- F8: despliegue en la instancia Lightsail (docs/DEPLOY.md). DEPLOY_HOST=ubuntu@<IP estática>;
+## DEPLOY_DIR en la instancia; MELANOMA_TAG = etiqueta de la imagen en ghcr (SHA corto o latest);
+## BUNDLE_RELEASE = release del paquete que se monta en /bundle. El servidor nunca compila.
+DEPLOY_HOST ?= ubuntu@melanoma.edgar-ontiveros.com
+DEPLOY_DIR ?= /opt/melanoma
+MELANOMA_TAG ?= latest
+BUNDLE_RELEASE ?= model-28a90b4-4264e888
+DEPLOY_SSH = ssh -o StrictHostKeyChecking=accept-new $(DEPLOY_HOST)
+## Primera vez: instala Docker y ufw, copia compose y Caddyfile, baja el paquete del release.
+deploy-install:
+	$(DEPLOY_SSH) 'sudo bash -s' < deploy/install.sh
+	scp -o StrictHostKeyChecking=accept-new deploy/docker-compose.yml deploy/Caddyfile $(DEPLOY_HOST):$(DEPLOY_DIR)/
+	$(DEPLOY_SSH) 'cd $(DEPLOY_DIR) && curl -fsSL -o bundle.tar.gz https://github.com/Edgar-Ontiveros/melanoma-detection/releases/download/$(BUNDLE_RELEASE)/melanoma-bundle-$(BUNDLE_RELEASE:model-%=%).tar.gz && curl -fsSL -o bundle.tar.gz.sha256 https://github.com/Edgar-Ontiveros/melanoma-detection/releases/download/$(BUNDLE_RELEASE)/melanoma-bundle-$(BUNDLE_RELEASE:model-%=%).tar.gz.sha256 && sha256sum -c <(cut -d" " -f1 bundle.tar.gz.sha256 | sed "s/$$/  bundle.tar.gz/") && rm -rf bundle && mkdir bundle && tar -xzf bundle.tar.gz -C bundle && rm bundle.tar.gz bundle.tar.gz.sha256 && ls bundle'
+## Actualiza: pull de la imagen y up -d (idempotente). Ej.: make deploy MELANOMA_TAG=<sha corto>
+deploy:
+	scp -o StrictHostKeyChecking=accept-new deploy/docker-compose.yml deploy/Caddyfile $(DEPLOY_HOST):$(DEPLOY_DIR)/
+	$(DEPLOY_SSH) 'cd $(DEPLOY_DIR) && echo "MELANOMA_TAG=$(MELANOMA_TAG)" > .env && docker compose pull --quiet && docker compose up -d --remove-orphans && docker compose ps'
+deploy-logs:
+	$(DEPLOY_SSH) 'cd $(DEPLOY_DIR) && docker compose logs --tail=100 -f'
+deploy-stop:
+	$(DEPLOY_SSH) 'cd $(DEPLOY_DIR) && docker compose down'
+deploy-start:
+	$(DEPLOY_SSH) 'cd $(DEPLOY_DIR) && docker compose up -d && docker compose ps'
