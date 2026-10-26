@@ -278,11 +278,17 @@ formas de cáncer de piel.
 
 El entrenamiento utilizó
 únicamente ISIC 2020 y recursos gratuitos de GPU, sin incorporar datos
-externos ni arquitecturas de mayor capacidad. El modelo único se fijó
-por protocolo antes de abrir el conjunto de prueba, por lo que
-cualquier mejora constituye una decisión nueva sobre validación; las
-mejoras mediante ensambles, TTA y metadatos se evalúan por separado,
-utilizando un segundo y último acceso al conjunto de prueba.
+externos ni arquitecturas de mayor capacidad. Se probaron tres métodos
+para mejorar el modelo: combinar varios modelos, aumentar los datos
+durante la prueba e incorporar metadatos. Solo la combinación de tres
+modelos entrenados con distintas semillas produjo mejoras. En la última
+evaluación con el conjunto de prueba, realizada el 26 de octubre de
+2026, el AUC-ROC aumentó de 0.834 a 0.843 y el AUPRC de 0.096 a 0.113.
+Sin embargo, la capacidad para identificar correctamente lesiones
+benignas, manteniendo una sensibilidad alta, no mejoró de manera
+significativa. Como ya se utilizaron los dos accesos permitidos al
+conjunto de prueba, las mejoras futuras solo podrán evaluarse con los
+datos de validación.
 
 #### 6. Evaluación retrospectiva
 
