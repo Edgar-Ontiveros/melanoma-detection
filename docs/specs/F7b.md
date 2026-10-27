@@ -96,3 +96,27 @@ Dos sesiones el 2026-10-26 (commits de la sesión 1 y 2).
 6. Imagen Docker: 437 MB sin comprimir (límite 650). `make ci` en verde.
 
 Criterios de aceptación: 8/8.
+
+---
+
+## F7b.6 — Ajustes del 2026-10-27: ancho y colores institucionales
+
+### Ancho y escala (escritorio)
+- Contenedor de 1360 px con márgenes de 40 px a partir de 1280 px de ancho; por debajo, lo actual (1120/24). Teléfono sin cambios.
+- Escala en escritorio: cuerpo 16, UI 15, wordmark 18, recomendación 24, probabilidad 64; botones de 42 px (36 dentro de tarjetas); tarjetas con relleno 28/32; separación entre columnas 32; columna de la imagen 560 px, resultados el resto. Encabezado de 68 px.
+
+### Tokens de color (sustituyen a los actuales en tokens.css)
+--accent #0B6E99 (texto de enlaces, botones primarios, etiqueta de la recomendación, símbolo del encabezado, foco) · --accent-hover #085578 · --accent-bright #0A93C6 (solo donde no hay texto: subrayado del menú activo, relleno de la barra, marcas) · --accent-tint #E8F4FA · --accent-tint-border #B8DCEE · --signature #7A2A8A (franja de 4 px por encima del encabezado; en ningún otro sitio). Los demás tokens no cambian. Origen: azul del logo de la Facultad de Ingeniería (#0A93C6, oscurecido a #0B6E99 donde lleva texto para cumplir AA) y morado del escudo de la UACH (#7A2A8A).
+- `theme-color` #0B6E99; favicon y apple-touch-icon regenerados con #0B6E99 (modo oscuro #5FB8E6) vía make f7b-icons.
+- reports/f7b_visual.md regenerado: todos los pares con texto ≥ 4.5:1 (--accent sobre blanco 5.67:1, blanco sobre --accent 5.67:1, --accent sobre tinte 5.06:1).
+
+### Logos institucionales
+- Archivos: `services/web/public/escudo-uach.png` (a partir del escudo-color.png existente) y `services/web/public/facultad-ingenieria.png` (archivo nuevo del autor). A ambos: quitar el fondo blanco (transparente), recortar al contenido, exportar a 2× de la altura máxima de uso (176 px) para que se vean nítidos; conservar los originales en `raw-assets/logos/` fuera del build. Se cambia la regla de F7b que limitaba el escudo a /modelo.
+- Pie (fondo --bg, filete superior --border): a la izquierda el aviso corto y «Ficha del modelo»; a la derecha, escudo UACH y logo de la Facultad a 44 px de alto en color, luego dos líneas («Edgar Eduardo Ontiveros Lara · a335951» en --text 500 y «Facultad de Ingeniería · Universidad Autónoma de Chihuahua» en --text-2) y al final el logo EO·. En teléfono los logos van arriba del texto, centrados.
+- /modelo, atribución final: los dos logos a 72 px con el mismo texto.
+- Logo EO·: restaurar sus colores originales. Están en la primera versión del archivo que el autor copió al repo (git log --follow sobre services/web/public/eo.svg y el favicon.svg que lo precedió); si esa versión ya no tiene color, tomarlo del repositorio edgar-ontiveros.com. Se muestra a 20 px de alto en el pie y a 28 px en /modelo, sin currentColor, con sus colores. Los logos quedan exentos de test_web_tokens_only (son imágenes, no CSS).
+
+### Pruebas y cierre
+- test_web_icons_present cubre también escudo-uach.png y facultad-ingenieria.png en dist.
+- Las pruebas de F7 y F7b siguen en verde; make f7-screenshots regenerado a 1440 y 390 px; make ci en verde; push.
+- Al final, make demo (puerto 8010), déjala corriendo y dame la URL con capturas de análisis, /modelo y el pie en escritorio y teléfono.
