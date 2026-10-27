@@ -139,3 +139,22 @@ su cian original (#22D3EE, favicon de edgar-ontiveros.com; la primera versión e
 usaba currentColor) a 20 y 28 px. `test_web_icons_present` cubre los dos logos y `eo.svg`;
 capturas a 1440 y 390 px. **Desviación:** el logo de la Facultad no llegó como archivo nuevo; se
 tomó del respaldo del sitio personal del autor.
+
+---
+
+## F7b.7 — Escala grande, franja, enlaces personales y zona de carga
+
+### Escala
+- Contenedor fluido: `min(1600px, 100% − 96px)` a partir de 1280 px (antes 1360 fijo); márgenes 48. Nuevo escalón en `@media (min-width: 1600px)`: cuerpo 17, UI 16, wordmark 20, h1 32, h2 20, recomendación 26, probabilidad 72, botones 46 (38 en tarjetas), tarjetas con relleno 32/36, columna de la imagen 640, separación entre columnas 40, encabezado 76. Entre 1280 y 1599 queda la escala de F7b.6. Teléfono sin cambios.
+- Franja `--signature`: 8 px de alto.
+
+### Enlaces personales
+- En el pie y en la atribución de /modelo, el nombre «Edgar Eduardo Ontiveros Lara · a335951» y el logo EO· son enlaces a https://edgar-ontiveros.com (nueva pestaña, `rel="author noopener"`), con `aria-label="Sitio personal de Edgar Eduardo Ontiveros Lara"` en el logo. El nombre conserva su color de texto y se subraya al pasar; el logo no cambia. Esos dos `href` quedan permitidos en test_web_no_external_requests (son enlaces, no peticiones).
+
+### Zona de carga
+- Tarjeta con fondo --surface, borde 1 px --border sólido, radio 14, alto mínimo 320, relleno 48, contenido centrado. Al pasar el cursor o recibir foco, borde --accent-bright; al arrastrar un archivo encima, borde discontinuo --accent y fondo --accent-tint.
+- Dentro, en columna: círculo de 72 px con fondo --accent-tint y borde --accent-tint-border con el icono de subir (trazo 1.75, 32 px, --accent); «Arrastre una dermatoscopía aquí» 21/600; «o seleccione un archivo · JPEG, PNG o WebP · hasta 10 MB» 15 --text-2; botón PRIMARIO de 46 px «Seleccionar archivo»; línea 13 --text-2 «Puede ser la foto original sin recortar. La imagen se analiza y no se almacena.». Toda la tarjeta sigue siendo clicable y accesible por teclado como hoy.
+- Ejemplos: encabezado «Ejemplos» 20/600 con la atribución a la derecha en 14 --text-2 («Imágenes de validación del ISIC 2020 Challenge Dataset, CC BY-NC 4.0. Ninguna de DDI.») y filete inferior; miniaturas de 136 × 136 con radio 10 y borde --border (borde --accent-bright al pasar), debajo el id en monoespaciada 13 y la etiqueta («Melanoma confirmado» / «Benigna confirmada») en 13 --text-2; la línea larga de licencia de abajo se retira porque ya está en el encabezado. En teléfono, miniaturas de 96 px en dos filas.
+
+### Cierre
+- Pruebas de F7 y F7b en verde; make f7b-visual y make f7-screenshots regenerados a 1920 y 390 px (ajusta VIEWPORTS); make ci; push. Al final make demo, déjala corriendo y dame la URL.
