@@ -11,6 +11,7 @@ import {
 } from "../api";
 import type { ModelInfoState } from "../App";
 import ErrorBox from "../components/ErrorBox";
+import Institution from "../components/Institution";
 import { formatDateEs, formatInt, formatPercent } from "../lib/format";
 
 const REPO = "https://github.com/Edgar-Ontiveros/melanoma-detection";
@@ -324,19 +325,9 @@ export default function ModelPage({ state }: { state: ModelInfoState }) {
               {state.loading ? "Cargando…" : "Ficha del modelo no disponible."}
             </p>
           )}
-          <p className="thesis">
-            <img
-              src="/escudo-color.png"
-              alt="Escudo de la Universidad Autónoma de Chihuahua"
-              width={44}
-              height={44}
-            />
-            <span>
-              Proyecto de tesis de licenciatura — Edgar Eduardo Ontiveros Lara,
-              matrícula a335951. Facultad de Ingeniería, Universidad Autónoma de
-              Chihuahua, 2026.
-            </span>
-          </p>
+          <div className="thesis">
+          <Institution />
+        </div>
         </section>
       </div>
     </>

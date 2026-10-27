@@ -120,3 +120,22 @@ Criterios de aceptación: 8/8.
 - test_web_icons_present cubre también escudo-uach.png y facultad-ingenieria.png en dist.
 - Las pruebas de F7 y F7b siguen en verde; make f7-screenshots regenerado a 1440 y 390 px; make ci en verde; push.
 - Al final, make demo (puerto 8010), déjala corriendo y dame la URL con capturas de análisis, /modelo y el pie en escritorio y teléfono.
+
+### Estado de F7b.6 (2026-10-27)
+
+Hecho. Tokens: `--accent #0b6e99`, `--accent-hover #085578`, `--accent-bright #0a93c6` (subrayado
+activo, relleno y marcas de la barra, línea de progreso), `--accent-tint #e8f4fa`,
+`--accent-tint-border #b8dcee`, `--signature #7a2a8a` (franja de 4 px sobre el encabezado y nada
+más); escala de escritorio por `@media (min-width: 1280px)` en `tokens.css` (contenedor 1360,
+márgenes 40, cuerpo 16, UI 15, wordmark 18, recomendación 24, probabilidad 64, botones 42,
+tarjetas 28/32, columnas a 32, imagen 560, encabezado 68). Favicons regenerados con #0B6E99
+(#5FB8E6 en oscuro); `theme-color` #0B6E99. Contraste (`reports/f7b_visual.md`): 13 pares,
+todos ≥ 4.5:1 (`--accent` sobre blanco 5.67:1, blanco sobre `--accent` 5.67:1, `--accent` sobre
+tinte 5.06:1). Logos: `scripts/f7b_logos.py` (`raw-assets/logos/` → fondo transparente, recorte,
+176 px de alto) produce `escudo-uach.png` y `facultad-ingenieria.png`; el logo de la Facultad es
+`uach-ingenieria.png` del repositorio edgar-ontiveros.com (respaldo del autor); `escudo-color.png`
+se retira. `Institution.tsx` en el pie (44 px) y en la atribución de `/modelo` (72 px); EO· con
+su cian original (#22D3EE, favicon de edgar-ontiveros.com; la primera versión en este repo ya
+usaba currentColor) a 20 y 28 px. `test_web_icons_present` cubre los dos logos y `eo.svg`;
+capturas a 1440 y 390 px. **Desviación:** el logo de la Facultad no llegó como archivo nuevo; se
+tomó del respaldo del sitio personal del autor.

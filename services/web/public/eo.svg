@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- Monograma EO· de Edgar Eduardo Ontiveros Lara; hereda el color del texto (currentColor) -->
-  <g stroke="currentColor" stroke-width="3.6" fill="none">
+  <!-- Monograma EO· de Edgar Eduardo Ontiveros Lara, con sus colores originales (cian #22D3EE de edgar-ontiveros.com) -->
+  <g stroke="#22D3EE" stroke-width="3.6" fill="none">
     <path d="M11.4 7.8H4.8v16.4h6.6M4.8 16h5.6" />
     <circle cx="22" cy="16" r="7.2" />
   </g>
-  <circle cx="29.4" cy="27.6" r="2.4" fill="currentColor" />
+  <circle cx="29.4" cy="27.6" r="2.4" fill="#22D3EE" />
 </svg>

@@ -18,8 +18,8 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "services" / "web" / "public"
-ACCENT = (29, 78, 216)  # --accent #1D4ED8 (tokens.css)
-ACCENT_DARK = "#93B4FF"
+ACCENT = (11, 110, 153)  # --accent #0B6E99 (tokens.css, F7b.6)
+ACCENT_DARK = "#5FB8E6"
 RING = (16.0, 16.0, 11.0, 3.0)  # cx, cy, r, trazo
 DOT = (19.5, 19.5, 4.0)  # cx, cy, r
 SS = 8  # supermuestreo
@@ -66,7 +66,7 @@ def raster(size: int, margin_frac: float, background: tuple | None) -> Image.Ima
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "mark.svg").write_text(svg(None), encoding="utf-8")
-    (OUT / "favicon.svg").write_text(svg("#1D4ED8", ACCENT_DARK), encoding="utf-8")
+    (OUT / "favicon.svg").write_text(svg("#0B6E99", ACCENT_DARK), encoding="utf-8")
     icons = [raster(s, 0.0, None) for s in (16, 32)]
     icons[1].save(
         OUT / "favicon.ico", format="ICO", sizes=[(16, 16), (32, 32)], append_images=[icons[0]]

@@ -28,10 +28,13 @@ PAIRS = [
     ("--on-accent", "--accent", "botón primario", False),
     ("--on-accent", "--accent-hover", "botón primario al pasar", False),
     ("--accent-hover", "--accent-tint", "etiqueta «Recomendación» sobre el tinte", False),
+    ("--accent", "--accent-tint", "enlaces y acento sobre el tinte", False),
     ("--text", "--accent-tint", "texto de la recomendación por encima del umbral", False),
     ("--text-2", "--accent-tint", "segunda línea de la recomendación", False),
-    ("--text", "--bg", "probabilidad a 52 px", True),
+    ("--text", "--bg", "probabilidad a 52/64 px", True),
 ]
+# Sin texto encima (no se evalúan como texto): --accent-bright en el subrayado activo, el relleno
+# de la barra y las marcas; --signature en la franja de 4 px; los logos son imágenes.
 
 
 def read_tokens() -> dict[str, str]:
@@ -81,13 +84,13 @@ def main() -> None:
         "",
         "## Capturas",
         "",
-        "Tomadas con `make f7-screenshots` (Playwright, Chromium) contra la demo local, a 1280 px (escritorio) y 390 px (teléfono): análisis vacío y con resultado, ficha del modelo y aviso.",
+        "Tomadas con `make f7-screenshots` (Playwright, Chromium) contra la demo local, a 1440 px (escritorio) y 390 px (teléfono): análisis vacío y con resultado, ficha del modelo y aviso.",
         "",
         *[f"- `reports/figures/{s}`" for s in shots],
         "",
-        "![Análisis, escritorio](figures/f7_ui_analisis_resultado_1280.png)",
+        "![Análisis, escritorio](figures/f7_ui_analisis_resultado_1440.png)",
         "",
-        "![Ficha del modelo, escritorio](figures/f7_ui_modelo_1280.png)",
+        "![Ficha del modelo, escritorio](figures/f7_ui_modelo_1440.png)",
         "",
     ]
     OUT.write_text("\n".join(md), encoding="utf-8")

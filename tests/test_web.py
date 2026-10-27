@@ -131,13 +131,21 @@ def test_web_icons_present() -> None:
     """mark.svg, favicon.svg, favicon.ico y apple-touch-icon.png existen en dist y los tres
     últimos están referenciados en index.html; el título es el del sistema."""
     dist = _dist_or_skip()
-    for name in ("mark.svg", "favicon.svg", "favicon.ico", "apple-touch-icon.png"):
+    for name in (
+        "mark.svg",
+        "favicon.svg",
+        "favicon.ico",
+        "apple-touch-icon.png",
+        "escudo-uach.png",
+        "facultad-ingenieria.png",
+        "eo.svg",
+    ):
         assert (dist / name).exists(), name
     html = (dist / "index.html").read_text(encoding="utf-8")
     assert 'href="/favicon.svg"' in html and 'href="/favicon.ico"' in html
     assert 'rel="apple-touch-icon" href="/apple-touch-icon.png"' in html
     assert "<title>Detección asistida de melanoma</title>" in html
-    assert 'name="theme-color" content="#1D4ED8"' in html
+    assert 'name="theme-color" content="#0B6E99"' in html
     svg = (dist / "favicon.svg").read_text(encoding="utf-8")
     assert 'r="11' in svg and 'r="4' in svg and "prefers-color-scheme: dark" in svg
 
@@ -161,10 +169,12 @@ def test_web_tokens_only() -> None:
         ("--border-strong", "#cbd5e1"),
         ("--text", "#0f172a"),
         ("--text-2", "#475569"),
-        ("--accent", "#1d4ed8"),
-        ("--accent-hover", "#1e40af"),
-        ("--accent-tint", "#eff6ff"),
-        ("--accent-tint-border", "#bfdbfe"),
+        ("--accent", "#0b6e99"),
+        ("--accent-hover", "#085578"),
+        ("--accent-bright", "#0a93c6"),
+        ("--accent-tint", "#e8f4fa"),
+        ("--accent-tint-border", "#b8dcee"),
+        ("--signature", "#7a2a8a"),
     ):
         assert f"{name}: {value};" in tokens, name
 

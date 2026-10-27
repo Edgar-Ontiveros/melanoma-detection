@@ -1,5 +1,5 @@
 """F7 — Capturas de la interfaz con Playwright: Análisis (vacío y con el resultado del ejemplo
-ISIC_5037784) y /modelo, a 1280 y 390 px, en reports/figures/f7_ui_*.png.
+ISIC_5037784) y /modelo, a 1440 y 390 px, en reports/figures/f7_ui_*.png.
 
 Requiere una API levantada con el build de la web (make api) en BASE_URL (por defecto
 http://127.0.0.1:8000). Chromium necesita bibliotecas del sistema; si no están (WSL sin sudo)
@@ -21,7 +21,7 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports" / "figures"
 EXAMPLE = "ISIC_5037784"
-VIEWPORTS = {"1280": (1280, 900), "390": (390, 844)}
+VIEWPORTS = {"1440": (1440, 900), "390": (390, 844)}
 ACCEPT_MODAL = "window.sessionStorage.setItem('melanoma-detection:aviso-aceptado', '1')"
 
 

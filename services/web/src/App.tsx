@@ -64,6 +64,7 @@ export default function App() {
   return (
     <>
       <DisclaimerModal disclaimer={info?.disclaimer ?? null} />
+      <div className="signature" aria-hidden="true" />
       <header className="top">
         <div className="container">
           <a href="/" className="brand" onClick={navigate("/")}>

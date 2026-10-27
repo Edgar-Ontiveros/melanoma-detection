@@ -213,7 +213,7 @@ li {
   background: var(--bg);
   border: var(--border-w) solid var(--border);
   border-radius: var(--r-card);
-  padding: var(--s-5);
+  padding: var(--card-pad);
   margin: var(--s-4) 0;
 }
 
@@ -258,6 +258,11 @@ li {
 }
 
 /* ---- encabezado */
+.signature {
+  height: var(--signature-h);
+  background: var(--signature);
+}
+
 header.top {
   height: var(--header-h);
   background: var(--bg);
@@ -314,7 +319,7 @@ header.top nav a:hover {
 
 header.top nav a[aria-current="page"] {
   color: var(--text);
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--accent-bright);
 }
 
 /* línea de progreso indeterminada bajo el encabezado */
@@ -332,7 +337,7 @@ header.top nav a[aria-current="page"] {
   bottom: 0;
   left: -40%;
   width: 40%;
-  background: var(--accent);
+  background: var(--accent-bright);
   animation: progress-slide 1.2s linear infinite;
 }
 
@@ -505,7 +510,7 @@ header.top nav a[aria-current="page"] {
 .result {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-5);
+  gap: var(--column-gap);
   align-items: flex-start;
 }
 
@@ -568,7 +573,7 @@ header.top nav a[aria-current="page"] {
   left: 0;
   top: 0;
   bottom: 0;
-  background: var(--accent);
+  background: var(--accent-bright);
   border-radius: var(--r-bar);
 }
 
@@ -577,14 +582,14 @@ header.top nav a[aria-current="page"] {
   top: -6px;
   height: 22px;
   width: 2px;
-  background: var(--text);
+  background: var(--accent-bright);
   transform: translateX(-50%);
 }
 
 .logbar .mark.dashed {
   background: repeating-linear-gradient(
     to bottom,
-    var(--text) 0 3px,
+    var(--accent-bright) 0 3px,
     transparent 3px 6px
   );
 }
@@ -848,7 +853,7 @@ td.num .ci,
 /* ---- pie */
 footer.bottom {
   border-top: var(--border-w) solid var(--border);
-  background: var(--surface);
+  background: var(--bg);
   font-size: var(--t-help);
   color: var(--text-2);
 }
@@ -856,32 +861,59 @@ footer.bottom {
 footer.bottom .container {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--s-5);
+  align-items: center;
+  gap: var(--s-6);
   flex-wrap: wrap;
   padding-top: var(--s-5);
   padding-bottom: var(--s-5);
 }
 
 footer.bottom .legal {
-  flex: 1 1 480px;
+  flex: 1 1 420px;
   margin: 0;
-  max-width: 72ch;
+  max-width: 64ch;
 }
 
-footer.bottom .credit {
-  display: inline-flex;
+.institution {
+  display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-4);
   margin: 0;
-  white-space: nowrap;
 }
 
-footer.bottom .credit svg {
-  width: 18px;
-  height: 18px;
-  flex: none;
+.institution .logos {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.institution img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+.institution .lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--t-help);
+  line-height: 1.35;
+}
+
+.institution .author {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.institution .affiliation {
   color: var(--text-2);
+}
+
+.institution .eo {
+  height: 20px;
+  width: 20px;
+  flex: none;
 }
 
 /* ---- ficha del modelo */
@@ -906,20 +938,22 @@ footer.bottom .credit svg {
 }
 
 .thesis {
-  display: flex;
-  align-items: center;
-  gap: var(--s-4);
   margin-top: var(--s-5);
-  padding-top: var(--s-4);
+  padding-top: var(--s-5);
   border-top: var(--border-w) solid var(--border);
-  font-size: var(--t-ui);
-  color: var(--text-2);
 }
 
-.thesis img {
-  width: 44px;
-  height: 44px;
-  flex: none;
+.thesis .institution img {
+  height: 72px;
+}
+
+.thesis .institution .lines {
+  font-size: var(--t-ui);
+}
+
+.thesis .institution .eo {
+  height: 28px;
+  width: 28px;
 }
 
 .sr-only {
@@ -981,10 +1015,19 @@ footer.bottom .credit svg {
   }
   footer.bottom .container {
     flex-direction: column;
-    gap: var(--s-3);
+    align-items: stretch;
+    gap: var(--s-4);
   }
   footer.bottom .legal {
     flex: 0 0 auto;
+  }
+  .institution {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .thesis .institution {
+    align-items: center;
   }
   main.container {
     min-height: 0;
