@@ -31,7 +31,8 @@ PAIRS = [
     ("--accent", "--accent-tint", "enlaces y acento sobre el tinte", False),
     ("--text", "--accent-tint", "texto de la recomendación por encima del umbral", False),
     ("--text-2", "--accent-tint", "segunda línea de la recomendación", False),
-    ("--text", "--bg", "probabilidad a 52/64 px", True),
+    ("--text", "--bg", "probabilidad a 52/64/72 px", True),
+    ("--accent", "--accent-tint", "icono de subir en el círculo de la zona de carga", False),
 ]
 # Sin texto encima (no se evalúan como texto): --accent-bright en el subrayado activo, el relleno
 # de la barra y las marcas; --signature en la franja de 4 px; los logos son imágenes.
@@ -84,13 +85,13 @@ def main() -> None:
         "",
         "## Capturas",
         "",
-        "Tomadas con `make f7-screenshots` (Playwright, Chromium) contra la demo local, a 1440 px (escritorio) y 390 px (teléfono): análisis vacío y con resultado, ficha del modelo y aviso.",
+        "Tomadas con `make f7-screenshots` (Playwright, Chromium) contra la demo local, a 1920 px (escritorio) y 390 px (teléfono): análisis vacío y con resultado, ficha del modelo y aviso.",
         "",
         *[f"- `reports/figures/{s}`" for s in shots],
         "",
-        "![Análisis, escritorio](figures/f7_ui_analisis_resultado_1440.png)",
+        "![Análisis, escritorio](figures/f7_ui_analisis_resultado_1920.png)",
         "",
-        "![Ficha del modelo, escritorio](figures/f7_ui_modelo_1440.png)",
+        "![Ficha del modelo, escritorio](figures/f7_ui_modelo_1920.png)",
         "",
     ]
     OUT.write_text("\n".join(md), encoding="utf-8")

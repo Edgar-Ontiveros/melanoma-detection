@@ -158,3 +158,17 @@ tomó del respaldo del sitio personal del autor.
 
 ### Cierre
 - Pruebas de F7 y F7b en verde; make f7b-visual y make f7-screenshots regenerados a 1920 y 390 px (ajusta VIEWPORTS); make ci; push. Al final make demo, déjala corriendo y dame la URL.
+
+### Estado de F7b.7 (2026-10-27)
+
+Hecho. Contenedor `min(1600px, 100% - 96px)` con márgenes de 48 desde 1280 px y escalón
+`@media (min-width: 1600px)` en `tokens.css` (cuerpo 17, UI 16, wordmark 20, h1 32, h2 20,
+recomendación 26, probabilidad 72, botones 46/38, tarjetas 32/36, imagen 640, columnas a 40,
+encabezado 76); franja de 8 px. Nombre y EO· enlazan a https://edgar-ontiveros.com en pestaña
+nueva con `rel="author noopener"` y `aria-label` en el logo; `test_web_no_external_requests`
+revisa ahora todas las URL del bundle contra una lista de enlaces permitidos (sitio personal,
+repositorio, DOI, atribución de `marked`, espacios de nombres XML y errores de React). Zona de
+carga como tarjeta de 320 px con círculo de 72 px, icono de 32 px a trazo 1.75, título 21/600,
+botón primario y nota; ejemplos con encabezado 20/600, atribución a la derecha, miniaturas de
+136 px (96 en dos filas en teléfono). Capturas a 1920 y 390 px; `reports/f7b_visual.md` con 14
+pares ≥ AA.

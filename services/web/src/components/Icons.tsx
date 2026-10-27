@@ -20,10 +20,10 @@ export function Mark({ size = 20 }: { size?: number }) {
 }
 
 /** Flecha hacia arriba (zona de carga). */
-export function UploadIcon({ size = 20 }: { size?: number }) {
+export function UploadIcon({ size = 20, strokeWidth = 1.5 }: { size?: number; strokeWidth?: number }) {
   return (
     <svg viewBox="0 0 20 20" width={size} height={size} aria-hidden="true" focusable="false">
-      <path d="M10 16V4m0 0-5 5m5-5 5 5" {...stroke} />
+      <path d="M10 16V4m0 0-5 5m5-5 5 5" {...stroke} strokeWidth={strokeWidth} />
     </svg>
   );
 }

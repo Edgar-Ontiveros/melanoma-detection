@@ -120,9 +120,20 @@ def test_web_no_external_requests() -> None:
         assert "@import" not in text, css.name
         assert not re.search(r"url\(\s*[\"']?(https?:)?//", text), f"url externa en {css.name}"
         assert "/fonts/InterVariable-latin.woff2" in text, "la fuente no se referencia desde el CSS"
+    allowed_hrefs = (  # enlaces del contenido, no peticiones del build
+        "https://edgar-ontiveros.com",
+        "https://github.com/Edgar-Ontiveros/melanoma-detection",
+        "https://doi.org/",
+        "https://github.com/markedjs/marked",  # cadena de atribución de la biblioteca marked
+        "http://www.w3.org/",
+        "https://react.dev/",
+        "https://reactjs.org/",
+    )
     for js in dist.glob("assets/*.js"):
         text = js.read_text(encoding="utf-8")
         assert "fonts.googleapis" not in text and "gstatic.com" not in text
+        for url in set(re.findall(r"https?://[^\s\"'`)]+", text)):
+            assert url.startswith(allowed_hrefs), f"URL no prevista en el bundle: {url}"
     assert (dist / "fonts" / "InterVariable-latin.woff2").exists()
     assert (dist / "fonts" / "LICENSE-Inter.txt").exists()
 

@@ -4,8 +4,8 @@ import { UploadIcon } from "./Icons";
 
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
-/** Zona de arrastrar o seleccionar archivo: toda la zona es clicable y el input nativo va
- * oculto. No valida nada del modelo: la API decide. */
+/** Zona de arrastrar o seleccionar archivo (F7b.7): toda la tarjeta es clicable y accesible por
+ * teclado; el input nativo va oculto. No valida nada del modelo: la API decide. */
 export default function Uploader({
   onFile,
   disabled,
@@ -50,12 +50,13 @@ export default function Uploader({
         if (!disabled) pick(e.dataTransfer.files);
       }}
     >
-      <UploadIcon />
-      <p className="lead">Arrastre una dermatoscopía o seleccione un archivo</p>
-      <p className="hint">JPEG, PNG o WebP · hasta 10 MB</p>
+      <span className="circle" aria-hidden="true">
+        <UploadIcon size={32} strokeWidth={1.75} />
+      </span>
+      <p className="lead">Arrastre una dermatoscopía aquí</p>
+      <p className="hint">o seleccione un archivo · JPEG, PNG o WebP · hasta 10 MB</p>
       <button
         type="button"
-        className="secondary sm"
         disabled={disabled}
         onClick={(e) => {
           e.stopPropagation();
@@ -64,6 +65,7 @@ export default function Uploader({
       >
         Seleccionar archivo
       </button>
+      <p className="note">Puede ser la foto original sin recortar. La imagen se analiza y no se almacena.</p>
       <input
         id={id}
         ref={input}

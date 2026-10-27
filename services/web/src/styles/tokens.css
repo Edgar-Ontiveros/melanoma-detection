@@ -72,7 +72,15 @@
   --result-image: 480px;
   --card-pad: 24px;
   --column-gap: 24px;
-  --signature-h: 4px;
+  --signature-h: 8px;
+  --thumb-lg: 136px;
+  --r-thumb: 10px;
+  --r-dropzone: 14px;
+  --dropzone-pad: 48px;
+  --dropzone-circle: 72px;
+  --dropzone-icon: 32px;
+  --t-lead: 21px; /* «Arrastre una dermatoscopía aquí», 600 */
+  --t-examples: 20px; /* encabezado «Ejemplos», 600 */
   --dropzone-min: 200px;
   --pre-max: 320px;
   --modal-max: 520px;
@@ -84,8 +92,8 @@
 /* F7b.6 — escritorio ancho: contenedor y escala mayores a partir de 1280 px. */
 @media (min-width: 1280px) {
   :root {
-    --container: 1360px;
-    --gutter: 40px;
+    --container: min(1600px, 100% - 96px);
+    --gutter: 48px;
     --header-h: 68px;
     --t-body: 16px;
     --t-ui: 15px;
@@ -96,5 +104,24 @@
     --card-pad: 28px 32px;
     --column-gap: 32px;
     --result-image: 560px;
+  }
+}
+
+/* F7b.7 — escalón grande a partir de 1600 px. */
+@media (min-width: 1600px) {
+  :root {
+    --header-h: 76px;
+    --t-body: 17px;
+    --t-ui: 16px;
+    --t-wordmark: 20px;
+    --t-h1: 32px;
+    --t-h2: 20px;
+    --t-rec: 26px;
+    --t-prob: 72px;
+    --control-h: 46px;
+    --control-h-sm: 38px;
+    --card-pad: 32px 36px;
+    --column-gap: 40px;
+    --result-image: 640px;
   }
 }

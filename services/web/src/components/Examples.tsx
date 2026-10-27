@@ -12,6 +12,8 @@ interface ExamplesFile {
   items: Example[];
 }
 
+const ATTRIBUTION = "Imágenes de validación del ISIC 2020 Challenge Dataset, CC BY-NC 4.0. Ninguna de DDI.";
+
 /** Cuatro imágenes de validación de ISIC 2020 (CC BY-NC), listadas en
  * public/examples/examples.json con su image_id y su diagnóstico confirmado. */
 export default function Examples({
@@ -46,9 +48,12 @@ export default function Examples({
 
   return (
     <section aria-labelledby="ejemplos-title">
-      <h2 id="ejemplos-title" className="examples-title">
-        Ejemplos
-      </h2>
+      <div className="examples-head">
+        <h2 id="ejemplos-title">Ejemplos</h2>
+        <p className="attribution" title={data.attribution}>
+          {ATTRIBUTION}
+        </p>
+      </div>
       <div className="examples">
         {data.items.map((ex) => (
           <button
@@ -65,15 +70,10 @@ export default function Examples({
               alt={`Dermatoscopía ${ex.image_id}, lesión ${ex.truth} confirmada`}
             />
             <code>{ex.image_id}</code>
-            <span className="truth">
-              {ex.truth === "melanoma" ? "Melanoma confirmado" : "Benigna confirmada"}
-              <br />
-              ISIC 2020, CC BY-NC
-            </span>
+            <span className="truth">{ex.truth === "melanoma" ? "Melanoma confirmado" : "Benigna confirmada"}</span>
           </button>
         ))}
       </div>
-      <p className="attribution">{data.attribution}</p>
     </section>
   );
 }
