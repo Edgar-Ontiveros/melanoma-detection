@@ -14,7 +14,7 @@ interface ExamplesFile {
 
 const ATTRIBUTION = "Imágenes de validación del ISIC 2020 Challenge Dataset, CC BY-NC 4.0. Ninguna de DDI.";
 
-/** Cuatro imágenes de validación de ISIC 2020 (CC BY-NC), listadas en
+/** Doce imágenes de validación de ISIC 2020 (CC BY-NC), listadas en
  * public/examples/examples.json con su image_id y su diagnóstico confirmado. */
 export default function Examples({
   onPick,

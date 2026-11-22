@@ -58,11 +58,11 @@ def test_limitations_present() -> None:
 def test_example_images_are_val_not_ddi() -> None:
     examples = json.loads((WEB / "public" / "examples" / "examples.json").read_text())
     ids = {e["image_id"] for e in examples["items"]}
-    assert len(ids) == 4
+    assert len(ids) == 12
     val = set((ROOT / "data" / "splits" / "val.txt").read_text().split())
     assert ids <= val, ids - val
     truths = [e["truth"] for e in examples["items"]]
-    assert truths.count("melanoma") == 2 and truths.count("benigna") == 2
+    assert truths.count("melanoma") == 7 and truths.count("benigna") == 5
     for e in examples["items"]:
         assert (WEB / "public" / e["file"]).exists(), e["file"]
     ddi = re.compile(r"raw/ddi|ddi_metadata|\bDDI\b(?!, Stanford\)|\)| \(Stanford)")
@@ -261,7 +261,7 @@ def test_web_build_in_docker(test_bundle: Path) -> None:  # noqa: F811
         with urllib.request.urlopen(f"{base}/modelo", timeout=5) as r:
             assert r.status == 200
         with urllib.request.urlopen(f"{base}/examples/examples.json", timeout=5) as r:
-            assert len(json.load(r)["items"]) == 4
+            assert len(json.load(r)["items"]) == 12
     finally:
         subprocess.run(["docker", "rm", "-f", name], capture_output=True)
         shutil.rmtree(readable, ignore_errors=True)
