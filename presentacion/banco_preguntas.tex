@@ -27,10 +27,10 @@
 % Pregunta (título del bloque) y respuesta (cuerpo)
 \newcommand{\qa}[2]{\begin{block}{#1}\footnotesize #2\end{block}}
 
-\title[Banco de preguntas]{Banco de preguntas para la defensa}
+\title[Banco de preguntas]{Banco de preguntas para el examen profesional}
 \subtitle{Detección asistida de melanoma en imágenes dermatoscópicas}
-\institute[UACH-FING]{Universidad Autónoma de Chihuahua\\Facultad de Ingeniería}
-\date{27 de noviembre de 2026}
+\institute[UACH]{Ingeniería Física\\Facultad de Ingeniería\\Universidad Autónoma de Chihuahua}
+\date{26 de noviembre de 2026}
 \author[E. E. Ontiveros Lara]{Edgar Eduardo Ontiveros Lara}
 \titlegraphic{\includegraphics[height=14mm]{logo_uach}\hspace{6.8cm}\includegraphics[height=14mm]{logo_fi}}
 
@@ -42,197 +42,245 @@
 
 \begin{frame}{Cómo usar este material}
   \begin{itemize}
-    \item Son \textbf{47 preguntas} probables, en el orden de la presentación. Cada sección indica las láminas a las que corresponde.
+    \item Son \textbf{61 preguntas} probables, en el orden de las 15 láminas de la presentación. Cada sección indica la lámina a la que corresponde.
     \item Las respuestas son una \textbf{guía}, no un guion: hay que poder decirlas con palabras propias.
     \item Método sugerido: tapar la respuesta, contestar en voz alta y después comparar.
     \item Todas las cifras salen de los reportes del repositorio (\texttt{reports/} y \texttt{docs/}). Si una cifra no se recuerda, es mejor decir el orden de magnitud que inventarla.
     \item Si no se sabe una respuesta: \textit{«eso no lo medí; lo que sí puedo decir es...»}.
+    \item El sistema \textbf{detecta}, no diagnostica. Se dice «melanoma» y «lesión benigna».
   \end{itemize}
-  \vspace{0.6em}
-  \begin{exampleblock}{Las cinco cifras que hay que saber de memoria}
-    Prevalencia \textbf{1.76\,\%} \quad$\cdot$\quad AUC-ROC \textbf{0.843} \quad$\cdot$\quad AUPRC \textbf{0.113} \quad$\cdot$\quad \textbf{84 de 86} melanomas detectados \quad$\cdot$\quad especificidad \textbf{39\,\%}
+  \vspace{0.4em}
+  \begin{exampleblock}{Las cifras que hay que saber de memoria}
+    \centering\small
+    \begin{tabular}{@{}cccc@{}}
+      Prevalencia \textbf{1.76\,\%} & Peso \textbf{54.88} & Umbral \textbf{0.39\,\%} & Fotografías clínicas \textbf{0.596} \\[0.3em]
+      Detecta \textbf{84 de 86} (\textbf{97.7\,\%}) & Especificidad \textbf{39.3\,\%} & AUC-ROC \textbf{0.843} & AUPRC \textbf{0.113} \\
+    \end{tabular}
   \end{exampleblock}
 \end{frame}
 
 % ============================================================
-\section{Problema y alcance}
-\begin{frame}{Problema y alcance (láminas 3 a 6)}
+\section{El problema y el objetivo}
+\begin{frame}{El problema y el objetivo (lámina 2)}
   \qa{1. ¿Por qué «detección asistida» y no «diagnóstico»?}{
     El sistema entrega una probabilidad estadística sobre una imagen. No está validado clínicamente ni aprobado por una autoridad sanitaria. Su salida es «referir» o «no referir» a dermatología; la decisión sigue siendo del médico.}
-  \qa{2. ¿Qué estaba mal con el 90.39\,\% de exactitud de la primera versión?}{
+  \qa{2. ¿Qué estaba mal con el 90.39\,\% de exactitud de la primera versión del proyecto?}{
     Cuatro cosas: se midió sobre una validación contaminada (sin verificar fugas), con 48\,\% de melanomas cuando la prevalencia real es 1.76\,\%, con el umbral 0.5 por omisión y sin calibración. Además, la exactitud engaña cuando las clases están desbalanceadas.}
-  \qa{3. ¿Por qué ISIC 2020 y no otro conjunto de datos?}{
-    Porque incluye el \textbf{identificador de paciente}, que permite separar las particiones por paciente y evitar fugas. Alternativas como ISIC 2019 no lo tienen. El costo es que hay pocos melanomas: 584.}
+  \qa{3. ¿Por qué solo melanoma y solo dermatoscopía?}{
+    Es lo que ISIC 2020 permite: sus etiquetas son melanoma contra el resto y sus imágenes son dermatoscopías. Fuera de ese dominio el sistema no sirve, y eso se midió con 656 fotografías clínicas. Una probabilidad baja no descarta otros cánceres de piel.}
 \end{frame}
 
-\begin{frame}{Problema y alcance (láminas 3 a 6)}
-  \qa{4. ¿Por qué solo melanoma y solo dermatoscopía?}{
-    Es lo que ISIC 2020 permite: sus etiquetas son melanoma contra el resto y sus imágenes son dermatoscópicas. Fuera de ese dominio el modelo no sirve, y eso se midió (DDI). Una probabilidad baja no descarta otros cánceres de piel, como el carcinoma basocelular.}
-  \qa{5. ¿Se podría usar hoy en una clínica?}{
-    No. Faltan una evaluación prospectiva, datos de población mexicana, validación con los equipos de la clínica y aprobación regulatoria. Es una herramienta educativa y de investigación, y además los datos son de licencia no comercial.}
-  \qa{6. ¿Cuál es la aportación del trabajo, si el resultado no supera al estado del arte?}{
-    La aportación es metodológica: una evaluación honesta y reproducible (particiones por paciente, conjunto de prueba bloqueado, intervalos de confianza, calibración, evaluación externa y limitaciones medidas), más un sistema completo que funciona de principio a fin.}
+\begin{frame}{El problema y el objetivo (lámina 2)}
+  \qa{4. ¿Se podría usar hoy en una clínica?}{
+    No. Faltan una evaluación prospectiva, datos de población mexicana, validación con los equipos de la clínica y aprobación regulatoria. Es un prototipo de investigación con fines educativos, y además los datos son de licencia no comercial.}
+  \qa{5. ¿Qué entrega exactamente el sistema?}{
+    Tres cosas: una probabilidad calibrada de melanoma, una recomendación («referir» o «no referir») y un mapa de activación. Nunca dice «benigna» ni emite un diagnóstico.}
 \end{frame}
 
 % ============================================================
-\section{Datos}
-\begin{frame}{Datos (láminas 7 y 8)}
+\section{Los datos}
+\begin{frame}{Los datos (lámina 3)}
+  \qa{6. ¿Por qué ISIC 2020 y no otro conjunto de datos?}{
+    Porque incluye el \textbf{identificador de paciente}, que permite repartir las imágenes por paciente y evitar fugas. El costo es que hay pocos melanomas: 584 en 33,126 dermatoscopías (1.76\,\%).}
   \qa{7. ¿Qué es una fuga de datos y cómo se evitó?}{
-    Es cuando información de la evaluación se cuela al entrenamiento. Aquí el riesgo era que fotos del mismo paciente quedaran en entrenamiento y en prueba. Se evitó particionando por paciente y fusionando a los pacientes que comparten imágenes duplicadas. Resultado: 0 pacientes en más de una partición, vigilado por una prueba automática.}
-  \qa{8. ¿Cómo se detectaron los duplicados?}{
-    En dos pasadas. Con SHA256 se encuentran archivos idénticos byte a byte: 433 grupos, todos dentro de un mismo paciente. Con un \textit{hash} perceptual (pHash de 64 bits) se encuentran imágenes visualmente iguales: 18 grupos cruzan pacientes distintos.}
-  \qa{9. ¿Por qué no se eliminaron los duplicados dentro de un paciente?}{
-    Porque no generan fuga: todas las imágenes de un paciente caen en la misma partición. Eliminarlos habría sido una decisión adicional sin beneficio para la validez de la evaluación.}
+    Es cuando información de la evaluación se cuela al entrenamiento. Aquí el riesgo era que imágenes del mismo paciente quedaran en entrenamiento y en prueba. Se evitó repartiendo por paciente y manteniendo juntos a los pacientes que comparten imágenes duplicadas. Resultado: 0 pacientes en más de un conjunto, vigilado por una prueba automática.}
+  \qa{8. ¿Cómo quedó el reparto?}{
+    Entrenamiento: 22,911 imágenes y 410 melanomas (948 pacientes). Validación: 4,963 y 88 (568 pacientes). Prueba: 5,252 y 86 (540 pacientes). Es cerca de 70, 15 y 15\,\% de las imágenes, con cada paciente completo en un solo conjunto.}
 \end{frame}
 
-\begin{frame}{Datos (láminas 7 y 8)}
-  \qa{10. El 82\,\% de las imágenes tiene diagnóstico «unknown». ¿No es un problema?}{
-    Son lesiones benignas sin subtipo; la etiqueta binaria (melanoma o no) sí está completa. La limitación real es otra: los melanomas tienen confirmación histopatológica, pero algunas benignas se etiquetaron por consenso clínico o seguimiento. Ese posible error de etiqueta tiende a \textbf{subestimar} la especificidad medida.}
-  \qa{11. ¿De dónde vienen los datos y a quién representan?}{
+\begin{frame}{Los datos (lámina 3)}
+  \qa{9. ¿Cómo se detectaron los duplicados?}{
+    En dos pasadas. Con la huella SHA256 se encuentran archivos idénticos byte a byte: 433 grupos, todos dentro de un mismo paciente. Con una huella perceptual de 64 bits se encuentran imágenes visualmente iguales: 18 grupos cruzan pacientes distintos.}
+  \qa{10. ¿Por qué no se eliminaron los duplicados dentro de un paciente?}{
+    Porque no generan fuga: todas las imágenes de un paciente caen en el mismo conjunto. Eliminarlos habría sido una decisión adicional sin beneficio para la validez de la medición.}
+  \qa{11. El 82\,\% de las imágenes tiene diagnóstico «unknown». ¿No es un problema?}{
+    Son lesiones benignas sin subtipo registrado; la etiqueta que usa el sistema (melanoma o no) sí está completa. La limitación real es otra: los melanomas tienen confirmación histopatológica, pero algunas lesiones benignas se etiquetaron por consenso clínico o seguimiento. Ese posible error de etiqueta tiende a \textbf{subestimar} la especificidad medida.}
+\end{frame}
+
+\begin{frame}{Los datos (lámina 3)}
+  \qa{12. ¿De dónde vienen los datos y a quién representan?}{
     De seis instituciones de Europa, Estados Unidos y Australia, recopilados hasta 2020. No incluyen pacientes mexicanos, así que el desempeño en nuestra población se desconoce.}
-  \qa{12. ¿Cómo se sabe que los datos descargados son los correctos?}{
-    Los conteos (33,126 imágenes, 584 melanomas, 2,056 pacientes) se verificaron contra la publicación oficial, y cada imagen está registrada con su SHA256 en un manifiesto versionado.}
+  \qa{13. ¿Cómo se sabe que los datos descargados son los correctos?}{
+    Los conteos (33,126 imágenes, 584 melanomas, 2,056 pacientes) se verificaron contra la publicación oficial, y cada imagen está registrada con su huella SHA256 en un manifiesto versionado.}
+  \qa{14. ¿Por qué estratificar por «paciente con al menos un melanoma»?}{
+    Con tan pocos melanomas, un reparto al azar podría dejar la prueba casi sin positivos. La estratificación reparte a los pacientes con melanoma de forma proporcional; el requisito era al menos 80 melanomas en la prueba y se obtuvieron 86.}
+\end{frame}
+
+\begin{frame}{Los datos (lámina 3)}
+  \qa{15. ¿Por qué el conjunto de prueba solo se abrió dos veces?}{
+    Cada vez que se mira la prueba y se decide algo con ella, deja de ser una estimación limpia y se convierte en otra validación. Limitar los accesos garantiza que la cifra reportada no está ajustada a esos datos. Accesos: 18 de septiembre (una red) y 26 de octubre de 2026 (sistema final).}
+  \qa{16. ¿Qué es un «protocolo congelado»?}{
+    Un archivo que fija el modelo, la calibración, los umbrales y las métricas, registrado \textbf{antes} de que exista el código que lee la prueba. El programa se niega a correr si el archivo cambió, y su huella queda anotada en una bitácora junto con la fecha del acceso.}
+  \qa{17. ¿Para qué sirve entonces la validación?}{
+    Para todas las decisiones: modelos de referencia, tratamiento del desbalance, red, resolución, época de parada, ensamble, calibración y umbral. Por eso sus métricas están sesgadas al alza y no se reportan como resultado final.}
 \end{frame}
 
 % ============================================================
-\section{Métricas}
-\begin{frame}{Desbalance y métricas (lámina 9)}
-  \qa{13. ¿Por qué no se reporta la exactitud?}{
-    Con 1.76\,\% de melanomas, responder siempre «benigno» da 98.24\,\% de exactitud sin detectar un solo melanoma. La exactitud premia ignorar la clase que importa.}
-  \qa{14. ¿Qué es el AUC-ROC?}{
-    La probabilidad de que un melanoma elegido al azar reciba una puntuación mayor que una lesión benigna elegida al azar. Vale 0.5 al azar y 1.0 si el orden es perfecto. No depende del umbral.}
-  \qa{15. ¿Qué es el AUPRC y por qué es la métrica primaria?}{
-    El área bajo la curva de precisión contra sensibilidad. Se concentra en la clase rara: al azar vale lo mismo que la prevalencia ($\approx 0.016$). Con tantos negativos el AUC-ROC puede verse optimista; el AUPRC muestra cuántas de las alertas son melanomas de verdad.}
+\section{El modelo}
+\begin{frame}{El modelo (lámina 4)}
+  \qa{18. ¿Qué es EfficientNetV2-S?}{
+    Una red neuronal convolucional de Tan y Le (2021), diseñada para dar buena precisión con poco cómputo. Tiene 20.2 millones de parámetros y recibe imágenes de 224 píxeles. La salida es simple: promedio global de los mapas de características, \textit{dropout} y una capa lineal con un solo número, el logit de melanoma.}
+  \qa{19. ¿Qué es el \textit{transfer learning} y por qué se usó?}{
+    Se parte de una red ya entrenada con imágenes generales (ImageNet) y se ajusta a la tarea. Con solo 410 melanomas en entrenamiento, conviene empezar con una red que ya distingue bordes, texturas y colores. Los pesos iniciales son de ImageNet (versión de 21 mil clases, afinada en la de mil).}
+  \qa{20. ¿Qué significa «ajuste fino de toda la red»?}{
+    Que durante el entrenamiento se actualizan todos los pesos de la red, no solo la última capa. La opción de congelar la red existe en la configuración y está desactivada.}
 \end{frame}
 
-\begin{frame}{Desbalance y métricas (láminas 9 y 16)}
-  \qa{16. Defina sensibilidad, especificidad, VPP y VPN con los números del proyecto.}{
+% ============================================================
+\section{El entrenamiento}
+\begin{frame}{El entrenamiento (lámina 5)}
+  \qa{21. ¿Cuál fue la receta de entrenamiento?}{
+    Optimizador AdamW, tasa de aprendizaje de 0.0001 con calentamiento de 1 época y descenso en coseno, lotes de 128 imágenes, máximo 15 épocas, entropía cruzada binaria con peso de 54.88 para los melanomas, 3 semillas y una Tesla T4 de Kaggle. Todas las redes comparadas usaron los mismos valores. Cada entrenamiento de la red elegida tardó entre 24 y 34 minutos.}
+  \qa{22. ¿Qué hace el peso de 54.88?}{
+    Es el cociente de lesiones benignas entre melanomas en entrenamiento (22,501 entre 410). Multiplica la pérdida de cada melanoma: equivocarse en un melanoma cuesta lo mismo que equivocarse en 54.88 lesiones benignas. Efecto secundario: las probabilidades salen infladas, y por eso después se calibra.}
+  \qa{23. ¿Qué frenos contra la memorización se usaron?}{
+    Cuatro. Parada temprana: el entrenamiento se detiene si el AUPRC de validación no mejora en 5 épocas. Decaimiento de pesos de 0.01. \textit{Dropout} de 0.2. Aumentos de datos (recorte, volteos, rotación de $\pm 20^{\circ}$, brillo y contraste), que solo se aplican en entrenamiento.}
+\end{frame}
+
+\begin{frame}{El entrenamiento (lámina 5)}
+  \qa{24. El muestreo ponderado tuvo mejor AUPRC (0.115 contra 0.077). ¿Por qué no se eligió?}{
+    Porque el sistema opera en sensibilidad alta, y ahí el muestreo deja una especificidad de 0.19 contra 0.42 del peso (a sensibilidad 0.90, con ResNet50). Además esa diferencia de AUPRC es de una sola semilla y con intervalos traslapados.}
+  \qa{25. ¿Cómo se sabe que el entrenamiento no falló en silencio?}{
+    Hay un detector de colapso: si las probabilidades de validación casi no varían o el AUC-ROC queda en 0.5, la corrida se marca. Ninguna de las doce corridas colapsó. Además, el modelo sin imagen (AUC-ROC 0.620) confirma que la red aprende de la imagen.}
+\end{frame}
+
+% ============================================================
+\section{La elección del modelo}
+\begin{frame}{La elección del modelo (lámina 6)}
+  \qa{26. ConvNeXt-Tiny tuvo los mejores números. ¿Por qué se eligió EfficientNetV2-S a 224 píxeles?}{
+    La regla, fijada de antemano, dice que diferencias menores a 0.02 son un empate y que entonces gana el modelo más barato. Los tres mejores empatan (0.825, 0.829 y 0.833 de AUC-ROC en validación), y EfficientNetV2-S a 224 píxeles cuesta 4.5 veces menos cómputo que ConvNeXt-Tiny.}
+  \qa{27. ¿De dónde sale el umbral de ruido de 0.02?}{
+    Es una medición: el mismo entrenamiento, repetido con la misma semilla y la misma configuración, dio 0.794 y 0.778 de AUC-ROC. Una diferencia menor que esos 0.016 no distingue un modelo de otro.}
+  \qa{28. ¿Qué es el modelo «sin imagen» y para qué sirve?}{
+    Una regresión logística que solo usa edad, sexo y sitio anatómico. Alcanza 0.620 de AUC-ROC en validación. Es el piso de la comparación: muestra cuánto se puede adivinar sin ver la lesión y confirma que las redes (0.778 a 0.833) aprenden de la imagen.}
+\end{frame}
+
+\begin{frame}{La elección del modelo (lámina 6)}
+  \qa{29. ¿Por qué subir la resolución de 224 a 384 píxeles no ayudó?}{
+    Lo que se midió es que la diferencia (+0.004 de AUC-ROC) queda dentro del ruido, con este conjunto de datos y este presupuesto de cómputo. No se investigó la causa. El ganador del reto sí usó resoluciones altas, pero con muchos más datos y redes.}
+  \qa{30. ¿Por qué no elegir la mejor de las tres semillas?}{
+    Elegir la mejor semilla sería seleccionar sobre validación y sesgar el resultado. Para el modelo de una sola red se fijó la semilla 0 antes de ver los números. El sistema final ya no elige: promedia las tres.}
+  \qa{31. ¿Por qué ResNet50 como referencia?}{
+    Es una red convolucional conocida y de costo parecido. Con la misma receta alcanzó 0.778 de AUC-ROC en validación; EfficientNetV2-S subió a 0.825. Esa diferencia de 0.047 sí supera el ruido: la red importa.}
+\end{frame}
+
+% ============================================================
+\section{El sistema final}
+\begin{frame}{El sistema final (lámina 7)}
+  \qa{32. ¿Por qué ayuda promediar tres redes iguales con distinta semilla?}{
+    Cada red comete errores algo distintos por su inicialización y el orden de los datos. Al promediar sus salidas, parte de esos errores se cancela. En validación el AUC-ROC subió de 0.834 a 0.847 y el AUPRC de 0.132 a 0.164.}
+  \qa{33. ¿Por qué no se usaron más redes, volteos al predecir ni los datos del paciente?}{
+    Porque se midieron y no aportaron. Seis y nueve redes empatan con tres y cuestan de 5 a 8 veces más. Los volteos bajaron el AUPRC en 0.008. Añadir edad, sexo y sitio anatómico bajó el AUC-ROC en 0.008 y la especificidad a sensibilidad 0.95 en 0.14.}
+  \qa{34. ¿Qué significa que una probabilidad esté calibrada?}{
+    Que el número se puede leer literalmente: de cada 100 lesiones con 8\,\%, cerca de 8 resultan melanoma. Platt ajusta $p = 1/(1 + e^{-(a z + b)})$ sobre validación, con $a = 0.4473$ y $b = -3.3553$; no cambia el orden de las imágenes ni el AUC-ROC.}
+\end{frame}
+
+\begin{frame}{El sistema final (lámina 7)}
+  \qa{35. ¿Por qué Platt y no solo escalado por temperatura?}{
+    La temperatura corrige la escala, pero no el desplazamiento. El peso de 54.88 desplaza las salidas en aproximadamente $\ln 54.88 \approx 4$. Con una sola red, la temperatura apenas bajó el Brier de 0.154 a 0.142; Platt lo bajó a 0.016.}
+  \qa{36. ¿Qué miden el Brier y el ECE, y cuánto valen?}{
+    Brier: el error cuadrático medio entre la probabilidad y lo que ocurrió (0 o 1). ECE: la diferencia promedio entre la probabilidad predicha y la frecuencia observada. En ambos, menos es mejor. En validación, Platt los bajó de 0.0898 a 0.0161 y de 0.1288 a 0.0022. En prueba, el sistema final tiene Brier de 0.0154 y ECE de 0.0030.}
+  \qa{37. ¿Por qué el umbral es 0.39\,\%? Parece demasiado bajo.}{
+    Es el corte que detecta al menos 95\,\% de los melanomas de validación. Parece bajo porque los melanomas son raros: en la prueba son 1.6\,\% de las lesiones. Una lesión con 8\,\% ya tiene cinco veces el riesgo promedio.}
+\end{frame}
+
+\begin{frame}{El sistema final (lámina 7)}
+  \qa{38. ¿Por qué el umbral se calcula como una mediana de remuestreos?}{
+    Con 88 melanomas en validación, detectar 95\,\% depende de solo cuatro casos: un único corte sería frágil. Se usó la mediana de 2,000 remuestreos por paciente, que es más estable. Resultado: 0.003851.}
+  \qa{39. ¿Por qué detectar 95\,\% y no otra cifra?}{
+    Es una decisión de costos: un melanoma no detectado es más grave que una consulta de más. La alternativa evaluada (detectar 90\,\%, umbral de 0.56\,\%) sube la especificidad en prueba a 55.7\,\%, pero deja ir 12 melanomas en vez de 2.}
+\end{frame}
+
+% ============================================================
+\section{Resultados en prueba}
+\begin{frame}{Resultados en prueba (lámina 8)}
+  \qa{40. ¿Por qué no se reporta la exactitud?}{
+    Con 1.76\,\% de melanomas, responder siempre «no es melanoma» da 98.24\,\% de exactitud sin detectar uno solo. La exactitud premia ignorar la clase que importa.}
+  \qa{41. Defina las cuatro métricas con los números del proyecto.}{
     \begin{tabular}{@{}lll@{}}
       \textbf{Sensibilidad}: de los melanomas, cuántos se refieren & 84 de 86 & 97.7\,\% \\
-      \textbf{Especificidad}: de las benignas, cuántas no se refieren & 2,028 de 5,166 & 39.3\,\% \\
-      \textbf{VPP}: de las referidas, cuántas son melanoma & 84 de 3,222 & 2.6\,\% \\
-      \textbf{VPN}: de las no referidas, cuántas son benignas & 2,028 de 2,030 & 99.9\,\% \\
+      \textbf{Especificidad}: de las lesiones benignas, cuántas no se refieren & 2,028 de 5,166 & 39.3\,\% \\
+      \textbf{Valor predictivo positivo}: de las referidas, cuántas son melanoma & 84 de 3,222 & 2.6\,\% \\
+      \textbf{Valor predictivo negativo}: de las no referidas, cuántas son benignas & 2,028 de 2,030 & 99.9\,\% \\
     \end{tabular}}
-  \qa{17. ¿Por qué el VPP y el VPN dependen de la prevalencia y la sensibilidad no?}{
-    La sensibilidad y la especificidad se calculan dentro de cada clase. El VPP y el VPN mezclan las dos clases, así que cambian con la proporción de melanomas. Proyección del modelo único: con 5\,\% de prevalencia el VPP subiría a cerca de 8\,\%.}
+  \qa{42. ¿Por qué los valores predictivos dependen de la prevalencia y la sensibilidad no?}{
+    La sensibilidad y la especificidad se calculan dentro de cada clase. Los valores predictivos mezclan las dos clases, así que cambian con la proporción de melanomas. Proyección: con 5\,\% de prevalencia, el valor predictivo positivo subiría a cerca de 8\,\%.}
 \end{frame}
 
-% ============================================================
-\section{Protocolo}
-\begin{frame}{Protocolo de evaluación (lámina 10)}
-  \qa{18. ¿Por qué el conjunto de prueba solo se abre dos veces?}{
-    Cada vez que se mira la prueba y se decide algo con ella, deja de ser una estimación limpia y se convierte en otra validación. Limitar los accesos garantiza que la cifra reportada no está ajustada a esos datos.}
-  \qa{19. ¿Qué es un «protocolo congelado»?}{
-    Un archivo que fija el modelo, la calibración, los umbrales y las métricas, registrado en git \textbf{antes} de que exista el código que lee la prueba. El script se niega a correr si el archivo cambió, y su \textit{hash} queda anotado en la bitácora junto con la fecha del acceso.}
-  \qa{20. ¿Por qué los intervalos de confianza se calculan por paciente?}{
+\begin{frame}{Resultados en prueba (lámina 9)}
+  \qa{43. ¿Qué es el AUC-ROC?}{
+    La probabilidad de que un melanoma elegido al azar reciba una puntuación mayor que una lesión benigna elegida al azar. Vale 0.5 al azar y 1.0 si el orden es perfecto. No depende del umbral. En prueba: 0.843, con intervalo de 0.804 a 0.881.}
+  \qa{44. ¿Qué es el AUPRC y por qué importa?}{
+    El área bajo la curva de precisión (valor predictivo positivo) contra sensibilidad. Se concentra en la clase rara: al azar vale lo mismo que la prevalencia, 0.016 en la prueba. El sistema alcanza 0.113, unas siete veces más, con intervalo de 0.076 a 0.179.}
+  \qa{45. ¿Por qué los intervalos de confianza se calculan por paciente?}{
     Las imágenes de un mismo paciente no son independientes. Remuestrear imágenes daría intervalos demasiado estrechos. Se remuestrean pacientes completos, 2,000 veces.}
 \end{frame}
 
-\begin{frame}{Protocolo de evaluación (lámina 10)}
-  \qa{21. ¿Por qué estratificar por «paciente con al menos un melanoma»?}{
-    Con tan pocos melanomas, una partición al azar podría dejar la prueba casi sin positivos. La estratificación reparte los pacientes con melanoma de forma proporcional; el requisito era al menos 80 melanomas en la prueba y se obtuvieron 86.}
-  \qa{22. ¿Para qué sirve entonces la validación?}{
-    Para todas las decisiones: línea base, tratamiento del desbalance, arquitectura, resolución, época de paro, ensamble, calibración y umbral. Por eso sus métricas están sesgadas al alza y no se reportan como resultado final.}
-  \qa{23. ¿Qué pasa si ahora se quiere mejorar el modelo?}{
-    El presupuesto de accesos está agotado. Cualquier mejora solo puede medirse sobre validación, o con un conjunto de prueba nuevo. Es una limitación asumida a cambio de que la cifra actual sea creíble.}
-\end{frame}
-
-% ============================================================
-\section{Entrenamiento}
-\begin{frame}{Entrenamiento y selección del modelo (láminas 11 y 12)}
-  \qa{24. ¿Qué es el aprendizaje por transferencia y por qué se usó?}{
-    Se parte de una red ya entrenada con millones de imágenes generales (ImageNet) y se ajusta a la tarea. Con solo 410 melanomas en entrenamiento, entrenar desde cero no sería viable: la red ya trae detectores de bordes, texturas y colores.}
-  \qa{25. ¿Qué hace el peso a la clase positiva?}{
-    Multiplica por $\approx 55$ (negativos entre positivos) la pérdida de cada melanoma: equivocarse en un melanoma cuesta lo mismo que equivocarse en 55 benignas. Efecto secundario: las probabilidades salen infladas, y por eso después se calibra.}
-  \qa{26. El muestreo ponderado tuvo mejor AUPRC (0.115 contra 0.077). ¿Por qué no se eligió?}{
-    Porque el sistema opera en sensibilidad alta, y ahí el muestreo deja una especificidad de 0.19 contra 0.42 del peso. Además esa diferencia de AUPRC es de una sola semilla y con intervalos traslapados.}
-\end{frame}
-
-\begin{frame}{Entrenamiento y selección del modelo (láminas 11 y 12)}
-  \qa{27. ConvNeXt-T tuvo los mejores números. ¿Por qué se eligió EfficientNetV2-S a 224 px?}{
-    La regla, fijada de antemano, dice que diferencias menores que 0.02 son un empate y que entonces gana el modelo más barato de servir. Los tres mejores empatan, y EfficientNetV2-S a 224 px cuesta 2.9 GFLOPs contra 13.1 de ConvNeXt-T.}
-  \qa{28. ¿De dónde sale el umbral de ruido de 0.02?}{
-    Es empírico: dos corridas con la misma semilla y la misma configuración difirieron 0.016 de AUC-ROC. Una diferencia menor que eso no distingue un modelo de otro.}
-  \qa{29. ¿Por qué se usó la semilla 0 y no la mejor de las tres?}{
-    Elegir la mejor semilla sería seleccionar sobre validación y sesgar el resultado. La semilla se fijó antes de ver los números.}
-\end{frame}
-
-\begin{frame}{Entrenamiento y selección del modelo (láminas 11 y 12)}
-  \qa{30. ¿Qué es EfficientNetV2-S?}{
-    Una red convolucional diseñada para dar buena precisión con poco cómputo. Se usó preentrenada en ImageNet-21k. La cabeza es simple: promedio global de los mapas de características, \textit{dropout} y una capa lineal con una sola salida, el logit de melanoma.}
-  \qa{31. ¿Por qué subir la resolución de 224 a 384 px no ayudó?}{
-    Lo que se midió es que la diferencia (+0.004 de AUC-ROC) queda dentro del ruido, con este conjunto de datos y este presupuesto de cómputo. No se investigó la causa. El ganador del reto sí usó resoluciones altas, pero con muchos más datos y modelos.}
-  \qa{32. ¿Cómo se sabe que el entrenamiento no falló en silencio?}{
-    Hay un detector de colapso: si las probabilidades de validación casi no varían o el AUC-ROC queda en 0.5, la corrida se marca. Ninguna de las doce corridas colapsó. Además, la línea base de metadatos (AUC-ROC 0.62) confirma que la red aprende de la imagen.}
-\end{frame}
-
-% ============================================================
-\section{Ensamble y calibración}
-\begin{frame}{Ensamble (lámina 13)}
-  \qa{33. ¿Por qué ayuda promediar tres redes iguales con distinta semilla?}{
-    Cada red comete errores algo distintos por su inicialización y el orden de los datos. Al promediar los logits, parte de esos errores se cancela y baja la varianza de la predicción.}
-  \qa{34. ¿Por qué no se usaron la aumentación en inferencia ni los metadatos?}{
-    Porque se midieron y no aportaron. Los volteos bajaron el AUPRC del ensamble en 0.008. Añadir edad, sexo y sitio anatómico bajó el AUC-ROC en 0.008 y la especificidad a sensibilidad 0.95 en 0.14. La regla exigía una ganancia mínima y no se alcanzó.}
-  \qa{35. En la prueba la mejora es de +0.009 con intervalos traslapados. ¿Por qué desplegar el ensamble?}{
-    Porque el criterio se escribió antes de abrir la prueba: desplegarlo si no era peor en AUC-ROC ni en AUPRC. Se cumplió. La mejora es modesta y así se reporta; el costo (tres veces el cómputo, unos 100 ms por imagen) es aceptable.}
-\end{frame}
-
-\begin{frame}{Calibración y umbral (lámina 14)}
-  \qa{36. ¿Qué significa que una probabilidad esté calibrada?}{
-    Que el número se puede leer literalmente: de cada 100 lesiones con una puntuación de 8\,\%, cerca de 8 resultan melanoma. Platt ajusta $p = \sigma(a \cdot \text{logit} + b)$ sobre validación; no cambia el orden de las imágenes ni el AUC.}
-  \qa{37. ¿Por qué Platt y no solo escalado por temperatura?}{
-    La temperatura corrige la escala, pero no el desplazamiento. El peso de 55 desplaza los logits en aproximadamente $\ln 55 \approx 4$. En el modelo único, la temperatura apenas bajó el Brier de 0.154 a 0.142; Platt lo bajó a 0.016.}
-  \qa{38. ¿Qué miden el Brier y el ECE?}{
-    Brier: el error cuadrático medio entre la probabilidad y lo que ocurrió (0 o 1). ECE: la diferencia promedio entre la probabilidad predicha y la frecuencia observada, por grupos de puntuación. En ambos, menos es mejor.}
-\end{frame}
-
-\begin{frame}{Calibración y umbral (lámina 14)}
-  \qa{39. ¿Por qué el umbral es 0.39\,\%? Parece demasiado bajo.}{
-    Es el corte que da sensibilidad de al menos 0.95 en validación. Parece bajo porque las probabilidades están calibradas a una tasa base de 1.6\,\%: casi todas las lesiones tienen probabilidades menores que 1\,\%.}
-  \qa{40. ¿Por qué sensibilidad 0.95 y no otra?}{
-    Es una decisión de costos: un melanoma no detectado es más grave que una consulta innecesaria. La alternativa evaluada, $\tau_{90}$, sube la especificidad a 0.56 pero deja pasar 12 melanomas en vez de 2.}
-  \qa{41. ¿Por qué el umbral se calcula como una mediana de remuestreos?}{
-    Con 88 melanomas en validación, la sensibilidad de 0.95 depende de solo cuatro casos: un único corte sería frágil. La mediana de 2,000 remuestreos por paciente es más estable.}
-\end{frame}
-
-% ============================================================
-\section{Resultados}
-\begin{frame}{Resultados (láminas 15 a 18)}
-  \qa{42. ¿Un AUC-ROC de 0.843 es bueno?}{
-    Es razonable para las condiciones: tres redes a 224 px, solo ISIC 2020 y GPU gratuita. El ganador del reto obtuvo 0.949 con 18 modelos, datos de tres años y metadatos; un modelo único de referencia, 0.80. Los conjuntos de evaluación no son los mismos, así que la comparación solo ubica.}
-  \qa{43. Con un VPP de 2.6\,\%, ¿para qué sirve?}{
-    Para priorizar, no para decidir. Deja fuera al 39\,\% de las lesiones con solo 2 melanomas entre 2,030 no referidas. El VPP bajo es consecuencia directa de la prevalencia de 1.6\,\% y de elegir sensibilidad alta. Es una limitación declarada, la primera de la lista.}
-  \qa{44. ¿Por qué el AUPRC bajó de validación (0.132) a prueba (0.096) en el modelo único?}{
+\begin{frame}{Resultados en prueba (lámina 9)}
+  \qa{46. ¿Un AUC-ROC de 0.843 es bueno?}{
+    Es razonable para las condiciones: tres redes a 224 píxeles y solo ISIC 2020. El ganador del reto obtuvo 0.949 con 18 redes, datos de tres años y resoluciones de hasta 896 píxeles; un trabajo con una sola red reporta 0.80. Los conjuntos de evaluación no son los mismos, así que la comparación solo ubica.}
+  \qa{47. En la prueba, tres redes mejoran solo 0.009 a una. ¿Por qué usar las tres?}{
+    Porque el criterio se escribió antes de abrir la prueba: usar las tres si no eran peores en AUC-ROC ni en AUPRC. Se cumplió (0.843 contra 0.834 y 0.113 contra 0.096). La mejora es modesta y así se reporta; el costo, unos 99 milisegundos por imagen, es aceptable.}
+  \qa{48. ¿Por qué el AUPRC es menor en prueba que en validación (0.113 contra 0.164)?}{
     Porque todo se eligió sobre validación, así que sus métricas son optimistas. Esa caída es la brecha de generalización, y es la razón de reportar la prueba.}
 \end{frame}
 
-\begin{frame}{Resultados (láminas 15 a 18)}
-  \qa{45. ¿El modelo es justo con todos los tonos de piel?}{
-    No se puede afirmar. En DDI el AUC-ROC fue parecido en los tres grupos (0.59, 0.60, 0.60), pero bajo en todos: un modelo que discrimina poco no tiene margen para discriminar peor en un grupo. Además, cambian a la vez el tipo de imagen y la tarea.}
-  \qa{46. ¿Por qué cae tanto el desempeño en DDI?}{
-    Por dos cambios simultáneos: de dermatoscopía a fotografía clínica, y de «melanoma contra el resto» a «maligno contra benigno». Tres algoritmos publicados cayeron a 0.56--0.67 sobre las mismas imágenes; este queda en 0.60.}
-  \qa{47. ¿Se puede concluir algo de los subgrupos por edad, sexo o sitio anatómico?}{
-    No. Es un análisis exploratorio: cada subgrupo tiene entre 7 y 51 melanomas y sus intervalos se traslapan. Solo detectaría diferencias grandes.}
+% ============================================================
+\section{Por qué la especificidad es baja}
+\begin{frame}{Por qué la especificidad es baja (lámina 10)}
+  \qa{49. ¿Por qué la especificidad es de solo 39.3\,\%?}{
+    Porque el umbral se fijó para detectar al menos 95\,\% de los melanomas, no para acertar en las lesiones benignas. Con ese umbral el sistema refiere 3,138 de las 5,166 lesiones benignas de la prueba: seis de cada diez.}
+  \qa{50. ¿Por qué no subir el umbral?}{
+    Se puede, pero se pagan melanomas. Con 0.56\,\% la especificidad sube a 55.7\,\% y se detectan 74 de 86: se escapan 12 en lugar de 2. La decisión fue que un melanoma no detectado cuesta más que una consulta de más.}
+  \qa{51. Con un valor predictivo positivo de 2.6\,\%, ¿para qué sirve?}{
+    Para priorizar, no para decidir. Deja fuera al 39\,\% de las lesiones con solo 2 melanomas entre 2,030 no referidas. El valor bajo es consecuencia directa de la prevalencia de 1.6\,\% y de elegir sensibilidad alta. Es una limitación declarada.}
 \end{frame}
 
 % ============================================================
-\section{Explicabilidad y sistema}
-\begin{frame}{Explicabilidad y artefactos (láminas 19 y 20): preguntas de respaldo}
-  \qa{¿Qué muestra exactamente el mapa de activación?}{
-    Las regiones que empujan la predicción hacia «melanoma»: una suma de los mapas de la última capa convolucional, ponderada por los pesos de la capa final. Tiene $7 \times 7$ celdas, así que señala regiones, no estructuras finas, y no muestra la evidencia en contra.}
-  \qa{¿Qué es la prueba de cordura?}{
-    Se reinician los pesos de la red y se recalcula el mapa. Si el mapa casi no cambia, no explica al modelo. Aquí la correlación con el mapa original quedó cerca de cero (umbral: menor que 0.3): el mapa sí depende de lo aprendido.}
-  \qa{Si el mapa cae fuera de la lesión, ¿el modelo está mal?}{
-    Indica que también usa la piel de alrededor: en los melanomas detectados, 22\,\% de la activación cae en la lesión contra 19\,\% por azar. Dos matices: la máscara de la lesión es automática y burda, y este hallazgo motivó el experimento de artefactos.}
+\section{Límites}
+\begin{frame}{Límites (lámina 11)}
+  \qa{52. ¿Qué pasa si se sube una imagen que no es una dermatoscopía?}{
+    El sistema no verifica el tipo de imagen: cualquier imagen recibe una probabilidad, aunque no sea una lesión. Fuera de la dermatoscopía ese número no significa nada. Verificar el tipo de imagen antes de responder está en el trabajo futuro.}
+  \qa{53. ¿Por qué cae tanto el desempeño con fotografías clínicas?}{
+    Por dos cambios simultáneos: de dermatoscopía a fotografía clínica, y de «melanoma contra el resto» a «lesión maligna contra benigna». Con 656 fotografías del conjunto Diverse Dermatology Images, el AUC-ROC de una red cayó de 0.834 a 0.596, la calibración se perdió y el umbral refirió casi todo. Tres algoritmos publicados quedaron entre 0.56 y 0.67 con las mismas imágenes.}
+  \qa{54. ¿El sistema es justo con todos los tonos de piel?}{
+    No se puede afirmar. Con las fotografías clínicas el AUC-ROC fue parecido en los tres grupos (0.59, 0.60 y 0.60), pero bajo en todos: un modelo que discrimina poco no tiene margen para discriminar peor en un grupo.}
 \end{frame}
 
-\begin{frame}{Artefactos y sistema (láminas 20 y 21): preguntas de respaldo}
-  \qa{¿Qué demostró el experimento de artefactos?}{
-    Que una marca de tinta fuera de la lesión hace referir al 84\,\% de las benignas que no se referían, contra 71\,\% con ruido de control. Y que el ruido hace perder 14 de 84 melanomas. La calidad de la imagen cambia la decisión.}
-  \qa{¿Por qué la API usa ONNX y no PyTorch?}{
-    Por tamaño y portabilidad: PyTorch instalado ocupa 741 MB; la imagen completa de la API mide 437 MB. La equivalencia con PyTorch se verificó: diferencia máxima de $2.2 \times 10^{-5}$ en las salidas.}
-  \qa{¿Por qué la interfaz nunca dice «benigna»? ¿Se guardan las imágenes?}{
-    Porque el modelo solo estima melanoma: una probabilidad baja no descarta otros cánceres, y 2 de 86 melanomas no se detectaron. Las imágenes se procesan en memoria y no se almacenan.}
+\begin{frame}{Límites (lámina 11)}
+  \qa{55. ¿Se puede concluir algo de los subgrupos por edad, sexo o sitio anatómico?}{
+    No. Es un análisis exploratorio: los subgrupos con datos tienen entre 7 y 51 melanomas, cuatro tienen uno o ninguno, y los intervalos se traslapan. Solo detectaría diferencias grandes.}
+  \qa{56. ¿Qué muestra exactamente el mapa de activación?}{
+    Las regiones que empujan la respuesta hacia «melanoma»: una suma de los mapas de la última capa convolucional, ponderada por los pesos de la capa final. Tiene $7 \times 7$ celdas, así que señala regiones, no estructuras finas. No explica la decisión: muestra dónde se apoyó la red, no por qué.}
+  \qa{57. Si el mapa cae fuera de la lesión, ¿el modelo está mal?}{
+    Indica que también usa la piel de alrededor: en los melanomas detectados, 22\,\% de la activación cae en la lesión contra 19\,\% por azar. El mapa sí depende de lo aprendido: al reiniciar los pesos de la red, deja de parecerse al original.}
+\end{frame}
+
+\begin{frame}{Límites (lámina 11)}
+  \qa{58. ¿Qué demostró el experimento de artefactos?}{
+    Que una marca de tinta fuera de la lesión hace referir al 84\,\% de las lesiones benignas que no se referían, contra 71\,\% con un control de ruido. Y que el ruido y el vello hacen perder 14 y 16 de 84 melanomas. La calidad de la imagen cambia la respuesta.}
+\end{frame}
+
+% ============================================================
+\section{El producto y la demostración}
+\begin{frame}{El producto y la demostración (lámina 12)}
+  \qa{59. ¿Cómo se eligieron los 12 ejemplos de la página?}{
+    Son dermatoscopías de validación, nunca de prueba, de 12 pacientes distintos: 7 melanomas que el sistema refiere, 4 lesiones benignas que no refiere y 1 lesión benigna que sí refiere. Se eligieron para ilustrar los casos, no al azar: \textbf{no representan la proporción de aciertos}. En la prueba el sistema refiere seis de cada diez lesiones benignas.}
+  \qa{60. ¿Cómo se sabe que la página responde igual que el modelo evaluado?}{
+    El modelo se exportó a un formato portátil y se comparó con el original: diferencia máxima de $2.2 \times 10^{-5}$ en las salidas. Además, cada ejemplo de la página da en el servicio la misma probabilidad que su predicción guardada de validación. Responde en 99 milisegundos por imagen, sin tarjeta gráfica.}
+  \qa{61. ¿Por qué la página nunca dice «benigna»? ¿Se guardan las imágenes?}{
+    Porque el sistema solo estima melanoma: una probabilidad baja no descarta otros cánceres, y 2 de 86 melanomas no se detectaron. Las imágenes se procesan en memoria y no se almacenan.}
+\end{frame}
+
+% ============================================================
+\section{Conclusiones y trabajo futuro}
+\begin{frame}{Conclusiones y trabajo futuro (láminas 13 y 14): preguntas de respaldo}
+  \qa{¿Cuál es la aportación del trabajo, si el resultado no supera al estado del arte?}{
+    La aportación es metodológica: una medición honesta y reproducible (reparto por paciente, conjunto de prueba abierto solo dos veces, intervalos de confianza, calibración, validación con fotografías clínicas y límites medidos), más un sistema completo que funciona de principio a fin.}
+  \qa{¿Qué pasa si ahora se quiere mejorar el modelo?}{
+    El presupuesto de accesos a la prueba está agotado. Cualquier mejora solo puede medirse sobre validación, o con un conjunto de prueba nuevo. Es una limitación asumida a cambio de que la cifra actual sea creíble.}
+  \qa{¿Qué relación tiene el trabajo con Ingeniería Física?}{
+    Se trabajó como un experimento de medición: se midió el ruido antes de comparar (0.794 contra 0.778), cada resultado lleva su intervalo de confianza, la salida se calibró como un instrumento, el protocolo se fijó antes de medir y el efecto de la tinta se comparó contra un control. El ajuste de 20.2 millones de parámetros es optimización numérica.}
 \end{frame}
 
 % ============================================================
@@ -246,7 +294,7 @@
     \item \textbf{¿Qué fue lo más difícil y cómo lo resolvió?}
     \item \textbf{¿Qué haría distinto si empezara de nuevo?}
     \item \textbf{¿Qué aprendió que no sabía al empezar?}
-    \item \textbf{¿Usó herramientas de inteligencia artificial? ¿Cómo?}
+    \item \textbf{¿Qué herramientas de apoyo utilizó y qué parte del trabajo es propia?}
   \end{enumerate}
   \vspace{0.4em}
   \begin{block}{Sobre la última}
